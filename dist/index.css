@@ -1,0 +1,15 @@
+body .a {
+  color: #000;
+  filter: alpha(opacity=50);
+  opacity: 0.5;
+  -webkit-transform: translate(1px, 1px);
+      -ms-transform: translate(1px, 1px);
+          transform: translate(1px, 1px);
+}
+.jtalk-editor {
+  width: 100px;
+  height: 100px;
+  border: 1px solid #eee;
+}
+
+/*# sourceMappingURL=index.css.map */
