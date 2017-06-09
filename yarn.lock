@@ -962,10 +962,6 @@ clone@^1.0.0, clone@^1.0.2:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/clone/download/clone-1.0.2.tgz#260b7a99ebb1edfe247538175f783243cb19d149"
 
-clone@~2.1.1:
-  version "2.1.1"
-  resolved "http://registry.npm.taobao.org/clone/download/clone-2.1.1.tgz#d217d1e961118e3ac9a4b8bba3285553bf647cdb"
-
 cloneable-readable@^1.0.0:
   version "1.0.0"
   resolved "http://registry.npm.taobao.org/cloneable-readable/download/cloneable-readable-1.0.0.tgz#a6290d413f217a61232f95e458ff38418cfb0117"
@@ -1117,11 +1113,26 @@ cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
     parse-json "^2.2.0"
     require-from-string "^1.1.0"
 
+cross-env@^5.0.1:
+  version "5.0.1"
+  resolved "http://registry.npm.taobao.org/cross-env/download/cross-env-5.0.1.tgz#ff4e72ea43b47da2486b43a7f2043b2609e44913"
+  dependencies:
+    cross-spawn "^5.1.0"
+    is-windows "^1.0.0"
+
 cross-spawn@^4.0.0:
   version "4.0.2"
   resolved "http://registry.npm.taobao.org/cross-spawn/download/cross-spawn-4.0.2.tgz#7b9247621c23adfdd3856004a823cbe397424d41"
   dependencies:
     lru-cache "^4.0.1"
+    which "^1.2.9"
+
+cross-spawn@^5.1.0:
+  version "5.1.0"
+  resolved "http://registry.npm.taobao.org/cross-spawn/download/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
+  dependencies:
+    lru-cache "^4.0.1"
+    shebang-command "^1.2.0"
     which "^1.2.9"
 
 cryptiles@2.x.x:
@@ -1247,10 +1258,6 @@ debug@2.6.4, debug@2.X, debug@^2.1.1, debug@^2.2.0, debug@^2.6.0:
 decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/decamelize/download/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
-
-deep-equal@^1.0.1, deep-equal@~1.0.1:
-  version "1.0.1"
-  resolved "http://registry.npm.taobao.org/deep-equal/download/deep-equal-1.0.1.tgz#f5d260292b660e084eff4cdbc9f08ad3247448b5"
 
 deep-extend@~0.4.0:
   version "0.4.2"
@@ -1509,10 +1516,6 @@ eventemitter3@1.x.x:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/eventemitter3/download/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
 
-eventemitter3@~2.0.3:
-  version "2.0.3"
-  resolved "http://registry.npm.taobao.org/eventemitter3/download/eventemitter3-2.0.3.tgz#b5e1079b59fb5e1ba2771c0a993be060a58c99ba"
-
 execa@^0.5.0:
   version "0.5.1"
   resolved "http://registry.npm.taobao.org/execa/download/execa-0.5.1.tgz#de3fb85cb8d6e91c85bcbceb164581785cb57b36"
@@ -1558,7 +1561,7 @@ extend-shallow@^2.0.1:
   dependencies:
     is-extendable "^0.1.0"
 
-extend@^3.0.0, extend@~3.0.0, extend@~3.0.1:
+extend@^3.0.0, extend@~3.0.0:
   version "3.0.1"
   resolved "http://registry.npm.taobao.org/extend/download/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
 
@@ -1600,10 +1603,6 @@ fancy-log@^1.1.0:
   dependencies:
     chalk "^1.1.1"
     time-stamp "^1.0.0"
-
-fast-diff@1.1.1:
-  version "1.1.1"
-  resolved "http://registry.npm.taobao.org/fast-diff/download/fast-diff-1.1.1.tgz#0aea0e4e605b6a2189f0e936d4b7fbaf1b7cfd9b"
 
 fd-slicer@~1.0.1:
   version "1.0.1"
@@ -2525,6 +2524,10 @@ is-utf8@^0.2.0:
 is-windows@^0.2.0:
   version "0.2.0"
   resolved "http://registry.npm.taobao.org/is-windows/download/is-windows-0.2.0.tgz#de1aa6d63ea29dd248737b69f1ff8b8002d2108c"
+
+is-windows@^1.0.0:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/is-windows/download/is-windows-1.0.1.tgz#310db70f742d259a16a369202b51af84233310d9"
 
 isarray@0.0.1:
   version "0.0.1"
@@ -3536,10 +3539,6 @@ p-locate@^2.0.0:
   dependencies:
     p-limit "^1.1.0"
 
-parchment@1.0.9:
-  version "1.0.9"
-  resolved "http://registry.npm.taobao.org/parchment/download/parchment-1.0.9.tgz#faa9f6ef654ebda3ba0199d6e460f24c73c677f2"
-
 parse-data-uri@^0.2.0:
   version "0.2.0"
   resolved "http://registry.npm.taobao.org/parse-data-uri/download/parse-data-uri-0.2.0.tgz#bf04d851dd5c87b0ab238e5d01ace494b604b4c9"
@@ -3904,25 +3903,6 @@ qs@6.2.1:
 qs@~6.4.0:
   version "6.4.0"
   resolved "http://registry.npm.taobao.org/qs/download/qs-6.4.0.tgz#13e26d28ad6b0ffaa91312cd3bf708ed351e7233"
-
-quill-delta@3.5.0:
-  version "3.5.0"
-  resolved "http://registry.npm.taobao.org/quill-delta/download/quill-delta-3.5.0.tgz#5b67e685da60c34eabed4449c416c74aab89157b"
-  dependencies:
-    deep-equal "^1.0.1"
-    extend "^3.0.0"
-    fast-diff "1.1.1"
-
-quill@^1.2.6:
-  version "1.2.6"
-  resolved "http://registry.npm.taobao.org/quill/download/quill-1.2.6.tgz#c4557933a5bb0034bd7842c31379254a8374caeb"
-  dependencies:
-    clone "~2.1.1"
-    deep-equal "~1.0.1"
-    eventemitter3 "~2.0.3"
-    extend "~3.0.1"
-    parchment "1.0.9"
-    quill-delta "3.5.0"
 
 quote-stream@~0.0.0:
   version "0.0.0"
@@ -4371,6 +4351,16 @@ setprototypeof@1.0.3:
 shallow-copy@~0.0.1:
   version "0.0.1"
   resolved "http://registry.npm.taobao.org/shallow-copy/download/shallow-copy-0.0.1.tgz#415f42702d73d810330292cc5ee86eae1a11a170"
+
+shebang-command@^1.2.0:
+  version "1.2.0"
+  resolved "http://registry.npm.taobao.org/shebang-command/download/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"
+  dependencies:
+    shebang-regex "^1.0.0"
+
+shebang-regex@^1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/shebang-regex/download/shebang-regex-1.0.0.tgz#da42f49740c0b42db2ca9728571cb190c98efea3"
 
 sigmund@~1.0.0:
   version "1.0.1"

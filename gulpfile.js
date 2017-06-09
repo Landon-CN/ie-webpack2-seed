@@ -27,6 +27,7 @@ const test = process.env.NODE_ENV === 'test';
 const devPath = path.resolve(__dirname,'./dev');
 const testPath = path.resolve(__dirname,'./test');
 const proPath = path.resolve(__dirname,'./dist');
+const prot = 3000; //访问端口
 
 let buildPath = devPath;
 if(production){
@@ -122,11 +123,13 @@ gulp.task('browsersync',function(){
     browsersSync({
         server:{
             baseDir:buildPath
-        }
+        },
+        port: port
     })
 })
 
-gulp.task('watch',['build','browsersync'],function () {
+gulp.task('watch',['build'],function () {
+    gulp.run('browsersync')
     gulp.watch('src/**/*',['build']);
 })
 
