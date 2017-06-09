@@ -2,6 +2,11 @@
 - 京东金融JTalk前端项目
 - 要求兼容IE7
 
+# 使用说明
+- `npm run start` 开发环境
+- `npm run test` 预览环境
+- `npm run build` 上线打包 dist目录
+
 # 技术栈
 - gulp
 - es6+less
@@ -12,7 +17,8 @@
 - 图片上传 jquery-file-upload(blueimp-file-upload)，兼容性>=-ie6+ Mozilla Firefox 3.0+
 - 模板渲染 mustache.js 后续可以转化为nodejs渲染
 - 表情库 采用和京东在线客户一样的表情库，已download所有图片
-- 图片粘贴 [待调研]
+- 图片粘贴 onPaste事件监听
+    - 问题1： 兼容性 IE>11(未证实)
 
 
 # 目录结构
