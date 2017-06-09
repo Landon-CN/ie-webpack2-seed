@@ -1,7 +1,7 @@
 const gulp = require('gulp');
 const babel = require('gulp-babel');
 const iife = require('gulp-iife');
-const concat = require('gulp-concat');
+const concat = require('gulp-concat');1
 const clean = require('gulp-rm');
 const inject = require('gulp-inject');
 const less = require('gulp-less');
@@ -12,13 +12,16 @@ const sourcemaps = require('gulp-sourcemaps');
 const gulpIf=require('gulp-if');
 const html2Js=require('gulp-html-to-js');
 const browsersSync = require('browser-sync');
-const plumber = require('gulp-plumber')
+const plumber = require('gulp-plumber');
+const sprites = require('postcss-sprites');
 
 const reload = browsersSync.reload;
 const autoprefix = new lessAutoprefix({ browsers: ['ie >= 7','Chrome > 20','Firefox >= 20'] });
 
 const development = process.env.NODE_ENV === 'development';
-const mapDist = './';
+
+// sourcemap生成地址
+const mapDist = './maps'; 
 
 gulp.task('js',function() {
     let task =  gulp.src('./src/**/*.js')
@@ -36,13 +39,13 @@ gulp.task('js',function() {
 });
 
 gulp.task('lib',function(){
-    return gulp.src(['./lib/jquery.js','./lib/*.js'])
+    return gulp.src(['./lib/es5-shim.js','./lib/es5-sham.js','./lib/jquery.js','./lib/*.js'])
     .pipe(concat('lib.js'))
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('html',function(){
-    let sources = gulp.src(['./dist/template.js','./dist/lib.js','./dist/*.js','./dist/*.css'],{read:false});
+    let sources = gulp.src(['./dist/lib.js','./dist/template.js','./dist/*.js','./dist/*.css'],{read:false});
     let target = gulp.src('./src/index.html');
     return target.pipe(inject(sources,{ignorePath: 'dist'}))
     .pipe(gulp.dest('./dist'))
@@ -54,6 +57,11 @@ gulp.task('clean',function(){
     .pipe(clean());
 });
 
+// post-sprite 配置项
+const spriteOpts = {
+    stylesheetPath: './dist',
+    spritePath: './dist/imgs/'
+};
 gulp.task('less',function(){
     return gulp.src('./src/**/*.less')
     .pipe(plumber())
@@ -66,7 +74,8 @@ gulp.task('less',function(){
                 opacity:{
                     method:'copy'
                 }
-            })
+            }),
+            sprites(spriteOpts)
         ]))
     .pipe(concat('index.css'))
     .pipe(gulpIf(development,sourcemaps.write(mapDist)))
@@ -84,7 +93,12 @@ gulp.task('tpl',function(){
     .pipe(reload({stream:true}))
 });
 
-gulp.task('build',['tpl','js','lib','less'],function(){
+gulp.task('img',function(){
+    gulp.src(['./src/**/*.gif'])
+    .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('build',['img','tpl','js','lib','less'],function(){
     gulp.run('html')
 });
 
@@ -97,10 +111,7 @@ gulp.task('browsersync',function(){
 })
 
 gulp.task('watch',['build','browsersync'],function () {
-    gulp.watch('src/**/*.js',['js']);
-    gulp.watch('src/**/*.tpl.html',['tpl']);
-    gulp.watch('src/**/*.less',['less']);
-    gulp.watch('src/index.html',['html'])
+    gulp.watch('src/**/*',['build']);
 })
 
 gulp.task('default')

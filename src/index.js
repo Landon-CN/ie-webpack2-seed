@@ -2,5 +2,5 @@ window.components = {};
 
 $(function(){
     const test = window.components.test;
-    // $('body').html(test(''));
+    // $('body').html(test('hello world'));
 });

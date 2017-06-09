@@ -5,7 +5,7 @@ window.components = {};
 
 $(function () {
     var test = window.components.test;
-    // $('body').html(test(''));
+    // $('body').html(test('hello world'));
 });
 }());
 
@@ -25,4 +25,4 @@ window.components.test = function (name, target) {
 };
 }());
 
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=maps/index.js.map

@@ -1,10 +1,16 @@
 body .a {
-  color: #000;
-  filter: alpha(opacity=50);
-  opacity: 0.5;
-  -webkit-transform: translate(1px, 1px);
-      -ms-transform: translate(1px, 1px);
-          transform: translate(1px, 1px);
+  width: 20px;
+  height: 20px;
+  background-image: url(imgs/sprite.png);
+  background-position: 0px 0px;
+  background-size: 48px 24px;
+}
+body .b {
+  width: 20px;
+  height: 20px;
+  background-image: url(imgs/sprite.png);
+  background-position: -24px 0px;
+  background-size: 48px 24px;
 }
 .jtalk-editor {
   width: 100px;
@@ -12,4 +18,4 @@ body .a {
   border: 1px solid #eee;
 }
 
-/*# sourceMappingURL=index.css.map */
+/*# sourceMappingURL=maps/index.css.map */
