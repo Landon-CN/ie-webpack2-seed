@@ -4,8 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "blueimp-file-upload": "^9.18.0",
     "es5-shim": "^4.5.9",
     "jquery": "1.12.4",
+    "jquery.ui.widget": "^1.10.3",
     "mustache": "^2.3.0",
     "quill": "^1.2.6"
   },
@@ -25,6 +27,7 @@
     "gulp-postcss": "^7.0.0",
     "gulp-rm": "^1.0.4",
     "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^3.0.0",
     "less-plugin-autoprefix": "^1.5.1",
     "oldie": "^1.3.0",
     "postcss-sprites": "^4.2.1"

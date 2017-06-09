@@ -1,15 +1,47 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>JTalk</title>
+    <style>
+        /*jquery-file-upload*/
+
+        .fileinput-button {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .fileinput-button input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+            font-size: 200px !important;
+            direction: ltr;
+            cursor: pointer;
+        }
+        /* Fixes for IE < 8 */
+
+        @media screen\9 {
+            .fileinput-button input {
+                filter: alpha(opacity=0);
+                font-size: 100%;
+                height: 100%;
+            }
+        }
+    </style>
     <!-- inject:css -->
     <!-- endinject -->
 </head>
+
 <body>
     <div class="a">
-        
+
     </div>
 
     <div class="b">
@@ -17,10 +49,19 @@
     </div>
 
     <div class="jtalk-editor" contenteditable="true">
-            123
-            <img src="https://static.360buyimg.com/im/w_web/img/classic/s40.gif" alt="">
+        123
+        <img src="https://static.360buyimg.com/im/w_web/img/classic/s40.gif" alt="">
     </div>
+    <div class="fileinput-button">
+        <div class="upload-btn">
+            点击上传文件
+        </div>
+        <input id="fileupload" type="file" name="files">
+    </div>
+
+
     <!-- inject:js -->
-  <!-- endinject -->
+    <!-- endinject -->
 </body>
+
 </html>
