@@ -6,6 +6,7 @@
 - `npm run start` 开发环境
 - `npm run test` 预览环境
 - `npm run build` 上线打包 dist目录
+- `npm run clean` 清除所有生成文件
 
 # 技术栈
 - gulp

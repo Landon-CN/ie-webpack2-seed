@@ -1,0 +1,18 @@
+<div class="emoji-body">
+    <table class="classics">
+        {{#classics}}
+        <tr>
+            {{#.}}
+            <td class="emoji-item">
+                <div class="emoji-border" data-id="{{.}}">
+                    <span class="emoji emoji-classics-{{.}}" ></span>
+                </div>
+            </td>
+            {{/.}}
+        </tr>
+        {{/classics}}
+    </table>
+    <div class="emoji-show-body">
+        <img>
+    </div>
+</div>

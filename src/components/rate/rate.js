@@ -1,0 +1,1 @@
+const tpl = __inline('./rate.tpl.html');

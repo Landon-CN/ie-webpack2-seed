@@ -10,12 +10,13 @@ const postcss = require('gulp-postcss');
 const oldIe = require('oldie');
 const sourcemaps = require('gulp-sourcemaps');
 const gulpIf=require('gulp-if');
-const html2Js=require('gulp-html-to-js');
 const browsersSync = require('browser-sync');
 const plumber = require('gulp-plumber');
 const sprites = require('postcss-sprites');
 const path = require('path');
 const uglyJs = require('gulp-uglify');
+const rename = require('gulp-rename');
+const inline = require('gulp-inline-template');
 
 const reload = browsersSync.reload;
 const autoprefix = new lessAutoprefix({ browsers: ['ie >= 7','Chrome > 20','Firefox >= 20'] });
@@ -27,7 +28,7 @@ const test = process.env.NODE_ENV === 'test';
 const devPath = path.resolve(__dirname,'./dev');
 const testPath = path.resolve(__dirname,'./test');
 const proPath = path.resolve(__dirname,'./dist');
-const prot = 3000; //访问端口
+const serverPort = 3000; //访问端口
 
 let buildPath = devPath;
 if(production){
@@ -41,10 +42,11 @@ gulp.task('js',function() {
     let task =  gulp.src('./src/**/*.js')
     .pipe(plumber())
     .pipe(gulpIf(development || test,sourcemaps.init()))
+    .pipe(inline())
     .pipe(babel())
     .pipe(iife({
         // 关闭严格模式,可以考虑开发环境下打开
-        useStrict:false
+        useStrict:true
     }))
     .pipe(concat('index.js'))
     .pipe(gulpIf(production|| test,uglyJs()))
@@ -77,7 +79,7 @@ gulp.task('clean',function(){
 // post-sprite 配置项
 const spriteOpts = {
     stylesheetPath: buildPath,
-    spritePath: path.resolve(buildPath,'./imgs')
+    spritePath: path.resolve(buildPath,'./imgs'),
 };
 gulp.task('less',function(){
     return gulp.src('./src/**/*.less')
@@ -96,22 +98,17 @@ gulp.task('less',function(){
         ]))
     .pipe(concat('index.css'))
     .pipe(gulpIf(development || test,sourcemaps.write('.')))
-    .pipe(gulp.dest(buildPath))
-    .pipe(reload({stream:true}))
-});
-
-gulp.task('tpl',function(){
-    gulp.src('./src/**/*.tpl.html')
-    .pipe(html2Js({
-        concat:'template.js',
-        global:'window.templates'
-    }))
+    .pipe(plumber.stop())
     .pipe(gulp.dest(buildPath))
     .pipe(reload({stream:true}))
 });
 
 gulp.task('img',function(){
-    gulp.src(['./src/**/*.gif'])
+    gulp.src(['./src/**/*.gif','./src/**/*.png','./src/**/*.jpeg','./src/**/*.jpeg'])
+    .pipe(rename(function(file) {
+        file.dirname = 'imgs';
+        
+    }))
     .pipe(gulp.dest(buildPath));
 });
 
@@ -124,13 +121,18 @@ gulp.task('browsersync',function(){
         server:{
             baseDir:buildPath
         },
-        port: port
+        port: serverPort
     })
 })
 
 gulp.task('watch',['build'],function () {
     gulp.run('browsersync')
-    gulp.watch('src/**/*',['build']);
+    gulp.watch('src/**/*.js',['js']);
+    gulp.watch('src/**/*.less',['less']);
+    gulp.watch('src/**/*.tpl.html',['tpl']);
+    gulp.watch('src/**/img/*',['img']);
+    gulp.watch('lib/**/*.js',['lib']);
+    gulp.watch('src/index.html',['html']);
 })
 
 gulp.task('default')
