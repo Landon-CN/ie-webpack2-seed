@@ -1,0 +1,93 @@
+@import '../../css/variable.less';
+.talk-body {
+    .message-box {
+        height: 509px;
+        border-bottom: 1px solid @border-color;
+        overflow-y: auto;
+
+        .history-msg {
+            background: #def1ff;
+            color:#6d6d6d;
+            text-align: center;
+            line-height: 35px;
+            cursor: pointer;
+        }
+
+        .message-row {
+            padding:20px;
+
+            .head-portrait{
+                width: 50px;
+                height: 50px;
+                font-size: 0;
+                float: left;
+            }
+
+            .message-text {
+                position: relative;
+                padding: 10px 20px;
+                margin: 3px 20px 0; 
+                background: #fff;
+                display: inline-block;
+                border-radius: 5px;
+                border:1px solid #dedede;
+                max-width: 75%;
+                word-wrap: break-word;
+
+                .triangle {
+                    @left: -17px;
+                    @top: 17px;
+                    position: absolute;
+                    display: inline-block;
+                    left: @left;
+                    top:@top;
+                    width: 0px;
+                    height: 0px;
+                    border-width: 8px;
+                    border-style: solid;
+                    border-color: transparent #dedede transparent transparent;
+
+                    &.border {
+                        left:@left+1;
+                        top: @top;
+                        border-width: 8px;
+                        border-right-color: #fff;
+                    }
+                }
+            }
+
+            &.user {
+                .message-text{
+                    float: right;
+                }
+                .head-portrait {
+                    float:right;
+                }
+                .triangle {
+                    @right: -17px;
+                    border-color: transparent transparent transparent #dedede ;
+                    left:auto;
+                    right:@right;
+
+                    &.border {
+                        right: @right+1;
+                        left: auto;
+                        border-color: transparent transparent transparent #fff;
+                    }
+                }
+
+            }
+        }
+
+        .time {
+            text-align: center;
+            line-height:40px;
+            color:#bdbebf;
+        }
+    }
+
+
+    .talk-editor {
+        height: 180px;
+    }
+}

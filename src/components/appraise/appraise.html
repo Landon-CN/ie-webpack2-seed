@@ -1,0 +1,24 @@
+<div class="appraise-body">
+    <span class="title">请对此次服务做出评价</span>
+    <a href="javascript:;" class="close">
+        <img src="./imgs/close.png" alt="关闭">
+    </a>
+    <div class="rate-content"></div>
+    <div class="reason-box">
+        <p>您不满意的原因是</p>
+        <div>
+            <ul class="reason-list">
+                {{#reasonList}}
+                <li class="reason-item" data-id="{{id}}">{{text}}</li>
+                {{/reasonList}}
+            </ul>
+        </div>
+        <textarea class="reason-text" placeholder="请输入您不满意的原因"></textarea>
+    </div>
+
+    <div class="split-line"></div>
+    <div class="footer">
+        <span class="user-attitude"></span>
+        <a class="submit">提交</a>
+    </div>
+</div>

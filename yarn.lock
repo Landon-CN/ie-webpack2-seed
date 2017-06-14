@@ -2030,13 +2030,6 @@ gulp-concat@^2.6.1:
     through2 "^2.0.0"
     vinyl "^2.0.0"
 
-gulp-html-to-js@^0.0.5:
-  version "0.0.5"
-  resolved "http://registry.npm.taobao.org/gulp-html-to-js/download/gulp-html-to-js-0.0.5.tgz#3b6099b0a86f88b2ed66070ebe5c568a4ad2ed18"
-  dependencies:
-    through2 "^0.6.5"
-    vinyl "^0.4.6"
-
 gulp-if@^2.0.2:
   version "2.0.2"
   resolved "http://registry.npm.taobao.org/gulp-if/download/gulp-if-2.0.2.tgz#a497b7e7573005041caa2bc8b7dda3c80444d629"
@@ -3760,6 +3753,16 @@ postcss-calc@^5.0.0:
     postcss-message-helpers "^2.0.0"
     reduce-css-calc "^1.2.6"
 
+postcss-less-engine@^0.6.2:
+  version "0.6.2"
+  resolved "http://registry.npm.taobao.org/postcss-less-engine/download/postcss-less-engine-0.6.2.tgz#e2c6d17f9685d6c51c791ed44c19f9aca2605daf"
+
+postcss-less@^1.0.2:
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/postcss-less/download/postcss-less-1.0.2.tgz#0efcededf25827552d6757638a4a317aa8ca3ade"
+  dependencies:
+    postcss "^5.2.16"
+
 postcss-load-config@^1.2.0:
   version "1.2.0"
   resolved "http://registry.npm.taobao.org/postcss-load-config/download/postcss-load-config-1.2.0.tgz#539e9afc9ddc8620121ebf9d8c3673e0ce50d28a"
@@ -4782,7 +4785,7 @@ through2@2.X, through2@^2, through2@^2.0.0, through2@^2.0.1, through2@^2.0.3, th
     readable-stream "^2.1.5"
     xtend "~4.0.1"
 
-"through2@>=0.6.1 <1.0.0-0", through2@^0.6.1, through2@^0.6.5:
+"through2@>=0.6.1 <1.0.0-0", through2@^0.6.1:
   version "0.6.5"
   resolved "http://registry.npm.taobao.org/through2/download/through2-0.6.5.tgz#41ab9c67b29d57209071410e1d7a7a968cd3ad48"
   dependencies:
@@ -5009,7 +5012,7 @@ vinyl@^0.2.1:
   dependencies:
     clone-stats "~0.0.1"
 
-vinyl@^0.4.0, vinyl@^0.4.6:
+vinyl@^0.4.0:
   version "0.4.6"
   resolved "http://registry.npm.taobao.org/vinyl/download/vinyl-0.4.6.tgz#2f356c87a550a255461f36bbeb2a5ba8bf784847"
   dependencies:
