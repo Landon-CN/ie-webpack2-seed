@@ -17,3 +17,26 @@
 .header {
     background-image: url('../imgs/header-bg.jpg');
 }
+
+.talk-editor {
+    .tool-item {
+        cursor: pointer;
+        .emoji-tool {
+            background: url('../components/talk/imgs/emoji.png');
+        }
+        .img-upload {
+            background: url('../components/talk/imgs/img.png');
+        }
+        .satisfaction {
+            background: url('../components/talk/imgs/rate.png');
+        }
+        &:hover {
+            .emoji-tool {
+                background: url('../components/talk/imgs/emoji-on.png');
+            }
+            .img-upload {
+                background: url('../components/talk/imgs/img-on.png');
+            }
+        }
+    }
+}

@@ -4,35 +4,35 @@
         height: 509px;
         border-bottom: 1px solid @border-color;
         overflow-y: auto;
-
         .history-msg {
             background: #def1ff;
-            color:#6d6d6d;
+            color: #6d6d6d;
             text-align: center;
             line-height: 35px;
             cursor: pointer;
         }
-
         .message-row {
-            padding:20px;
-
-            .head-portrait{
+            padding: 20px;
+            .head-portrait {
                 width: 50px;
                 height: 50px;
                 font-size: 0;
                 float: left;
             }
-
             .message-text {
                 position: relative;
                 padding: 10px 20px;
-                margin: 3px 20px 0; 
+                margin: 3px 20px 0;
                 background: #fff;
                 display: inline-block;
                 border-radius: 5px;
-                border:1px solid #dedede;
+                border: 1px solid #dedede;
                 max-width: 75%;
                 word-wrap: break-word;
+
+                img {
+                    vertical-align: middle;
+                }
 
                 .triangle {
                     @left: -17px;
@@ -40,54 +40,145 @@
                     position: absolute;
                     display: inline-block;
                     left: @left;
-                    top:@top;
+                    top: @top;
                     width: 0px;
                     height: 0px;
                     border-width: 8px;
                     border-style: solid;
                     border-color: transparent #dedede transparent transparent;
-
                     &.border {
-                        left:@left+1;
+                        left: @left+1;
                         top: @top;
                         border-width: 8px;
                         border-right-color: #fff;
                     }
                 }
             }
-
             &.user {
-                .message-text{
+                .message-text {
                     float: right;
                 }
                 .head-portrait {
-                    float:right;
+                    float: right;
                 }
                 .triangle {
                     @right: -17px;
-                    border-color: transparent transparent transparent #dedede ;
-                    left:auto;
-                    right:@right;
-
+                    border-color: transparent transparent transparent #dedede;
+                    left: auto;
+                    right: @right;
                     &.border {
                         right: @right+1;
                         left: auto;
                         border-color: transparent transparent transparent #fff;
                     }
                 }
-
+            }
+        }
+        .time {
+            text-align: center;
+            line-height: 40px;
+            color: #bdbebf;
+        }
+    }
+    .talk-editor {
+        height: 180px;
+        .toolbar {
+            position: relative;
+            padding: 0 20px 0 10px;
+            height: 40px;
+            overflow: hidden;
+            .tool-item {
+                padding: 10px;
+                display: inline-block;
+                min-width: 20px;
+                height: 20px;
+                text-align: center;
+                >span {
+                    vertical-align: middle;
+                    display: inline-block;
+                }
+                .emoji-tool {
+                    width: 16px;
+                    height: 16px;
+                }
+                .img-upload {
+                    width: 17px;
+                    height: 16px;
+                }
+                .satisfaction {
+                    width: 18px;
+                    height: 16px;
+                    vertical-align: middle;
+                }
+                &.rate-tool {
+                    color: #f9444e;
+                }
+            }
+            .reminder {
+                position: absolute;
+                top: 0;
+                right: 20px;
+                height: 40px;
+                line-height: 40px;
+                color: #9ea1a2;
+                font-size: 12px;
             }
         }
 
-        .time {
-            text-align: center;
-            line-height:40px;
-            color:#bdbebf;
+        .input-box {
+            padding: 10px 20px;
+            outline: none;
+            word-wrap: break-word;
+            height: 75px;
+
+            img {
+                vertical-align: middle;
+            }
         }
-    }
 
+        .bottom-btn {
+            text-align: right;
+            margin-right: 20px;
 
-    .talk-editor {
-        height: 180px;
+            .btn {
+                box-sizing: border-box;
+                padding: 0 15px;
+                height: 30px;
+                font-size: 12px;
+                line-height: 30px;
+                 vertical-align: middle;
+            }
+
+            .btn-close {
+                border: 1px solid #dddddd;
+                background: #f2f2f2;
+            }
+
+            .btn-submit {
+                color:#fff;
+                background: #f9444e;
+
+            }
+
+            .btn-group {
+                vertical-align: middle;
+                display: inline-block;
+                font-size: 0;
+            }
+            .split {
+                display: inline-block;
+                height: 30px;
+                border-left: 1px solid #ff8990;
+                vertical-align: middle;
+            }
+            .btn-more {
+                background: #f9444e;
+                padding:0 5px;
+                img {
+                    vertical-align: middle;
+                }
+            }
+
+        }
     }
 }
