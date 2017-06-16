@@ -4,15 +4,15 @@ const mustache = window.Mustache;
 
 const rateText = ['非常不满意', '不满意', '一般', '满意', '非常满意'];
 const reasonList = [{
-        id: 1,
+        id: 'JA',
         text: '回复不及时'
     },
     {
-        id: 2,
+        id: 'JB',
         text: '态度差'
     },
     {
-        id: 3,
+        id: 'JC',
         text: '问题没得到解决'
     }
 ];
@@ -24,7 +24,11 @@ window.components[NAME] = function (parent) {
     dom = $(mustache.render(tpl, {
         reasonList
     }));
-    let rate = window.components.rate(dom.find('.rate-content'),rateChange);
+    let rate = window.components.rate(dom.find('.rate-content'), rateChange);
+
+    dom.on('click', function (event) {
+        event.stopPropagation();
+    })
 
     dom.on('click', '.reason-item', function (event) {
         event.stopPropagation();
@@ -34,6 +38,7 @@ window.components[NAME] = function (parent) {
         recordReson(id);
     });
 
+    let isRate = false;
     dom.on('click', '.submit', function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -42,9 +47,23 @@ window.components[NAME] = function (parent) {
         if (rateSocre === -1) {
             return false;
         }
-        let reasonText = dom.find('.reason-text').val();
-        // TODO: ajax交互
 
+        // 防止重复提交
+        if(isRate){
+            return dom.hide();
+        }
+        isRate=true;
+        dom.hide();
+        let reasonText = dom.find('.reason-text').val();
+
+        const data = {
+            toUser: window.targetServiceId,
+            sendTime: moment().format('YYYY-MM-DD HH:mm:SS'),
+            score:rateSocre,
+            reason: reason.join(','),
+            userSay: reasonText
+        }
+        sendRate(data);
     });
 
     dom.on('click', '.close', function (event) {
@@ -52,6 +71,7 @@ window.components[NAME] = function (parent) {
         event.preventDefault();
         dom.hide();
     });
+
 
     //记录不满意原因
     function recordReson(id) {
@@ -73,13 +93,36 @@ window.components[NAME] = function (parent) {
             $('.reason-box').hide();
         }
     }
-
+    let showStatus = false;
+    let id = '';
     return {
         open: function () {
-            componentShow(parent,dom);
+            showStatus = true;
+            id = componentShow(parent, dom, id);
         },
         close: function () {
+            showStatus = false;
             dom.hide();
+        },
+        toggle() {
+            if (!showStatus) {
+                this.open();
+            } else {
+                this.close();
+            }
         }
     }
+}
+
+// 发送评价
+function sendRate(params) {
+    return $.ajax({
+        url:'/webpage/invitejudge/judge.htm',
+        contentType: 'application/json; charset=utf-8',
+        type:'post',
+        data:params,
+        headers:{
+            web_personal_key:window.webPersonalKey
+        }
+    });
 }

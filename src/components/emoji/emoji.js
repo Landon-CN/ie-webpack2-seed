@@ -25,9 +25,9 @@ function setTip(show, pos, img) {
     }).find('img').attr('src', img)
 }
 
-window.components[NAME] = function (parent) {
+window.components[NAME] = function (parent, change = () => {}) {
     let dom;
-
+    let showStatus = false;
     let classics = [];
     for (let i = 0; i < 72; i++) {
         let index = parseInt(i / 12);
@@ -42,7 +42,7 @@ window.components[NAME] = function (parent) {
     dom.on('mouseenter', '.emoji-border', function (event) {
         let pos = $(this).position();
         let id = $(this).data('id');
-        let img = `imgs/s${id<10?`0${id}`:id}.gif`;
+        let img = genrateImgSrc(id);
 
         setTip(true, pos, img);
     });
@@ -51,14 +51,33 @@ window.components[NAME] = function (parent) {
         setTip(false);
     });
 
+    dom.on('click', '.emoji-item', function (event) {
+        let id = $(this).children('.emoji-border').data('id');
+        change(genrateImgSrc(id),id);
+    });
+
     tip = dom.find('.emoji-show-body');
+    let id = '';
+
+    function genrateImgSrc(id) {
+        return `imgs/s${id<10?`0${id}`:id}.gif`;
+    }
 
     return {
         open: () => {
-            componentShow(parent,dom);
+            showStatus = true;
+            id = componentShow(parent, dom, id);
         },
         close: () => {
+            showStatus = false;
             dom.hide();
+        },
+        toggle() {
+            if (!showStatus) {
+                this.open();
+            } else {
+                this.close();
+            }
         }
     }
 }

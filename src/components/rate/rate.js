@@ -26,6 +26,7 @@ window.components[NAME] = function (parent,change = () => {},max = 5 , currentRa
     });
 
     dom.on('click', '.rate-item', function (event) {
+        event.stopPropagation();
         const rate = parseInt($(this).data('rate'),10);
         if(rate !== currentRate){
             currentRate = rate;

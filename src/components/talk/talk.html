@@ -1,58 +1,32 @@
 <div class="talk-body">
-    <div class="message-box">
+    <div class="scroll">
+            <div class="message-box">
         <div class="history-msg">
             查看历史消息
         </div>
-        <div class="message-row time">
-            15:03
-        </div>
-        <div class="message-row service">
-            <div class="head-portrait">
-                <img src="./imgs/service-head.png" alt="头像">
-            </div>
-            <div class="message-text">
-                <span class="triangle"></span>
-                <span class="triangle border"></span> 1231212312123121231212
-                <img src='./imgs/service-head.png' /> 按时送到路口附近奥斯卡级了撒娇啊 按时送到路口附<img src='./imgs/service-head.png' />近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按<img
-                    src='./imgs/service-head.png' />时送到路口附近奥斯卡级了撒娇啊
-            </div>
-            <div class="clear"></div>
-        </div>
-        <div class="message-row user">
-            <div class="head-portrait">
-                <img src="./imgs/service-head.png" alt="头像">
-            </div>
-            <div class="message-text">
-                <span class="triangle"></span>
-                <span class="triangle border"></span> 1231212312123121231212
-                <img src='./imgs/service-head.png' />
-                <img src='./imgs/service-head.png' />近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按时送到路口附近奥斯卡级了撒娇啊按<img
-                    src='./imgs/service-head.png' />时送到路口附近奥斯卡级了撒娇啊
-            </div>
-            <div class="clear"></div>
-        </div>
     </div>
+    </div>
+
     <div class="talk-editor">
         <div class="toolbar ">
             <ul class="tool-list inline-list">
-                <li class="tool-item">
+                <li class="tool-item" data-type="emoji">
                     <span class="emoji-tool"></span>
                 </li>
-                <li class="tool-item">
+                <li class="tool-item fileinput-button" data-type="img">
                     <span class="img-upload"></span>
+                    <input id="fileupload" type="file" name="files">
                 </li>
-                <li class="tool-item rate-tool">
+                <li class="tool-item rate-tool" data-type="rate">
                     <span class="satisfaction"></span>
                     <span>满意度评价</span>
                 </li>
             </ul>
             <div class="reminder">
-                Enter发送，Ctrl+Enter换行
+                按Enter键发送消息，Ctrl+Enter换行
             </div>
         </div>
-        <div class="input-box" contenteditable="true">
-            asdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdasasdfasfdas
-        </div>
+        <div class="input-box" contenteditable="true"></div>
         <div class="bottom-btn">
             <div class="btn btn-close">结束对话</div>
             <div class='btn-group'>
@@ -62,6 +36,10 @@
                 <span class="split"></span>
                 <div class="btn btn-more">
                     <img src="./imgs/down.png" alt="">
+                    <div class="submit-type">
+                         <span data-type="one">按Enter键发送消息，Ctrl+Enter换行</span>
+                         <span data-type="two">按Ctrl+Enter键发送消息，Enter换行</span>
+                    </div>
                 </div>
             </span>
         

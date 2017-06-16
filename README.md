@@ -36,3 +36,7 @@
 
 # 开发环境
 - gulp+babel+browsersync
+
+# dev环境密码
+- huiasd123
+- 123

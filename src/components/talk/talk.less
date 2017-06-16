@@ -1,9 +1,14 @@
 @import '../../css/variable.less';
 .talk-body {
-    .message-box {
+
+    .scroll {
         height: 509px;
         border-bottom: 1px solid @border-color;
         overflow-y: auto;
+    }
+
+    .message-box {
+        
         .history-msg {
             background: #def1ff;
             color: #6d6d6d;
@@ -20,6 +25,7 @@
                 float: left;
             }
             .message-text {
+                 min-height: 20px;
                 position: relative;
                 padding: 10px 20px;
                 margin: 3px 20px 0;
@@ -32,6 +38,8 @@
 
                 img {
                     vertical-align: middle;
+                    max-width: 150px;
+                    max-height: 150px;
                 }
 
                 .triangle {
@@ -53,9 +61,31 @@
                         border-right-color: #fff;
                     }
                 }
+
+                .service-group {
+                    list-style: none;
+
+                    .help-icon {
+                        vertical-align: middle;
+                    }
+
+                    
+
+                    .group-name {
+                        vertical-align: middle;
+                        color: #369;
+                        &:active {
+                            color: #369;
+                        }
+                        &.active {
+                            color: #e66464;
+                        }
+                    }
+                }
             }
             &.user {
                 .message-text {
+                
                     float: right;
                 }
                 .head-portrait {
@@ -78,6 +108,8 @@
             text-align: center;
             line-height: 40px;
             color: #bdbebf;
+            padding-top:0;
+            padding-bottom:0;
         }
     }
     .talk-editor {
@@ -86,8 +118,9 @@
             position: relative;
             padding: 0 20px 0 10px;
             height: 40px;
-            overflow: hidden;
+
             .tool-item {
+                overflow: hidden;
                 padding: 10px;
                 display: inline-block;
                 min-width: 20px;
@@ -130,6 +163,7 @@
             outline: none;
             word-wrap: break-word;
             height: 75px;
+            overflow: auto;
 
             img {
                 vertical-align: middle;
@@ -174,8 +208,27 @@
             .btn-more {
                 background: #f9444e;
                 padding:0 5px;
+                position: relative;
                 img {
                     vertical-align: middle;
+                }
+
+                .submit-type {
+                    border: 1px solid @border-color;
+                    bottom:0;
+                    right: -236px;
+                    position: absolute;
+                    background: #fff;
+                    display: none;
+                    >span {
+                        width: 210px;
+                        display: block;
+                        padding:0px  10px;
+
+                        &:hover {
+                            background: #f2f2f2;
+                        }
+                    }
                 }
             }
 

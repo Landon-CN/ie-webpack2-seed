@@ -1,0 +1,60 @@
+{{#list}} 
+
+{{#timeShow}}
+<div class="message-row time">
+    {{message}}
+</div>
+{{/timeShow}} 
+
+{{#loading}}
+<div class="message-row time">
+    正在转接中，请稍后...
+</div>
+{{/loading}}
+
+{{#service}}
+<div class="message-row service">
+    <div class="head-portrait">
+        <img src="./imgs/service-head.png" alt="头像">
+    </div>
+    <div class="message-text">
+        <span class="triangle"></span>
+        <span class="triangle border"></span>
+        {{{message}}}
+    </div>
+    <div class="clear"></div>
+</div>
+{{/service}} {{#serviceGroup}}
+<div class="message-row service">
+    <div class="head-portrait">
+        <img src="./imgs/service-head.png" alt="头像">
+    </div>
+    <div class="message-text">
+        <span class="triangle"></span>
+        <span class="triangle border"></span>
+        <div class="title">请选择您要咨询的业务</div>
+        <ul class="service-group">
+            {{#serviceList}}
+            <li data-id="{{groupId}}">
+                <span class="help-icon"></span>
+                <a href="javascript:;" class="group-name">{{businessName}}</a>
+            </li>
+            {{/serviceList}}
+        </ul>
+    </div>
+    <div class="clear"></div>
+</div>
+{{/serviceGroup}} {{#user}}
+<div class="message-row user">
+    <div class="head-portrait">
+        <img src="./imgs/service-head.png" alt="头像">
+    </div>
+    <div class="message-text">
+        <span class="triangle"></span>
+        <span class="triangle border"></span>
+        {{{message}}}
+    </div>
+    <div class="clear"></div>
+</div>
+{{/user}} {{/list}}
+
