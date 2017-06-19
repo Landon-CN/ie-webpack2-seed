@@ -195,36 +195,46 @@ let proxyMiddlewareOne = proxy('/jtalk/message/**', {
 
 // 登录用，如果返回302 则跳转，饭后返回index.html
 let proxyMiddlewareLogin = proxy((pathname, req) => {
-    return pathname === '/';
+    return pathname === '/' || pathname === '/index.htm';
 }, {
-    target: 'http://10.9.46.136:8000',
+    target: 'http://10.9.46.136:8090',
     // target:'http://127.0.0.1:8080',
     changeOrigin: true,
     logLevel: 'debug',
-    proxyTimeout: 3000,
+    proxyTimeout: 3000, 
+    changeOrigin: true,
+    pathRewrite: function (path, req) {
+        return '/index.htm'
+    },
     onProxyRes(proxyRes, req, res) {
         var _write = res.write;
 
         const statusCode = proxyRes.statusCode;
-        console.log(statusCode);
 
-        if (statusCode != 302) {
-            const indexHtml = fs.readFileSync(path.resolve(buildPath, './index.html'), 'utf-8');
+        if (statusCode == 302) {
+            return;
+        }
 
-            res.write = function (data) {
-                try {
 
-                    _write.call(res, indexHtml);
-                } catch (err) {
-                    console.error(err);
-                }
+        const indexHtml = fs.readFileSync(path.resolve(buildPath, './index.html'), 'utf-8');
+        proxyRes.statusCode = 200;
+        return res.write = function (data) {
+            try {
+                _write.call(res, indexHtml);
+            } catch (err) {
+                console.error(err);
             }
         }
-        proxyRes.statusCode = 200;
+
+    },
+    onProxyReq(proxyReq, req, res) {
+        
+        proxyReq.setHeader('host', req.headers.host)
+
     },
     onError: function (err, req, res) {
         const indexHtml = fs.readFileSync(path.resolve(buildPath, './index.html'), 'utf-8');
-        res.write(indexHtml,'utf-8');
+        res.write(indexHtml, 'utf-8');
         res.end();
     }
 });

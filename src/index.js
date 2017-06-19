@@ -30,7 +30,7 @@ $.ajaxSetup({
     success(result, status, xhr) {
 
         if (result.resultCode !== '00000') {
-            components.dialog.open('错误:' + JSON.stringify(result));
+            components.dialog.open('错误:' + JSON.stringify(result)+'  path:'+ xhr.setting.url);
             throw new Error(result.msg);
         }
     },
@@ -38,7 +38,7 @@ $.ajaxSetup({
 
         if (xhr.readyState !== 0) {
             console.error(xhr.setting, xhr, text, error);
-            components.dialog.open('错误:' + error);
+            components.dialog.open('错误:' + error+'  path:'+ xhr.setting.url);
         }
 
     },

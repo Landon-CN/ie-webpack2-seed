@@ -5,7 +5,7 @@ window.components.dialog = (function () {
     let dom;
 
     return {
-        open(message = '', timeout = 2000) {
+        open(message = '', timeout = 5000) {
             if (dom) {
                 this.close();
             }
@@ -24,7 +24,7 @@ window.components.dialog = (function () {
             }
         },
         close() {
-            dom.remove();
+            dom && dom.remove();
             dom = null;
         }
     };

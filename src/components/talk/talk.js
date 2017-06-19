@@ -7,7 +7,7 @@ window.components.talk = function (parent) {
     const dom = $(mustache.render(tpl, {}));
 
     let emoji = components.emoji(dom.find('.toolbar'), emojiChange);
-    let appraise = components.appraise(dom.find('.toolbar'));
+    // let appraise = components.appraise(dom.find('.toolbar'));
     let inputBox = dom.find('.input-box');
     let msgBox = dom.find('.message-box');
     let keyType = 'one';
@@ -30,14 +30,30 @@ window.components.talk = function (parent) {
                 emoji.toggle();
                 break;
             case 'rate':
-                appraise.toggle();
+                addAppraise();
                 break;
             default:
                 break;
         }
     });
 
+    // 邀请评价
+    dom.on('click','.open-rate',(event)=>{
+        
+        event.stopPropagation();
+        addAppraise();
+    });
 
+    // 添加评价
+    function addAppraise() {
+        let dom = addMsg({
+            service:true,
+            date: Date.now()
+        });
+
+        components.appraise(dom.find('.message-text')).open();
+    }
+    
 
 
     dom.find('.fileinput-button').fileupload({
@@ -148,6 +164,7 @@ window.components.talk = function (parent) {
                 service: true,
                 message: result.data.welcomeWords
             });
+            window.headerChangeToSerice();
             components.dialog.open('人工客服连接成功')
         });
     });
@@ -158,14 +175,13 @@ window.components.talk = function (parent) {
     dom.on('click', '.history-msg', getHistory);
 
     function getHistory() {
-        
+
         if (noMorePage || pageLoading) {
             return;
         }
         pageLoading = true;
         backMsg = historyDom.text();
         historyDom.text('加载中请稍后...')
-        console.log(historyDom);
 
 
         let params = {
@@ -248,9 +264,7 @@ window.components.talk = function (parent) {
         if (type !== 'emoji') {
             emoji.close();
         }
-        if (type !== 'rate') {
-            appraise.close();
-        }
+
     }
 
     // 添加消息
@@ -341,6 +355,11 @@ window.components.talk = function (parent) {
                 for (let i = 0; i < resData.length; i++) {
                     let item = resData[i];
 
+                    if (item.msgType == 6) {
+                        addAppraise();
+                        break;
+                    }
+
                     msgList.push({
                         service: true,
                         message: parseContent(item.content),
@@ -365,6 +384,8 @@ window.components.talk = function (parent) {
 
         });
     }
+
+
 
 
     // 每隔25S拉去一次离线消息
@@ -397,6 +418,12 @@ window.components.talk = function (parent) {
                 let msgList = [];
                 for (let i = 0; i < data.length; i++) {
                     let item = data[i];
+
+                    if (item.msgType == 6) {
+                        addAppraise();
+                        break;
+                    }
+
                     msgList.push({
                         service: true,
                         message: parseContent(item.content),
@@ -410,6 +437,7 @@ window.components.talk = function (parent) {
         }, offlineTimeout);
     }
 
+
     function init() {
         offlineMsgInteval();
         pollInterval();
@@ -419,6 +447,7 @@ window.components.talk = function (parent) {
             if (result.data.continuePreviousDialog) {
                 targetServiceId = result.data.customerServiceId;
                 onlineClick = true; //防止再次进线
+                window.headerChangeToSerice();
                 return getHistory();
             }
 
@@ -433,6 +462,8 @@ window.components.talk = function (parent) {
         });
     }
     init();
+
+
 }
 
 // 长轮训10S
@@ -575,7 +606,7 @@ function stringifyContent(html) {
                 htmlStr += '<br/>';
                 break;
             case 'img':
-                if(element.data('type'))
+                if (element.data('type'))
                     htmlStr += `<e t="d" s="${element.data('s')}" />`;
                 else
                     htmlStr += `<img src='${element.attr('src')}' />`

@@ -8,5 +8,10 @@ window.components.header = function (parent) {
         onlineServiceClick();
     });
 
+    window.headerChangeToSerice = function () {
+        dom.find('.online').remove();
+        dom.find('.name-small').text('人工客服');
+    }
+
     $(parent).append(dom);
 }
