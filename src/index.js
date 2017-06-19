@@ -21,7 +21,8 @@ window.componentShow = (function () {
 
 
 
-jQuery.ajaxSetup({
+
+$.ajaxSetup({
     timeout: 10000,
     cache: false,
     dataType: 'json',
@@ -29,12 +30,12 @@ jQuery.ajaxSetup({
     success(result, status, xhr) {
 
         if (result.resultCode !== '00000') {
-            components.dialog.open('错误:' + result.msg);
+            components.dialog.open('错误:' + JSON.stringify(result));
             throw new Error(result.msg);
         }
     },
     error(xhr, text, error) {
-    
+
         if (xhr.readyState !== 0) {
             console.error(xhr.setting, xhr, text, error);
             components.dialog.open('错误:' + error);
@@ -52,20 +53,29 @@ jQuery.ajaxSetup({
             setting.data = JSON.stringify(data);
         }
 
+
+
+
+        xhr.setRequestHeader('web_personal_key', window.webPersonalKey);
+
     }
 });
-// $.ajax({
-//     url:'/message/login/key.htm',
-//     type:'post'
-// }).then((result)=>{
-//     window.jdPin = result.data.jdPin;
-//     window.webPersonalKey = result.data.webPersonalKey;
-// });
 
-$(function () {
-    // 注册头部
-    components.header('.body-content');
-    // 注册内容
-    components.content('.body-content');
+// 必须保证先返回
+$.ajax({
+    url: '/message/login/key.htm',
+    type: 'post',
+    contentType: 'application/json; charset=utf-8'
+}).then((result) => {
+    window.jdPin = result.data.jdPin;
+    window.webPersonalKey = result.data.webPersonalKey;
+    window.userId = result.data.userId;
+}).then(() => {
+    $(function () {
+        // 注册头部
+        components.header('.body-content');
+        // 注册内容
+        components.content('.body-content');
 
+    });
 });

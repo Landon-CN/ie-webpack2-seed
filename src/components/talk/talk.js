@@ -12,7 +12,10 @@ window.components.talk = function (parent) {
     let msgBox = dom.find('.message-box');
     let keyType = 'one';
     let scroll = dom.find('.scroll');
-
+    let pageSize = 10;
+    let pageNo = 1;
+    let maxPageSize = Number.MAX_SAFE_INTEGER;
+    let historyDom = dom.find('.history-msg');
 
     // 默认对话机器人
     window.targetServiceId = botId;
@@ -44,10 +47,15 @@ window.components.talk = function (parent) {
             let data = result.result.data[0];
             let url = data.url;
             let msg = `<img src='${url}'>`;
-            addMsg({
-                user: true,
-                message: msg
+            sendMsg(targetServiceId, {
+                content: stringifyContent(msg)
+            }).then(() => {
+                addMsg({
+                    user: true,
+                    message: msg
+                });
             });
+
         }
     });
 
@@ -92,7 +100,6 @@ window.components.talk = function (parent) {
         let html = inputBox.html();
         inputBox.html('');
         sendMsg(targetServiceId, {
-            type: msgType,
             content: stringifyContent(html)
         });
         addMsg({
@@ -132,15 +139,97 @@ window.components.talk = function (parent) {
             return;
         }
 
-
         groupClick = true;
         let id = $(this).data('id');
         $(this).find('.group-name').addClass('active');
         queryServiceId(id).then((result) => {
             targetServiceId = result.data.customerServiceId;
+            addMsg({
+                service: true,
+                message: result.data.welcomeWords
+            });
             components.dialog.open('人工客服连接成功')
         });
     });
+    // 点击状态
+    let noMorePage = false,
+        pageLoading = false,
+        backMsg = '';
+    dom.on('click', '.history-msg', getHistory);
+
+    function getHistory() {
+        
+        if (noMorePage || pageLoading) {
+            return;
+        }
+        pageLoading = true;
+        backMsg = historyDom.text();
+        historyDom.text('加载中请稍后...')
+        console.log(historyDom);
+
+
+        let params = {
+            pageSize,
+            current: pageNo
+        };
+        pageNo++;
+        historyMsg(params).then((result) => {
+
+            // mock数据
+            // Promise.resolve({
+            //     "resultCode": "00000", //String，响应码
+            //     "msg": "操作成功", //String，描述
+            //     "data": [{
+            //             "msgId": "23", //String，消息唯一Id
+            //             "msgType": "3", //String，消息类型
+            //             "groupId": "68", //String，消息群组ID，暂时不用
+            //             "fromUser": "4235234524511", //String，发送者
+            //             "fromUserName": "wucong12", //String，发送者
+            //             "toUser": "123412341234123", //String，接受者
+            //             "toUserName": "jiege", //String，接受者
+            //             "sendTime": "2012-02-03 12:21:35", //String，发送时间
+            //             "content": "hello" //String，消息体
+            //         },
+            //         {
+            //             "msgId": "23", //String，消息唯一Id
+            //             "msgType": "3", //String，消息类型
+            //             "groupId": "68", //String，消息群组ID，暂时不用
+            //             "fromUser": "11", //String，发送者
+            //             "fromUserName": "wucong12", //String，发送者
+            //             "toUser": "11", //String，接受者
+            //             "toUserName": "jiege", //String，接受者
+            //             "sendTime": "2012-02-03 12:21:35", //String，发送时间
+            //             "content": "hello" //String，消息体
+            //         }
+            //     ]
+            // }).then((result) => {
+            maxPageSize = Math.ceil(result.total / pageSize);
+            if (pageNo > maxPageSize) {
+                noMorePage = true;
+                historyDom.text('没有更多了');
+            } else {
+                historyDom.text(backMsg);
+            }
+
+            let data = result.data;
+
+            let userId = window.userId;
+            let msgList = [];
+            for (let i = 0; i < data.length; i++) {
+                let item = data[i];
+                msgList.push({
+                    service: item.toUser != userId,
+                    user: item.toUser == userId,
+                    message: parseContent(item.content),
+                    time: item.sendTime
+                });
+            }
+
+            addMsg(msgList, false);
+        }, function (event) {
+            historyDom.text(backMsg)
+        });
+    }
 
     // 表情包选中
     function emojiChange(src, id) {
@@ -169,8 +258,9 @@ window.components.talk = function (parent) {
     // 提前缓存
     mustache.parse(msgTpl);
     let lastTime;
-    let intervalTime = 5 * 60 * 1000; // 5分钟
-    function addMsg(data) {
+    let intervalTime = 6 * 60 * 1000; // 间隔5分钟以上才会显示时间条
+    // append false 代表是历史记录
+    function addMsg(data, append = true) {
         if (Array.isArray(data)) {
             data = {
                 list: data
@@ -186,7 +276,7 @@ window.components.talk = function (parent) {
         for (let i = 0; i < data.list.length; i++) {
             let item = data.list[i];
             let time = moment(item.time);
-            // console.log(time - lastTime)
+
             if (!lastTime || time - lastTime > intervalTime) {
                 lastTime = time;
                 data.list.splice(i, 0, {
@@ -196,15 +286,18 @@ window.components.talk = function (parent) {
             }
 
         }
-        // console.log(data);
+
 
         const serviceListHtml = mustache.render(msgTpl, data);
         let dom = $(serviceListHtml);
-        msgBox.append(dom);
 
+        if (append) {
+            msgBox.append(dom);
+            scroll.scrollTop(msgBox.height());
+        } else {
+            historyDom.after(dom);
+        }
 
-
-        scroll.scrollTop(msgBox.height());
         return dom;
     }
 
@@ -230,14 +323,7 @@ window.components.talk = function (parent) {
     $(parent).append(dom);
 
 
-    // 添加默认对话
-    setTimeout(function () {
-        addMsg({
-            service: true,
-            message: '欢迎来到京东金融智能客服，请输入您遇到的问题',
-            time: moment()
-        });
-    }, 500);
+
 
     // 建立长连接
     function pollInterval(params) {
@@ -279,7 +365,7 @@ window.components.talk = function (parent) {
 
         });
     }
-    pollInterval();
+
 
     // 每隔25S拉去一次离线消息
     const offlineTimeout = 25000;
@@ -322,9 +408,31 @@ window.components.talk = function (parent) {
                 offlineMsgInteval();
             });
         }, offlineTimeout);
-
     }
-    offlineMsgInteval();
+
+    function init() {
+        offlineMsgInteval();
+        pollInterval();
+        // 上次处于进线状态
+        getServiceList().then((result) => {
+            let message = '欢迎来到京东金融智能客服，请输入您遇到的问题';
+            if (result.data.continuePreviousDialog) {
+                targetServiceId = result.data.customerServiceId;
+                onlineClick = true; //防止再次进线
+                return getHistory();
+            }
+
+            // 添加默认对话
+            setTimeout(function () {
+                addMsg({
+                    service: true,
+                    message,
+                    time: moment()
+                });
+            }, 500);
+        });
+    }
+    init();
 }
 
 // 长轮训10S
@@ -350,7 +458,7 @@ function getOfflineMsg(params) {
 // 发送消息
 function sendMsg(targetUserId, data) {
     data.time = moment().format('YYYY-MM-DD HH:mm:SS');
-
+    data.type = targetUserId === botId ? 3 : 2;
     return $.ajax({
         url: `/message/onlinemsg/send.htm?targetUserId=${targetUserId}`,
         type: 'post',
@@ -378,7 +486,8 @@ function queryServiceId(groupId) {
         url: '/IncomingLine/selectCustomerServiceInGroup.htm',
         contentType: 'application/json; charset=utf-8',
         data: {
-            groupId
+            groupId,
+            initSource: '03'
         }
     });
 }
@@ -402,42 +511,23 @@ function queryServiceId(groupId) {
     OFFLINE("9","下线");
  */
 function historyMsg(data) {
+
+    data.userA = targetServiceId;
+    data.userB = window.userId;
+    data.msgType = targetServiceId === botId ? 3 : 2;
     return $.ajax({
-        url: '/records/get.htm',
+        url: '/webpage/records/get.htm',
+        contentType: 'application/json; charset=utf-8',
         type: 'post',
         data
     })
 }
 
-/**
- * 评价接口
- * @param {*} data 
- 
-{
-    "dialogId": "346437213412", //会话ID
-    "toUser": "33333", //目标用户userId
-    "toUserName": "xxx", //目标用户
-    "fromUser": "110020000000000102", //来源用户userId
-    "fromUserName": "shuaidaobaoa", //来源用户
-    "sendTime": "2017-06-06 00:00:00", //时间
-    "score": "3", //评分
-    "reason": "服务态度问题", //缘由，用户点击选择
-    "userSay": "太差了", //用户言论
-}
-
- */
-function rate(data) {
-    return $.ajax({
-        url: '/records/get.htm',
-        type: 'post',
-        data
-    })
-}
 
 // 消息体解析
 function parseContent(xml) {
 
-    if(targetServiceId === botId){
+    if (xml.indexOf('<') != 0) {
         return xml;
     }
     let msgBody = $(xml);
@@ -485,7 +575,10 @@ function stringifyContent(html) {
                 htmlStr += '<br/>';
                 break;
             case 'img':
-                htmlStr += `<e t="d" s="${element.data('s')}" />`;
+                if(element.data('type'))
+                    htmlStr += `<e t="d" s="${element.data('s')}" />`;
+                else
+                    htmlStr += `<img src='${element.attr('src')}' />`
                 break;
             default:
                 break;
