@@ -473,7 +473,7 @@ window.components.talk = function (parent) {
 function pollMsg() {
     return $.ajax({
         type: 'post',
-        timeout: 0,
+        timeout: 60000,
         contentType: 'application/json; charset=utf-8',
         url: `/message/conn?type=conn&time=${Date.now()}`
     });
