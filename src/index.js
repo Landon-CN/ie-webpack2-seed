@@ -55,7 +55,6 @@ $.ajaxSetup({
 
 
 
-
         xhr.setRequestHeader('web_personal_key', window.webPersonalKey);
 
     }

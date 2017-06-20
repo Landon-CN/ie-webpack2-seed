@@ -115,16 +115,16 @@ window.components.talk = function (parent) {
 
     //提交消息
     function submit() {
-        let htmlText= inputBox.html();
-        if(htmlText== ''){
-            return ;
+        let htmlText = inputBox.html();
+        if (htmlText == '') {
+            return;
         }
         inputBox.html('');
-        htmlText= $(`<div>${htmlText}</div>`);
+        htmlText = $(`<div>${htmlText}</div>`);
         htmlText.find('.remove').remove()
-        htmlText= htmlText.html();  
+        htmlText = htmlText.html();
 
-        
+
         sendMsg(targetServiceId, {
             content: stringifyContent(htmlText)
         });
@@ -171,12 +171,17 @@ window.components.talk = function (parent) {
         queryServiceId(id).then((result) => {
             targetServiceId = result.data.customerServiceId;
             window.dialogId = result.data.dialogId;
-            addMsg({
+
+            addMsg([{
                 service: true,
                 message: result.data.welcomeWords
-            });
+            }]);
             window.headerChangeToSerice();
-            components.dialog.open('人工客服连接成功')
+        },()=>{
+            addMsg([{
+                dialog: true,
+                message: '人工客服连接失败'
+            }]);
         });
     });
     // 点击状态
@@ -405,26 +410,6 @@ window.components.talk = function (parent) {
         setTimeout(function () {
             getOfflineMsg().then((result) => {
                 let data = result.data;
-                // data = [{
-                //     "msgId": "23", //String，消息唯一Id
-                //     "msgType": "3", //String，消息类型
-                //     "groupId": "68", //String，消息群组ID，暂时不用
-                //     "fromUser": "4235234524511", //String，发送者
-                //     "fromUserName": "wucong12", //String，发送者
-                //     "toUser": "123412341234123", //String，接受者
-                //     "toUserName": "jiege", //String，接受者
-                //     "sendTime": "2012-02-03 12:21:35", //String，发送时间
-                //     "content": `
-
-                //         <body>
-                //         你好!
-                //         <br />
-                //         <e t="d" s="s01" />
-                //         <img src="http://img10.360buyimg.com/N6/jfs/t5788/320/1292921154/149424/d6173c8b/59253508N6b27ffdb.jpg" />
-                //     </body>
-
-                //     `
-                // }]
                 let msgList = [];
                 for (let i = 0; i < data.length; i++) {
                     let item = data[i];
@@ -459,6 +444,13 @@ window.components.talk = function (parent) {
                 window.dialogId = result.data.previousDialogId;
                 onlineClick = true; //防止再次进线
                 window.headerChangeToSerice();
+
+                addMsg({
+                    dialog: true,
+                    message: '重新连接成功',
+                    time: moment()
+                });
+
                 return getHistory();
             }
 
@@ -469,7 +461,7 @@ window.components.talk = function (parent) {
                     message,
                     time: moment()
                 });
-            }, 500);
+            }, 100);
         });
     }
     init();
@@ -612,7 +604,8 @@ function stringifyContent(html) {
         element = $(element);
         switch (nodeName) {
             case '#text':
-                htmlStr += element.text();
+                // 转义
+                htmlStr += $('<div></div>').append(element).html();;
                 break;
             case 'br':
                 htmlStr += '<br/>';

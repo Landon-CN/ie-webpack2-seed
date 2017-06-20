@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development gulp watch",
     "test": "cross-env NODE_ENV=test gulp watch",
-    "build": "rm -rf ./dist && cross-env NODE_ENV=production gulp build",
+    "build": "gulp clean && cross-env NODE_ENV=production gulp build",
     "clean": "gulp clean"
   },
   "dependencies": {

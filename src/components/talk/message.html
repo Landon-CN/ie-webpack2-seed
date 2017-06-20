@@ -1,32 +1,23 @@
-{{#list}} 
-
-{{#timeShow}}
+{{#list}} {{#timeShow}}
 <div class="message-row time">
     {{message}}
 </div>
-{{/timeShow}} 
-
-{{#loading}}
+{{/timeShow}} {{#loading}}
 <div class="message-row time">
     正在转接中，请稍后...
 </div>
-{{/loading}}
-
-{{#service}}
+{{/loading}} {{#service}}
 <div class="message-row service">
     <div class="head-portrait">
         <img src="./imgs/service-head.png" alt="头像">
     </div>
     <div class="message-text">
         <span class="triangle"></span>
-        <span class="triangle border"></span>
-        {{{message}}}
+        <span class="triangle border"></span> {{{message}}}
     </div>
     <div class="clear"></div>
 </div>
-{{/service}}
-
- {{#serviceGroup}}
+{{/service}} {{#serviceGroup}}
 <div class="message-row service">
     <div class="head-portrait">
         <img src="./imgs/service-head.png" alt="头像">
@@ -53,10 +44,31 @@
     </div>
     <div class="message-text">
         <span class="triangle"></span>
-        <span class="triangle border"></span>
-        {{{message}}}
+        <span class="triangle border"></span> {{{message}}}
     </div>
     <div class="clear"></div>
 </div>
-{{/user}} {{/list}}
+{{/user}}
 
+{{#dialog}}
+<div class="message-row dialog">
+    <div class='dialog-body'>
+        <div class="dialog-text">
+            <table>
+                <tr>
+                    <td class="check">
+                        <span class="dialog-img"></span>
+                    </td>
+                    <td class="dialog-msg-td">
+                        <div class="dialog-msg">
+                            {{message}}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{{/dialog}}
+
+{{/list}}

@@ -213,7 +213,7 @@ let proxyMiddlewareLogin = proxy((pathname, req) => {
         console.log(statusCode);
         
 
-        if (statusCode == 302) {
+        if (statusCode == 302 || statusCode == 304) {
             return;
         }
 

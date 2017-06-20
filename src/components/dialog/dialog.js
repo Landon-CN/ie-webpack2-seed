@@ -6,7 +6,8 @@ window.components.dialog = (function () {
     
 
     return {
-        id: '',
+        timer: null,
+       
         open(message = '', timeout = 3000) {
             if (dom) {
                 this.close();
@@ -19,14 +20,16 @@ window.components.dialog = (function () {
                 this.close();
             });
             let parent = $(document).find('.content  .talk-body');
-            this.id = componentShow(parent, dom, this.id);
-
+            $(parent).append(dom);
             if (timeout > 0) {
                 setTimeout(() => this.close(), timeout);
             }
         },
         close() {
             dom && dom.remove();
+            clearTimeout(this.timer);
+        
+            this.tiemr = null;
             dom = null;
         }
     };
