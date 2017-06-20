@@ -76,6 +76,5 @@ $.ajax({
         components.header('.body-content');
         // 注册内容
         components.content('.body-content');
-
     });
 });

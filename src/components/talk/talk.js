@@ -2,6 +2,7 @@ const tpl = __inline('./talk.html');
 const msgTpl = __inline('./message.html');
 const mustache = window.Mustache;
 const botId = '10001';
+window.dialogId;
 
 window.components.talk = function (parent) {
     const dom = $(mustache.render(tpl, {}));
@@ -16,6 +17,7 @@ window.components.talk = function (parent) {
     let pageNo = 1;
     let maxPageSize = Number.MAX_SAFE_INTEGER;
     let historyDom = dom.find('.history-msg');
+
 
     // 默认对话机器人
     window.targetServiceId = botId;
@@ -38,8 +40,8 @@ window.components.talk = function (parent) {
     });
 
     // 邀请评价
-    dom.on('click','.open-rate',(event)=>{
-        
+    dom.on('click', '.open-rate', (event) => {
+
         event.stopPropagation();
         addAppraise();
     });
@@ -47,13 +49,13 @@ window.components.talk = function (parent) {
     // 添加评价
     function addAppraise() {
         let dom = addMsg({
-            service:true,
+            service: true,
             date: Date.now()
         });
 
         components.appraise(dom.find('.message-text')).open();
     }
-    
+
 
 
     dom.find('.fileinput-button').fileupload({
@@ -113,25 +115,33 @@ window.components.talk = function (parent) {
 
     //提交消息
     function submit() {
-        let html = inputBox.html();
+        let htmlText= inputBox.html();
+        if(htmlText== ''){
+            return ;
+        }
         inputBox.html('');
+        htmlText= $(`<div>${htmlText}</div>`);
+        htmlText.find('.remove').remove()
+        htmlText= htmlText.html();  
+
+        
         sendMsg(targetServiceId, {
-            content: stringifyContent(html)
+            content: stringifyContent(htmlText)
         });
         addMsg({
             user: true,
-            message: html
-        })
+            message: htmlText
+        });
     }
 
     // 添加换行
     function addBr() {
         try {
-            document.execCommand("insertHTML", false, "<br/>")
+            document.execCommand("insertHTML", false, "<br/><br class=remove'/>")
         } catch (e) {
             if (document.selection) {
                 const range = document.selection.createRange();
-                range.pasteHTML('<br />')
+                range.pasteHTML('<br /><br class=\'remove\' />')
             }
         }
     }
@@ -160,6 +170,7 @@ window.components.talk = function (parent) {
         $(this).find('.group-name').addClass('active');
         queryServiceId(id).then((result) => {
             targetServiceId = result.data.customerServiceId;
+            window.dialogId = result.data.dialogId;
             addMsg({
                 service: true,
                 message: result.data.welcomeWords
@@ -176,7 +187,8 @@ window.components.talk = function (parent) {
 
     function getHistory() {
 
-        if (noMorePage || pageLoading) {
+        // 暂时不用
+        if (noMorePage || pageLoading || true) {
             return;
         }
         pageLoading = true;
@@ -355,7 +367,7 @@ window.components.talk = function (parent) {
                 for (let i = 0; i < resData.length; i++) {
                     let item = resData[i];
 
-                    if (item.msgType == 6) {
+                    if (item.type == 5) {
                         addAppraise();
                         break;
                     }
@@ -368,8 +380,6 @@ window.components.talk = function (parent) {
                 }
                 addMsg(msgList);
             }
-
-
 
             pollInterval();
 
@@ -419,7 +429,7 @@ window.components.talk = function (parent) {
                 for (let i = 0; i < data.length; i++) {
                     let item = data[i];
 
-                    if (item.msgType == 6) {
+                    if (item.type == 5) {
                         addAppraise();
                         break;
                     }
@@ -446,6 +456,7 @@ window.components.talk = function (parent) {
             let message = '欢迎来到京东金融智能客服，请输入您遇到的问题';
             if (result.data.continuePreviousDialog) {
                 targetServiceId = result.data.customerServiceId;
+                window.dialogId = result.data.previousDialogId;
                 onlineClick = true; //防止再次进线
                 window.headerChangeToSerice();
                 return getHistory();
@@ -490,6 +501,7 @@ function getOfflineMsg(params) {
 function sendMsg(targetUserId, data) {
     data.time = moment().format('YYYY-MM-DD HH:mm:SS');
     data.type = targetUserId === botId ? 3 : 2;
+    data.dialogId = window.dialogId;
     return $.ajax({
         url: `/message/onlinemsg/send.htm?targetUserId=${targetUserId}`,
         type: 'post',

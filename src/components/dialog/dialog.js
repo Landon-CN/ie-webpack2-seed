@@ -3,9 +3,11 @@ const mustache = window.Mustache;
 
 window.components.dialog = (function () {
     let dom;
+    
 
     return {
-        open(message = '', timeout = 5000) {
+        id: '',
+        open(message = '', timeout = 3000) {
             if (dom) {
                 this.close();
             }
@@ -16,11 +18,11 @@ window.components.dialog = (function () {
             dom.on('click', '.close', () => {
                 this.close();
             });
+            let parent = $(document).find('.content  .talk-body');
+            this.id = componentShow(parent, dom, this.id);
 
-            $(document.body).append(dom);
-
-            if(timeout>0){
-                setTimeout(()=>this.close(), timeout);
+            if (timeout > 0) {
+                setTimeout(() => this.close(), timeout);
             }
         },
         close() {

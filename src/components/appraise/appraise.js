@@ -50,10 +50,10 @@ window.components[NAME] = function (parent) {
 
         // 防止重复提交
         if(isRate){
-            return dom.hide();
+            return;
         }
         isRate=true;
-        dom.hide();
+        // dom.hide();
         let reasonText = dom.find('.reason-text').val();
 
         const data = {
@@ -61,7 +61,8 @@ window.components[NAME] = function (parent) {
             sendTime: moment().format('YYYY-MM-DD HH:mm:SS'),
             score:rateSocre,
             reason: reason.join(','),
-            userSay: reasonText
+            userSay: reasonText,
+            dialogId: window.dialogId
         }
         sendRate(data);
     });
@@ -123,6 +124,15 @@ function sendRate(params) {
         data:params,
         headers:{
             web_personal_key:window.webPersonalKey
+        }
+    }).then((result)=>{
+        if(result.data  == '01'){
+            components.dialog.open('评价成功')
+        }else if(result.data == '02'){
+            // 重复评价
+            components.dialog.open('请勿重复评价')
+        }else{
+            components.dialog.open('评价异常')
         }
     });
 }
