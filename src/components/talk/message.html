@@ -48,27 +48,19 @@
     </div>
     <div class="clear"></div>
 </div>
-{{/user}}
-
-{{#dialog}}
+{{/user}} {{#dialog}}
 <div class="message-row dialog">
     <div class='dialog-body'>
-        <div class="dialog-text">
-            <table>
-                <tr>
-                    <td class="check">
-                        <span class="dialog-img"></span>
-                    </td>
-                    <td class="dialog-msg-td">
-                        <div class="dialog-msg">
-                            {{message}}
-                        </div>
-                    </td>
-                </tr>
-            </table>
+        <div class="dialog-text ">
+            <div class="pull-left">
+                <span class="dialog-img"></span>
+            </div>
+            
+
+            <div class="dialog-msg ellipsis">
+                {{message}}
+            </div>
         </div>
     </div>
 </div>
-{{/dialog}}
-
-{{/list}}
+{{/dialog}} {{/list}}

@@ -100,15 +100,24 @@
 
             .dialog-body {
                 position: static;
+                text-align: center;
+                .dialog-img {
+                    vertical-align: text-top;
+                }
+               
                 .dialog-text {
+                    padding: 5px 10px;
+                    text-align: left;
+                    max-width: 100%;
+                    width: auto;
                     box-sizing: border-box;
-                    height: 43px;
 
                     .dialog-msg {
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        width: 260px;
+                        vertical-align: middle;
+                        width: auto;
+                        max-width: 95%;
+                        margin-left:10px;
+                        display: inline-block;
                     }
                 }
             }

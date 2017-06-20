@@ -32,7 +32,8 @@ window.components[NAME] = function (parent, change = () => {}) {
     for (let i = 0; i < 72; i++) {
         let index = parseInt(i / 12);
         classics[index] = classics[index] || [];
-        classics[index][i % 12] = i + 1;
+        let num = i + 1;
+        classics[index][i % 12] = num>10?num:'0'+num ;
     }
     const renderResult = mustache.render(tpl, {
         classics
@@ -60,7 +61,7 @@ window.components[NAME] = function (parent, change = () => {}) {
     let id = '';
 
     function genrateImgSrc(id) {
-        return `imgs/s${id<10?`0${id}`:id}.gif`;
+        return `imgs/s${id}.gif`;
     }
 
     return {
