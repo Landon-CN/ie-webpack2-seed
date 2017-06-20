@@ -177,7 +177,7 @@ window.components.talk = function (parent) {
                 message: result.data.welcomeWords
             }]);
             window.headerChangeToSerice();
-        },()=>{
+        }, () => {
             addMsg([{
                 dialog: true,
                 message: '人工客服连接失败'
@@ -605,7 +605,8 @@ function stringifyContent(html) {
         switch (nodeName) {
             case '#text':
                 // 转义
-                htmlStr += $('<div></div>').append(element).html();;
+                // htmlStr += $('<div></div>').append(element).html();;
+                htmlStr+=encode(element.text());
                 break;
             case 'br':
                 htmlStr += '<br/>';
@@ -623,4 +624,12 @@ function stringifyContent(html) {
     return `<body>${htmlStr}</body>`
 
 
+}
+
+function encode(str) {
+    str = str.replace(/&/g,'&amp;');
+    str = str.replace(/</g,'&lt;');
+    str = str.replace(/>/g,'&gt;');
+    str = str.replace(/"/g,'&quot;');
+    return str;
 }
