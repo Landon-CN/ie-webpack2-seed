@@ -8,7 +8,8 @@ window.components.talk = function (parent) {
     const dom = $(mustache.render(tpl, {}));
 
     let emoji = components.emoji(dom.find('.toolbar'), emojiChange);
-    // let appraise = components.appraise(dom.find('.toolbar'));
+    let appraise = components.appraise(dom.find('.toolbar'),true);
+
     let inputBox = dom.find('.input-box');
     let msgBox = dom.find('.message-box');
     let keyType = 'one';
@@ -32,7 +33,7 @@ window.components.talk = function (parent) {
                 emoji.toggle();
                 break;
             case 'rate':
-                addAppraise();
+                appraise.toggle();
                 break;
             default:
                 break;
@@ -354,8 +355,6 @@ window.components.talk = function (parent) {
     $(parent).append(dom);
 
 
-
-
     // 建立长连接
     function pollInterval(params) {
         pollMsg().then(function (result) {
@@ -567,7 +566,6 @@ function parseContent(xml) {
     }
     let msgBody = $(xml);
 
-
     let htmlStr = '';
     msgBody.each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
@@ -595,7 +593,6 @@ function parseContent(xml) {
 // 消息解析为xml
 function stringifyContent(html) {
     let htmlStr = '';
-    console.log(html);
 
     if (targetServiceId === botId) {
         return $(`<body>${html}</body>`).text();
@@ -622,9 +619,7 @@ function stringifyContent(html) {
                 break;
         }
     });
-    console.log('=>>>>>>>');
-    
-    console.log(htmlStr);
+
     
     return `<body>${htmlStr}</body>`
 

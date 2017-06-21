@@ -18,12 +18,17 @@ const reasonList = [{
 ];
 
 
-window.components[NAME] = function (parent) {
+window.components[NAME] = function (parent,top=false) {
     let dom, rateSocre = -1,
         reason = [];
     dom = $(mustache.render(tpl, {
         reasonList
     }));
+
+    if(top){
+        dom.addClass('top')
+    }
+
     let rate = window.components.rate(dom.find('.rate-content'), rateChange);
 
     dom.on('click', function (event) {
@@ -53,7 +58,7 @@ window.components[NAME] = function (parent) {
             return;
         }
         isRate=true;
-        // dom.hide();
+        top && dom.hide();
         let reasonText = dom.find('.reason-text').val();
 
         const data = {
@@ -89,15 +94,19 @@ window.components[NAME] = function (parent) {
         rateSocre = rate;
         dom.find('.user-attitude').text(rateText[rate - 1]);
         if (rate < 4) {
-            $('.reason-box').show();
+            dom.find('.reason-box').show();
         } else {
-            $('.reason-box').hide();
+            dom.find('.reason-box').hide();
         }
     }
     let showStatus = false;
     let id = '';
     return {
         open: function () {
+            if(isRate){
+                return;
+            }
+
             showStatus = true;
             id = componentShow(parent, dom, id);
         },
