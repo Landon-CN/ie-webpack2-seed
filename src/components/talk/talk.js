@@ -595,6 +595,8 @@ function parseContent(xml) {
 // 消息解析为xml
 function stringifyContent(html) {
     let htmlStr = '';
+    console.log(html);
+
     if (targetServiceId === botId) {
         return $(`<body>${html}</body>`).text();
     }
@@ -603,11 +605,6 @@ function stringifyContent(html) {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
         switch (nodeName) {
-            case '#text':
-                // 转义
-                // htmlStr += $('<div></div>').append(element).html();;
-                htmlStr+=encode(element.text());
-                break;
             case 'br':
                 htmlStr += '<br/>';
                 break;
@@ -617,19 +614,27 @@ function stringifyContent(html) {
                 else
                     htmlStr += `<img src='${element.attr('src')}' />`
                 break;
+            case '#text':
             default:
+                console.log(element.text());
+                
+                htmlStr += encode(element.text());
                 break;
         }
     });
+    console.log('=>>>>>>>');
+    
+    console.log(htmlStr);
+    
     return `<body>${htmlStr}</body>`
 
 
 }
 
 function encode(str) {
-    str = str.replace(/&/g,'&amp;');
-    str = str.replace(/</g,'&lt;');
-    str = str.replace(/>/g,'&gt;');
-    str = str.replace(/"/g,'&quot;');
+    str = str.replace(/&/g, '&amp;');
+    str = str.replace(/</g, '&lt;');
+    str = str.replace(/>/g, '&gt;');
+    str = str.replace(/"/g, '&quot;');
     return str;
 }
