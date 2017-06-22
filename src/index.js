@@ -30,7 +30,7 @@ $.ajaxSetup({
     success(result, status, xhr) {
 
         if (result.resultCode !== '00000') {
-            components.dialog.open('错误:' + JSON.stringify(result)+'  path:'+ xhr.setting.url);
+            components.dialog.open('错误:' + JSON.stringify(result) + '  path:' + xhr.setting.url);
             throw new Error(result.msg);
         }
     },
@@ -38,7 +38,7 @@ $.ajaxSetup({
 
         if (xhr.readyState !== 0) {
             console.error(xhr.setting, xhr, text, error);
-            components.dialog.open('错误:' + error+'  path:'+ xhr.setting.url);
+            components.dialog.open('错误:' + error + '  path:' + xhr.setting.url);
         }
 
     },
@@ -70,10 +70,15 @@ $.ajax({
     window.webPersonalKey = result.data.webPersonalKey;
     window.userId = result.data.userId;
 }).then(() => {
+    init();
+});
+
+
+function init() {
     $(function () {
         // 注册头部
         components.header('.body-content');
         // 注册内容
         components.content('.body-content');
     });
-});
+}

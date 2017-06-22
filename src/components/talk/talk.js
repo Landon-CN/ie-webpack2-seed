@@ -2,13 +2,21 @@ const tpl = __inline('./talk.html');
 const msgTpl = __inline('./message.html');
 const mustache = window.Mustache;
 const botId = '10001';
+const msgText = {
+    serviceError: '系统开小差啦~请稍后再试',
+    reconnect: '京东金融客服正在为您服务',
+    serviceSuccess: '京东金融客服正在为您服务',
+    isRate: '您已经评价过了'
+}
+
+
 window.dialogId;
 
 window.components.talk = function (parent) {
     const dom = $(mustache.render(tpl, {}));
 
     let emoji = components.emoji(dom.find('.toolbar'), emojiChange);
-    let appraise = components.appraise(dom.find('.toolbar'),true);
+    let appraise = components.appraise(dom.find('.toolbar'), true);
 
     let inputBox = dom.find('.input-box');
     let msgBox = dom.find('.message-box');
@@ -18,6 +26,7 @@ window.components.talk = function (parent) {
     let pageNo = 1;
     let maxPageSize = Number.MAX_SAFE_INTEGER;
     let historyDom = dom.find('.history-msg');
+    let rateTooltip = dom.find('.rate-tooltip');
 
 
     // 默认对话机器人
@@ -28,6 +37,7 @@ window.components.talk = function (parent) {
         event.stopPropagation();
         const type = $(this).data('type');
         closeOther(type);
+        rateTooltip.hide();
         switch (type) {
             case 'emoji':
                 emoji.toggle();
@@ -54,7 +64,7 @@ window.components.talk = function (parent) {
             date: Date.now()
         });
 
-        components.appraise(dom.find('.message-text')).open();
+        components.appraise(dom.find('.message-text'), undefined, submitRateCallback).open();
     }
 
 
@@ -74,7 +84,6 @@ window.components.talk = function (parent) {
                     message: msg
                 });
             });
-
         }
     });
 
@@ -135,6 +144,10 @@ window.components.talk = function (parent) {
         });
     }
 
+    function submitRateCallback() {
+        rateTooltip.hide();
+    }
+
     // 添加换行
     function addBr() {
         try {
@@ -174,6 +187,9 @@ window.components.talk = function (parent) {
             window.dialogId = result.data.dialogId;
 
             addMsg([{
+                dialog: true,
+                message: msgText.serviceSuccess
+            }, {
                 service: true,
                 message: result.data.welcomeWords
             }]);
@@ -181,7 +197,7 @@ window.components.talk = function (parent) {
         }, () => {
             addMsg([{
                 dialog: true,
-                message: '人工客服连接失败'
+                message: msgText.serviceError
             }]);
         });
     });
@@ -208,35 +224,6 @@ window.components.talk = function (parent) {
         };
         pageNo++;
         historyMsg(params).then((result) => {
-
-            // mock数据
-            // Promise.resolve({
-            //     "resultCode": "00000", //String，响应码
-            //     "msg": "操作成功", //String，描述
-            //     "data": [{
-            //             "msgId": "23", //String，消息唯一Id
-            //             "msgType": "3", //String，消息类型
-            //             "groupId": "68", //String，消息群组ID，暂时不用
-            //             "fromUser": "4235234524511", //String，发送者
-            //             "fromUserName": "wucong12", //String，发送者
-            //             "toUser": "123412341234123", //String，接受者
-            //             "toUserName": "jiege", //String，接受者
-            //             "sendTime": "2012-02-03 12:21:35", //String，发送时间
-            //             "content": "hello" //String，消息体
-            //         },
-            //         {
-            //             "msgId": "23", //String，消息唯一Id
-            //             "msgType": "3", //String，消息类型
-            //             "groupId": "68", //String，消息群组ID，暂时不用
-            //             "fromUser": "11", //String，发送者
-            //             "fromUserName": "wucong12", //String，发送者
-            //             "toUser": "11", //String，接受者
-            //             "toUserName": "jiege", //String，接受者
-            //             "sendTime": "2012-02-03 12:21:35", //String，发送时间
-            //             "content": "hello" //String，消息体
-            //         }
-            //     ]
-            // }).then((result) => {
             maxPageSize = Math.ceil(result.total / pageSize);
             if (pageNo > maxPageSize) {
                 noMorePage = true;
@@ -283,6 +270,10 @@ window.components.talk = function (parent) {
             emoji.close();
         }
 
+        if (type !== 'rate') {
+            appraise.close();
+        }
+
     }
 
     // 添加消息
@@ -307,7 +298,7 @@ window.components.talk = function (parent) {
 
         for (let i = 0; i < data.list.length; i++) {
             let item = data.list[i];
-            let time = moment(item.time);
+            let time = moment(item.time || Date.now());
 
             if (!lastTime || time - lastTime > intervalTime) {
                 lastTime = time;
@@ -332,6 +323,8 @@ window.components.talk = function (parent) {
 
         return dom;
     }
+    // 让评价用
+    window.addMsg = addMsg;
 
     let onlineClick = false;
     window.onlineServiceClick = function () {
@@ -399,9 +392,6 @@ window.components.talk = function (parent) {
         });
     }
 
-
-
-
     // 每隔25S拉去一次离线消息
     const offlineTimeout = 25000;
 
@@ -431,6 +421,23 @@ window.components.talk = function (parent) {
         }, offlineTimeout);
     }
 
+    dom.on('mouseenter', '.rate-tool', () => {
+        if (window.isRate) {
+            rateTooltip.find('.text').text(msgText.isRate);
+            rateTooltip.show();
+        }
+
+    });
+
+    dom.on('mouseleave', '.rate-tool', () => {
+        if (window.isRate) {
+            rateTooltip.hide();
+        }
+    });
+
+    dom.on('click', '.rate-tooltip .close', () => {
+        dom.find('.rate-tooltip').hide();
+    });
 
     function init() {
         offlineMsgInteval();
@@ -446,7 +453,7 @@ window.components.talk = function (parent) {
 
                 addMsg({
                     dialog: true,
-                    message: '重新连接成功',
+                    message: msgText.reconnect,
                     time: moment()
                 });
 
@@ -464,7 +471,6 @@ window.components.talk = function (parent) {
         });
     }
     init();
-
 
 }
 
@@ -613,14 +619,13 @@ function stringifyContent(html) {
                 break;
             case '#text':
             default:
-                console.log(element.text());
-                
+
                 htmlStr += encode(element.text());
                 break;
         }
     });
 
-    
+
     return `<body>${htmlStr}</body>`
 
 
