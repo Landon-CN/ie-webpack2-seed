@@ -1,11 +1,13 @@
 @import '../../css/variable.less';
 .content {
-    @content-height: 690px;
+    @content-height: 86.25%;
+    height: @content-height;
     background: #f8fbff;
+    
     .left {
         border-right: 1px solid @border-color;
         width: 839px;
-        height: @content-height;
+        height:100%;
 
         .talk-body {
             position: relative;
@@ -13,7 +15,7 @@
     }
 
     .right {
-        height: @content-height;
+        height:100%;
         width: 360px;
     }
     .clear {

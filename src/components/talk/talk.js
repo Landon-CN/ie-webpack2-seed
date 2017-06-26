@@ -185,7 +185,7 @@ window.components.talk = function (parent) {
         queryServiceId(id).then((result) => {
             targetServiceId = result.data.customerServiceId;
             window.dialogId = result.data.dialogId;
-
+            showRateTool(dom);
             addMsg([{
                 dialog: true,
                 message: msgText.serviceSuccess
@@ -260,8 +260,8 @@ window.components.talk = function (parent) {
             src,
             'data-type': 'e',
             'data-s': 's' + id
-        })
-        inputBox.append(img);
+        });
+        addEmoji(inputBox, img);
     }
 
     // 关闭其他弹窗
@@ -391,7 +391,6 @@ window.components.talk = function (parent) {
 
         });
     }
-
     // 每隔25S拉去一次离线消息
     const offlineTimeout = 25000;
 
@@ -450,7 +449,7 @@ window.components.talk = function (parent) {
                 window.dialogId = result.data.previousDialogId;
                 onlineClick = true; //防止再次进线
                 window.headerChangeToSerice();
-
+                showRateTool(dom);
                 addMsg({
                     dialog: true,
                     message: msgText.reconnect,
@@ -471,6 +470,18 @@ window.components.talk = function (parent) {
         });
     }
     init();
+    inputBoxPlaceholder(dom);
+
+    $(window).on('resize', resize);
+
+    function resize() {
+        let height = $('.talk-editor').height();
+
+        $('.input-box').outerHeight(height - 70 - 10);
+    }
+    setTimeout(function () {
+        resize();
+    }, 0);
 
 }
 
@@ -637,4 +648,54 @@ function encode(str) {
     str = str.replace(/>/g, '&gt;');
     str = str.replace(/"/g, '&quot;');
     return str;
+}
+let defaultText = '请描述您遇到的问题~';
+let placeholderClassName = 'placeholder';
+/**
+ * 输入框的placehloder
+ * @param {*} dom 
+ */
+function inputBoxPlaceholder(dom) {
+    
+    let inputBox = dom.find('.input-box');
+    inputBox.addClass(placeholderClassName);
+    inputBox.text(defaultText);
+    inputBox.on('focus', () => {
+        
+        inputBoxPlaceholderJudge(inputBox);
+        dom.find('.rate-tooltip').hide();
+    });
+    inputBox.on('blur', () => {
+        if (inputBox.html() == '') {
+            inputBox.addClass(placeholderClassName);
+            inputBox.text(defaultText);
+        }
+    });
+}
+
+// 判断是否placeholder需要删除
+function inputBoxPlaceholderJudge(inputBox) {
+    if (inputBox.html() == defaultText) {
+        inputBox.removeClass(placeholderClassName);
+        inputBox.text('');
+    }
+}
+
+/**
+ * 添加表情
+ * @param {*} emoji
+ */
+function addEmoji(inputBox, emoji) {
+    inputBoxPlaceholderJudge(inputBox)
+
+    inputBox.append(emoji);
+}
+
+
+function showRateTool(dom) {
+    dom.find('.rate-tool,.fileinput-button').css('display', 'inline-block');
+
+
+    // 如果已评价，则不提示
+    !window.isRate && dom.find('.rate-tooltip').show();
 }

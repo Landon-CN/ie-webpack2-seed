@@ -72,7 +72,7 @@ $.ajax({
 }).then(() => {
     init();
 });
-
+ init();
 
 function init() {
     $(function () {
