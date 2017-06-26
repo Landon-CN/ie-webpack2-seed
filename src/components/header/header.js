@@ -10,7 +10,8 @@ window.components.header = function (parent) {
 
     window.headerChangeToSerice = function () {
         dom.find('.online').remove();
-        dom.find('.name-small').text('人工客服');
+        dom.find('.name-small').text('在线客服');
+        dom.find('.qr-code').addClass('big');
     }
 
     $(parent).append(dom);

@@ -2,13 +2,22 @@ const tpl = __inline('./talk.html');
 const msgTpl = __inline('./message.html');
 const mustache = window.Mustache;
 const botId = '10001';
+const msgText = {
+    serviceError: '系统开小差啦~请稍后再试',
+    reconnect: '京东金融客服正在为您服务',
+    serviceSuccess: '京东金融客服正在为您服务',
+    isRate: '您已经评价过了'
+}
+
+
 window.dialogId;
 
 window.components.talk = function (parent) {
     const dom = $(mustache.render(tpl, {}));
 
     let emoji = components.emoji(dom.find('.toolbar'), emojiChange);
-    // let appraise = components.appraise(dom.find('.toolbar'));
+    let appraise = components.appraise(dom.find('.toolbar'), true);
+
     let inputBox = dom.find('.input-box');
     let msgBox = dom.find('.message-box');
     let keyType = 'one';
@@ -17,6 +26,7 @@ window.components.talk = function (parent) {
     let pageNo = 1;
     let maxPageSize = Number.MAX_SAFE_INTEGER;
     let historyDom = dom.find('.history-msg');
+    let rateTooltip = dom.find('.rate-tooltip');
 
 
     // 默认对话机器人
@@ -27,12 +37,13 @@ window.components.talk = function (parent) {
         event.stopPropagation();
         const type = $(this).data('type');
         closeOther(type);
+        rateTooltip.hide();
         switch (type) {
             case 'emoji':
                 emoji.toggle();
                 break;
             case 'rate':
-                addAppraise();
+                appraise.toggle();
                 break;
             default:
                 break;
@@ -53,7 +64,7 @@ window.components.talk = function (parent) {
             date: Date.now()
         });
 
-        components.appraise(dom.find('.message-text')).open();
+        components.appraise(dom.find('.message-text'), undefined, submitRateCallback).open();
     }
 
 
@@ -73,7 +84,6 @@ window.components.talk = function (parent) {
                     message: msg
                 });
             });
-
         }
     });
 
@@ -134,6 +144,10 @@ window.components.talk = function (parent) {
         });
     }
 
+    function submitRateCallback() {
+        rateTooltip.hide();
+    }
+
     // 添加换行
     function addBr() {
         try {
@@ -171,8 +185,11 @@ window.components.talk = function (parent) {
         queryServiceId(id).then((result) => {
             targetServiceId = result.data.customerServiceId;
             window.dialogId = result.data.dialogId;
-
+            showRateTool(dom);
             addMsg([{
+                dialog: true,
+                message: msgText.serviceSuccess
+            }, {
                 service: true,
                 message: result.data.welcomeWords
             }]);
@@ -180,7 +197,7 @@ window.components.talk = function (parent) {
         }, () => {
             addMsg([{
                 dialog: true,
-                message: '人工客服连接失败'
+                message: msgText.serviceError
             }]);
         });
     });
@@ -207,35 +224,6 @@ window.components.talk = function (parent) {
         };
         pageNo++;
         historyMsg(params).then((result) => {
-
-            // mock数据
-            // Promise.resolve({
-            //     "resultCode": "00000", //String，响应码
-            //     "msg": "操作成功", //String，描述
-            //     "data": [{
-            //             "msgId": "23", //String，消息唯一Id
-            //             "msgType": "3", //String，消息类型
-            //             "groupId": "68", //String，消息群组ID，暂时不用
-            //             "fromUser": "4235234524511", //String，发送者
-            //             "fromUserName": "wucong12", //String，发送者
-            //             "toUser": "123412341234123", //String，接受者
-            //             "toUserName": "jiege", //String，接受者
-            //             "sendTime": "2012-02-03 12:21:35", //String，发送时间
-            //             "content": "hello" //String，消息体
-            //         },
-            //         {
-            //             "msgId": "23", //String，消息唯一Id
-            //             "msgType": "3", //String，消息类型
-            //             "groupId": "68", //String，消息群组ID，暂时不用
-            //             "fromUser": "11", //String，发送者
-            //             "fromUserName": "wucong12", //String，发送者
-            //             "toUser": "11", //String，接受者
-            //             "toUserName": "jiege", //String，接受者
-            //             "sendTime": "2012-02-03 12:21:35", //String，发送时间
-            //             "content": "hello" //String，消息体
-            //         }
-            //     ]
-            // }).then((result) => {
             maxPageSize = Math.ceil(result.total / pageSize);
             if (pageNo > maxPageSize) {
                 noMorePage = true;
@@ -272,14 +260,18 @@ window.components.talk = function (parent) {
             src,
             'data-type': 'e',
             'data-s': 's' + id
-        })
-        inputBox.append(img);
+        });
+        addEmoji(inputBox, img);
     }
 
     // 关闭其他弹窗
     function closeOther(type) {
         if (type !== 'emoji') {
             emoji.close();
+        }
+
+        if (type !== 'rate') {
+            appraise.close();
         }
 
     }
@@ -306,7 +298,7 @@ window.components.talk = function (parent) {
 
         for (let i = 0; i < data.list.length; i++) {
             let item = data.list[i];
-            let time = moment(item.time);
+            let time = moment(item.time || Date.now());
 
             if (!lastTime || time - lastTime > intervalTime) {
                 lastTime = time;
@@ -331,6 +323,8 @@ window.components.talk = function (parent) {
 
         return dom;
     }
+    // 让评价用
+    window.addMsg = addMsg;
 
     let onlineClick = false;
     window.onlineServiceClick = function () {
@@ -352,8 +346,6 @@ window.components.talk = function (parent) {
     }
 
     $(parent).append(dom);
-
-
 
 
     // 建立长连接
@@ -399,10 +391,6 @@ window.components.talk = function (parent) {
 
         });
     }
-
-
-
-
     // 每隔25S拉去一次离线消息
     const offlineTimeout = 25000;
 
@@ -432,6 +420,23 @@ window.components.talk = function (parent) {
         }, offlineTimeout);
     }
 
+    dom.on('mouseenter', '.rate-tool', () => {
+        if (window.isRate) {
+            rateTooltip.find('.text').text(msgText.isRate);
+            rateTooltip.show();
+        }
+
+    });
+
+    dom.on('mouseleave', '.rate-tool', () => {
+        if (window.isRate) {
+            rateTooltip.hide();
+        }
+    });
+
+    dom.on('click', '.rate-tooltip .close', () => {
+        dom.find('.rate-tooltip').hide();
+    });
 
     function init() {
         offlineMsgInteval();
@@ -444,10 +449,10 @@ window.components.talk = function (parent) {
                 window.dialogId = result.data.previousDialogId;
                 onlineClick = true; //防止再次进线
                 window.headerChangeToSerice();
-
+                showRateTool(dom);
                 addMsg({
                     dialog: true,
-                    message: '重新连接成功',
+                    message: msgText.reconnect,
                     time: moment()
                 });
 
@@ -465,7 +470,18 @@ window.components.talk = function (parent) {
         });
     }
     init();
+    inputBoxPlaceholder(dom);
 
+    $(window).on('resize', resize);
+
+    function resize() {
+        let height = $('.talk-editor').height();
+
+        $('.input-box').outerHeight(height - 70 - 10);
+    }
+    setTimeout(function () {
+        resize();
+    }, 0);
 
 }
 
@@ -567,7 +583,6 @@ function parseContent(xml) {
     }
     let msgBody = $(xml);
 
-
     let htmlStr = '';
     msgBody.each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
@@ -595,6 +610,7 @@ function parseContent(xml) {
 // 消息解析为xml
 function stringifyContent(html) {
     let htmlStr = '';
+
     if (targetServiceId === botId) {
         return $(`<body>${html}</body>`).text();
     }
@@ -603,11 +619,6 @@ function stringifyContent(html) {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
         switch (nodeName) {
-            case '#text':
-                // 转义
-                // htmlStr += $('<div></div>').append(element).html();;
-                htmlStr+=encode(element.text());
-                break;
             case 'br':
                 htmlStr += '<br/>';
                 break;
@@ -617,19 +628,74 @@ function stringifyContent(html) {
                 else
                     htmlStr += `<img src='${element.attr('src')}' />`
                 break;
+            case '#text':
             default:
+
+                htmlStr += encode(element.text());
                 break;
         }
     });
+
+
     return `<body>${htmlStr}</body>`
 
 
 }
 
 function encode(str) {
-    str = str.replace(/&/g,'&amp;');
-    str = str.replace(/</g,'&lt;');
-    str = str.replace(/>/g,'&gt;');
-    str = str.replace(/"/g,'&quot;');
+    str = str.replace(/&/g, '&amp;');
+    str = str.replace(/</g, '&lt;');
+    str = str.replace(/>/g, '&gt;');
+    str = str.replace(/"/g, '&quot;');
     return str;
+}
+let defaultText = '请描述您遇到的问题~';
+let placeholderClassName = 'placeholder';
+/**
+ * 输入框的placehloder
+ * @param {*} dom 
+ */
+function inputBoxPlaceholder(dom) {
+    
+    let inputBox = dom.find('.input-box');
+    inputBox.addClass(placeholderClassName);
+    inputBox.text(defaultText);
+    inputBox.on('focus', () => {
+        
+        inputBoxPlaceholderJudge(inputBox);
+        dom.find('.rate-tooltip').hide();
+    });
+    inputBox.on('blur', () => {
+        if (inputBox.html() == '') {
+            inputBox.addClass(placeholderClassName);
+            inputBox.text(defaultText);
+        }
+    });
+}
+
+// 判断是否placeholder需要删除
+function inputBoxPlaceholderJudge(inputBox) {
+    if (inputBox.html() == defaultText) {
+        inputBox.removeClass(placeholderClassName);
+        inputBox.text('');
+    }
+}
+
+/**
+ * 添加表情
+ * @param {*} emoji
+ */
+function addEmoji(inputBox, emoji) {
+    inputBoxPlaceholderJudge(inputBox)
+
+    inputBox.append(emoji);
+}
+
+
+function showRateTool(dom) {
+    dom.find('.rate-tool,.fileinput-button').css('display', 'inline-block');
+
+
+    // 如果已评价，则不提示
+    !window.isRate && dom.find('.rate-tooltip').show();
 }

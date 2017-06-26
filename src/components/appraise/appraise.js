@@ -16,14 +16,20 @@ const reasonList = [{
         text: '问题没得到解决'
     }
 ];
+window.isRate = false;
 
 
-window.components[NAME] = function (parent) {
+window.components[NAME] = function (parent, top = false, cb = () => {}) {
     let dom, rateSocre = -1,
         reason = [];
     dom = $(mustache.render(tpl, {
         reasonList
     }));
+
+    if (top) {
+        dom.addClass('top')
+    }
+
     let rate = window.components.rate(dom.find('.rate-content'), rateChange);
 
     dom.on('click', function (event) {
@@ -38,7 +44,6 @@ window.components[NAME] = function (parent) {
         recordReson(id);
     });
 
-    let isRate = false;
     dom.on('click', '.submit', function (event) {
         event.stopPropagation();
         event.preventDefault();
@@ -49,22 +54,25 @@ window.components[NAME] = function (parent) {
         }
 
         // 防止重复提交
-        if(isRate){
+        if (isRate) {
             return;
         }
-        isRate=true;
-        // dom.hide();
+        isRate = true;
+        disabled(dom);
+        top && dom.hide();
         let reasonText = dom.find('.reason-text').val();
 
         const data = {
             toUser: window.targetServiceId,
             sendTime: moment().format('YYYY-MM-DD HH:mm:SS'),
-            score:rateSocre,
+            score: rateSocre,
             reason: reason.join(','),
             userSay: reasonText,
             dialogId: window.dialogId
         }
         sendRate(data);
+        // 提交评价后回调
+        cb();
     });
 
     dom.on('click', '.close', function (event) {
@@ -89,15 +97,19 @@ window.components[NAME] = function (parent) {
         rateSocre = rate;
         dom.find('.user-attitude').text(rateText[rate - 1]);
         if (rate < 4) {
-            $('.reason-box').show();
+            dom.find('.reason-box').show();
         } else {
-            $('.reason-box').hide();
+            dom.find('.reason-box').hide();
         }
     }
     let showStatus = false;
     let id = '';
     return {
         open: function () {
+            if (isRate) {
+                return;
+            }
+
             showStatus = true;
             id = componentShow(parent, dom, id);
         },
@@ -113,26 +125,43 @@ window.components[NAME] = function (parent) {
             }
         }
     }
+
+
 }
+
+// 禁止点击
+function disabled(dom) {
+    dom.css('pointer-events', 'none');
+}
+
 
 // 发送评价
 function sendRate(params) {
     return $.ajax({
-        url:'/webpage/invitejudge/judge.htm',
+        url: '/webpage/invitejudge/judge.htm',
         contentType: 'application/json; charset=utf-8',
-        type:'post',
-        data:params,
-        headers:{
-            web_personal_key:window.webPersonalKey
+        type: 'post',
+        data: params,
+        headers: {
+            web_personal_key: window.webPersonalKey
         }
-    }).then((result)=>{
-        if(result.data  == '01'){
-            components.dialog.open('评价成功')
-        }else if(result.data == '02'){
+    }).then((result) => {
+        if (result.data == '01') {
+            window.addMsg({
+                dialog: true,
+                message: '评价成功'
+            });
+        } else if (result.data == '02') {
             // 重复评价
-            components.dialog.open('请勿重复评价')
-        }else{
-            components.dialog.open('评价异常')
+            window.addMsg({
+                dialog: true,
+                message: '请勿重复评价'
+            });
+        } else {
+            window.addMsg({
+                dialog: true,
+                message: '系统开小差啦~请稍后再试'
+            });
         }
     });
 }
