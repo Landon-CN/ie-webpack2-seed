@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/");
 var compiler = webpack(webapckDevConfig);
 
-let targetUrl = '10.9.46.136';
+let targetUrl = '10.9.46.147';
 
 var server = new webpackDevServer(compiler, {
     // webpack-dev-server options
@@ -22,8 +22,8 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
-        '/jtalk/**': `http://${targetUrl}:8000`,
         '/jtalk/message/**': `http://${targetUrl}:8090`,
+        '/jtalk/**': `http://${targetUrl}:8000`
     },
     // Set this if you want webpack-dev-server to delegate a single path to an arbitrary server.
     // Use "**" to proxy all paths to the specified server.

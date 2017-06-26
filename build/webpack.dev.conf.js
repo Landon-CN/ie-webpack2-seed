@@ -1,37 +1,31 @@
 const webpack = require('webpack');
-const path = require('./pathConfig');
+const pathConf = require('./pathConfig');
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const oldie = require('oldie');
-const sprites = require('postcss-sprites');
 const es3ifyPlugin = require('es3ify-webpack-plugin');
+const package = require('../package.json');
 
-// post-sprite 配置项
-const spriteOpts = {
-    stylesheetPath: path.distPath,
-    spritePath: path.imgPath,
-    groupBy: function (img) {
 
-        if (img.url.indexOf('.gif') > -1) {
-            return Promise.resolve('emoji');
-        }
-        return Promise.reject('default');
+let dependencies = Object.keys(package.dependencies);
 
-    }
-};
+const vender = [].concat(dependencies,['es5-shim/es5-sham','blueimp-file-upload/js/jquery.iframe-transport.js'])
+console.log(vender);
 
 module.exports = {
     devtool: '#inline-source-map',
     entry: {
-        index: [path.indexPath],
-        vendor: ['jquery', 'es5-shim', 'es5-shim/es5-sham']
+        index: [pathConf.indexPath],
+        vendor: vender
     },
     resolve:{
-        root:[path.srcPath]
+        root:[pathConf.srcPath],
+        alias:{'jquery-ui/ui/widget': path.resolve(__dirname,'../node_modules/blueimp-file-upload/js/vendor/jquery.ui.widget.js')}
     },
     output: {
         filename: 'index.[hash].js',
-        path: path.distPath,
+        path: pathConf.distPath,
         chunkFilename: '[name].[chunkhash].js',
         publicPath: '/'
     },
@@ -68,10 +62,11 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             inject: true,
-            template: path.publicPath,
+            template: pathConf.publicPath,
         }),
         new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[hash].js"),
-        new es3ifyPlugin()
+        new es3ifyPlugin(),
+        new webpack.ProvidePlugin({ "window.jQuery": "jquery" })
     ],
     postcss: function () {
         return [

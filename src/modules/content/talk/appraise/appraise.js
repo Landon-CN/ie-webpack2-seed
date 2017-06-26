@@ -3,6 +3,7 @@ import mustache from 'mustache';
 import $ from 'jquery';
 import './appraise.less';
 import {rate as Rate} from 'components';
+import {componentShow} from 'utils';
 
 const rateText = ['非常不满意', '不满意', '一般', '满意', '非常满意'];
 const reasonList = [{

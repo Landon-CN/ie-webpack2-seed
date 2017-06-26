@@ -76,23 +76,23 @@ export default function (parent) {
 
 
 
-    // dom.find('.fileinput-button').fileupload({
-    //     dataType: 'json',
-    //     url: '/webpage/file/upload.htm',
-    //     done: function (e, result) {
-    //         let data = result.result.data[0];
-    //         let url = data.url;
-    //         let msg = `<img src='${url}'>`;
-    //         sendMsg(targetServiceId, {
-    //             content: stringifyContent(msg)
-    //         }).then(() => {
-    //             addMsg({
-    //                 user: true,
-    //                 message: msg
-    //             });
-    //         });
-    //     }
-    // });
+    dom.find('.fileinput-button').fileupload({
+        dataType: 'json',
+        url: '/webpage/file/upload.htm',
+        done: function (e, result) {
+            let data = result.result.data[0];
+            let url = data.url;
+            let msg = `<img src='${url}'>`;
+            sendMsg(targetServiceId, {
+                content: stringifyContent(msg)
+            }).then(() => {
+                addMsg({
+                    user: true,
+                    message: msg
+                });
+            });
+        }
+    });
 
     dom.on('click', '.btn-more', function (event) {
         event.stopPropagation();

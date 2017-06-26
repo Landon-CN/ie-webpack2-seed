@@ -1,6 +1,6 @@
 {
   "name": "jtalk_web_webpack",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -28,17 +28,13 @@
     "url-loader": "^0.5.9",
     "webpack": "1.15.0",
     "webpack-dev-server": "1.16.5",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "html-loader": "^0.4.5"
   },
   "dependencies": {
-    "babel-polyfill": "^6.23.0",
     "blueimp-file-upload": "^9.18.0",
     "es5-shim": "^4.5.9",
-    "gulp-inline-template": "^1.1.5",
-    "gulp-template-inline-js": "^1.0.6",
-    "html-loader": "^0.4.5",
     "jquery": "1.12.4",
-    "jquery.ui.widget": "^1.10.3",
     "moment": "^2.18.1",
     "mustache": "^2.3.0"
   }

@@ -2,7 +2,7 @@ import tpl from './emoji.html';
 import mustache from 'mustache';
 import $ from 'jquery';
 import './emoji.less';
-import {componentShow} from '../utils';
+import {componentShow} from 'utils';
 
 let tip;
 
@@ -36,7 +36,7 @@ export default function (parent, change = () => {}) {
         classics[index] = classics[index] || [];
         let num = i + 1;
         classics[index][i % 12] = num>=10?num:'0'+num ;
-        console.log(classics[index][i % 12],num);
+
     }
     
     
