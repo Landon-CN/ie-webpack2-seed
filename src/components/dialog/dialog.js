@@ -37,4 +37,4 @@ const dialog = (function () {
     };
 })();
 
-export default dialog;
+export {dialog};

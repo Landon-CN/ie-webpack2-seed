@@ -9,7 +9,7 @@ import './rate.less';
  * @param  {function} change 评分变化
  * @param  {number} currentRate 初始评分
  */
-export default function (parent,change = () => {},max = 5 , currentRate = 0) {
+export function rate(parent,change = () => {},max = 5 , currentRate = 0) {
     let maxRate = [];
     for (let i = 1; i <= max; i++) {
         maxRate[i - 1] = i;

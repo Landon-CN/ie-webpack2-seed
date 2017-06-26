@@ -1,3 +1,9 @@
-export {default as dialog} from './dialog/dialog';
-export {default as emoji} from './emoji/emoji';
-export {default as rate} from './rate/rate';
+import {dialog} from './dialog/dialog';
+import {emoji} from './emoji/emoji';
+import {rate} from './rate/rate';
+
+export {
+    emoji,
+    rate,
+    dialog
+}

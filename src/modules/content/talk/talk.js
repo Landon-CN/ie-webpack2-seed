@@ -17,6 +17,9 @@ const msgText = {
     isRate: '您已经评价过了'
 }
 
+const defaultText = '请描述您遇到的问题~';
+const placeholderClassName = 'placeholder';
+
 const dialogId = window.dialogId;
 
 export default function (parent) {
@@ -123,7 +126,6 @@ export default function (parent) {
         } else if (keyType === 'two' && keyCode === 13 && event.ctrlKey) {
             submit();
         }
-
     });
 
     dom.on('click', '.btn-submit', function (event) {
@@ -133,10 +135,11 @@ export default function (parent) {
     //提交消息
     function submit() {
         let htmlText = inputBox.html();
-        if (htmlText == '') {
+        if (htmlText == '' || htmlText == defaultText) {
             return;
         }
-        inputBox.html('');
+
+        inputBox.html('').blur();
         htmlText = $(`<div>${htmlText}</div>`);
         htmlText.find('.remove').remove()
         htmlText = htmlText.html();
@@ -656,8 +659,7 @@ function encode(str) {
     str = str.replace(/"/g, '&quot;');
     return str;
 }
-let defaultText = '请描述您遇到的问题~';
-let placeholderClassName = 'placeholder';
+
 /**
  * 输入框的placehloder
  * @param {*} dom 

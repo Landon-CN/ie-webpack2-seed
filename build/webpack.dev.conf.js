@@ -7,21 +7,20 @@ const oldie = require('oldie');
 const es3ifyPlugin = require('es3ify-webpack-plugin');
 const package = require('../package.json');
 
-
-let dependencies = Object.keys(package.dependencies);
-
-const vender = [].concat(dependencies,['es5-shim/es5-sham','blueimp-file-upload/js/jquery.iframe-transport.js'])
-console.log(vender);
+//'es5-shim','es5-shim/es5-sham,'jquery', 'blueimp-file-upload' ,'blueimp-file-upload/js/jquery.iframe-transport.js','mustache'
+const vender = ['jquery', 'blueimp-file-upload', 'blueimp-file-upload/js/jquery.iframe-transport.js', 'mustache'];
 
 module.exports = {
-    devtool: '#inline-source-map',
+    devtool: '#cheap-source-map',
     entry: {
         index: [pathConf.indexPath],
         vendor: vender
     },
-    resolve:{
-        root:[pathConf.srcPath],
-        alias:{'jquery-ui/ui/widget': path.resolve(__dirname,'../node_modules/blueimp-file-upload/js/vendor/jquery.ui.widget.js')}
+    resolve: {
+        root: pathConf.srcPath,
+        alias: {
+            'jquery-ui/ui/widget': path.resolve(__dirname, '../node_modules/blueimp-file-upload/js/vendor/jquery.ui.widget.js')
+        }
     },
     output: {
         filename: 'index.[hash].js',
@@ -32,12 +31,12 @@ module.exports = {
     module: {
         loaders: [{
                 test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel'
+                include: pathConf.srcPath,
+                loader: 'babel?cacheDirectory=true'
             },
             {
                 test: /\.less$/,
-                exclude: /node_modules/,
+                include: pathConf.srcPath,
                 loader: 'style-loader!css-loader!sprite-loader!postcss-loader!less-loader'
             },
             {
@@ -51,6 +50,7 @@ module.exports = {
             },
             {
                 test: /\.gif$/,
+                include: pathConf.srcPath,
                 loader: "file-loader?name=imgs/[name].[ext]"
             },
             {
@@ -66,11 +66,23 @@ module.exports = {
         }),
         new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[hash].js"),
         new es3ifyPlugin(),
-        new webpack.ProvidePlugin({ "window.jQuery": "jquery" })
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        })
     ],
     postcss: function () {
         return [
             // sprites(spriteOpts),
+            oldie({
+                opacity: {
+                    method: 'copy'
+                },
+                rgba: {
+                    method: 'clone',
+                    filter: true
+                }
+            }),
             autoprefixer({
                 browsers: ['ie >= 8', '> 0.01%', 'Firefox >= 20']
             })
