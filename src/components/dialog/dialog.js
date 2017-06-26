@@ -1,7 +1,9 @@
-const tpl = __inline('./dialog.html');
-const mustache = window.Mustache;
+import tpl from './dialog.html';
+import mustache from 'mustache';
+import $ from 'jquery';
+import './dialog.less';
 
-window.components.dialog = (function () {
+const dialog = (function () {
     let dom;
     
 
@@ -34,3 +36,5 @@ window.components.dialog = (function () {
         }
     };
 })();
+
+export default dialog;

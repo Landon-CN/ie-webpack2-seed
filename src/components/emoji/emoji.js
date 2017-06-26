@@ -1,6 +1,8 @@
-const NAME = 'emoji';
-const tpl = __inline('./emoji.html');
-const mustache = window.Mustache;
+import tpl from './emoji.html';
+import mustache from 'mustache';
+import $ from 'jquery';
+import './emoji.less';
+import {componentShow} from '../utils';
 
 let tip;
 
@@ -25,7 +27,7 @@ function setTip(show, pos, img) {
     }).find('img').attr('src', img)
 }
 
-window.components[NAME] = function (parent, change = () => {}) {
+export default function (parent, change = () => {}) {
     let dom;
     let showStatus = false;
     let classics = [];
@@ -33,8 +35,11 @@ window.components[NAME] = function (parent, change = () => {}) {
         let index = parseInt(i / 12);
         classics[index] = classics[index] || [];
         let num = i + 1;
-        classics[index][i % 12] = num>10?num:'0'+num ;
+        classics[index][i % 12] = num>=10?num:'0'+num ;
+        console.log(classics[index][i % 12],num);
     }
+    
+    
     const renderResult = mustache.render(tpl, {
         classics
     });
