@@ -13,7 +13,7 @@ const proConf = merge(devConfig, {
     plugins: [
         new webpack.optimize.UglifyJsPlugin({
             compress: {
-                warn: false,
+                warnings: false,
                 screw_ie8: false
             },
             mangle: {
