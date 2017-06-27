@@ -648,3 +648,7 @@ export {
   onlineServiceClick,
   addMsg
 }
+setTimeout(function() {
+  console.log(parseContent('<body><e t="d" s="s01" /></body>'));
+}, 1000);
+

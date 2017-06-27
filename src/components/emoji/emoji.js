@@ -69,12 +69,13 @@ export function emoji(parent, change = () => {}) {
 
 
   tip = dom.find('.emoji-show-body');
-  let id = '';
 
+
+  parent.append(dom);
   return {
     open: () => {
       showStatus = true;
-      id = componentShow(parent, dom, id);
+      dom.show();
     },
     close: () => {
       showStatus = false;
