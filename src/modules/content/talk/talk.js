@@ -3,13 +3,18 @@ import msgTpl from './message.html';
 import mustache from 'mustache';
 import $ from 'jquery';
 import './talk.less';
-import {emoji as Emoji} from 'components';
+import {
+    emoji as Emoji
+} from 'components';
 import Appraise from './appraise/appraise';
 import moment from 'moment';
+import {
+    headerChangeToSerice
+} from '../../header/header';
+import globalVar from 'globalVar';
+import * as service from './talkService';
 
-
-
-const botId = '10001';
+const botId = globalVar.botId;
 const msgText = {
     serviceError: '系统开小差啦~请稍后再试',
     reconnect: '京东金融客服正在为您服务',
@@ -19,28 +24,27 @@ const msgText = {
 
 const defaultText = '请描述您遇到的问题~';
 const placeholderClassName = 'placeholder';
+// 默认对话机器人
+globalVar.targetServiceId = botId;
 
-const dialogId = window.dialogId;
-
+let dom, historyDom, msgBox, scroll;
 export default function (parent) {
-    const dom = $(mustache.render(tpl, {}));
+    dom = $(mustache.render(tpl, {}));
 
     let emoji = Emoji(dom.find('.toolbar'), emojiChange);
     let appraise = Appraise(dom.find('.toolbar'), true);
 
     let inputBox = dom.find('.input-box');
-    let msgBox = dom.find('.message-box');
+    msgBox = dom.find('.message-box');
     let keyType = 'one';
-    let scroll = dom.find('.scroll');
+    scroll = dom.find('.scroll');
     let pageSize = 10;
     let pageNo = 1;
     let maxPageSize = Number.MAX_SAFE_INTEGER;
-    let historyDom = dom.find('.history-msg');
+    historyDom = dom.find('.history-msg');
     let rateTooltip = dom.find('.rate-tooltip');
 
 
-    // 默认对话机器人
-    window.targetServiceId = botId;
     let msgType = '3';
 
     dom.on('click', '.tool-item', function (event) {
@@ -86,7 +90,7 @@ export default function (parent) {
             let data = result.result.data[0];
             let url = data.url;
             let msg = `<img src='${url}'>`;
-            sendMsg(targetServiceId, {
+            service.sendMsg(globalVar.targetServiceId, {
                 content: stringifyContent(msg)
             }).then(() => {
                 addMsg({
@@ -145,7 +149,7 @@ export default function (parent) {
         htmlText = htmlText.html();
 
 
-        sendMsg(targetServiceId, {
+        service.sendMsg(globalVar.targetServiceId, {
             content: stringifyContent(htmlText)
         });
         addMsg({
@@ -192,9 +196,9 @@ export default function (parent) {
         groupClick = true;
         let id = $(this).data('id');
         $(this).find('.group-name').addClass('active');
-        queryServiceId(id).then((result) => {
-            targetServiceId = result.data.customerServiceId;
-            window.dialogId = result.data.dialogId;
+        service.queryServiceId(id).then((result) => {
+            globalVar.targetServiceId = result.data.customerServiceId;
+            globalVar.dialogId = result.data.dialogId;
             showRateTool(dom);
             addMsg([{
                 dialog: true,
@@ -203,8 +207,9 @@ export default function (parent) {
                 service: true,
                 message: result.data.welcomeWords
             }]);
-            window.headerChangeToSerice();
+            headerChangeToSerice();
         }, () => {
+            groupClick = false;
             addMsg([{
                 dialog: true,
                 message: msgText.serviceError
@@ -233,7 +238,7 @@ export default function (parent) {
             current: pageNo
         };
         pageNo++;
-        historyMsg(params).then((result) => {
+        service.historyMsg(params).then((result) => {
             maxPageSize = Math.ceil(result.total / pageSize);
             if (pageNo > maxPageSize) {
                 noMorePage = true;
@@ -244,7 +249,7 @@ export default function (parent) {
 
             let data = result.data;
 
-            let userId = window.userId;
+            let userId = globalVar.userId;
             let msgList = [];
             for (let i = 0; i < data.length; i++) {
                 let item = data[i];
@@ -286,81 +291,12 @@ export default function (parent) {
 
     }
 
-    // 添加消息
-
-    // 提前缓存
-    mustache.parse(msgTpl);
-    let lastTime;
-    let intervalTime = 6 * 60 * 1000; // 间隔5分钟以上才会显示时间条
-    // append false 代表是历史记录
-    function addMsg(data, append = true) {
-        if (Array.isArray(data)) {
-            data = {
-                list: data
-            }
-        } else {
-            data = {
-                list: [data]
-            }
-        }
-
-
-
-        for (let i = 0; i < data.list.length; i++) {
-            let item = data.list[i];
-            let time = moment(item.time || Date.now());
-
-            if (!lastTime || time - lastTime > intervalTime) {
-                lastTime = time;
-                data.list.splice(i, 0, {
-                    timeShow: true,
-                    message: lastTime.format('HH:mm')
-                });
-            }
-
-        }
-
-
-        const serviceListHtml = mustache.render(msgTpl, data);
-        let dom = $(serviceListHtml);
-
-        if (append) {
-            msgBox.append(dom);
-            scroll.scrollTop(msgBox.height());
-        } else {
-            historyDom.after(dom);
-        }
-
-        return dom;
-    }
-    // 让评价用
-    window.addMsg = addMsg;
-
-    let onlineClick = false;
-    window.onlineServiceClick = function () {
-
-        if (onlineClick) {
-            return;
-        }
-        onlineClick = true;
-
-        getServiceList().then(function (result) {
-            const data = result.data;
-            const list = data.showBusinessInfo;
-            addMsg({
-                serviceGroup: true,
-                serviceList: list,
-                time: moment()
-            });
-        });
-    }
-
     $(parent).append(dom);
 
 
     // 建立长连接
     function pollInterval(params) {
-        pollMsg().then(function (result) {
+        service.pollMsg().then(function (result) {
             let data = result.data;
 
             // 重新建立长连接
@@ -406,7 +342,7 @@ export default function (parent) {
 
     function offlineMsgInteval() {
         setTimeout(function () {
-            getOfflineMsg().then((result) => {
+            service.getOfflineMsg().then((result) => {
                 let data = result.data;
                 let msgList = [];
                 for (let i = 0; i < data.length; i++) {
@@ -431,7 +367,7 @@ export default function (parent) {
     }
 
     dom.on('mouseenter', '.rate-tool', () => {
-        if (window.isRate) {
+        if (globalVar.isRate) {
             rateTooltip.find('.text').text(msgText.isRate);
             rateTooltip.show();
         }
@@ -439,7 +375,7 @@ export default function (parent) {
     });
 
     dom.on('mouseleave', '.rate-tool', () => {
-        if (window.isRate) {
+        if (globalVar.isRate) {
             rateTooltip.hide();
         }
     });
@@ -452,13 +388,13 @@ export default function (parent) {
         offlineMsgInteval();
         pollInterval();
         // 上次处于进线状态
-        getServiceList().then((result) => {
+        service.getServiceList().then((result) => {
             let message = '欢迎来到京东金融智能客服，请输入您遇到的问题';
             if (result.data.continuePreviousDialog) {
-                targetServiceId = result.data.customerServiceId;
-                window.dialogId = result.data.previousDialogId;
+                globalVar.targetServiceId = result.data.customerServiceId;
+                globalVar.dialogId = result.data.previousDialogId;
                 onlineClick = true; //防止再次进线
-                window.headerChangeToSerice();
+                headerChangeToSerice();
                 showRateTool(dom);
                 addMsg({
                     dialog: true,
@@ -494,96 +430,6 @@ export default function (parent) {
     }, 0);
 
 }
-
-// 长轮训10S
-function pollMsg() {
-    return $.ajax({
-        type: 'post',
-        timeout: 60000,
-        contentType: 'application/json; charset=utf-8',
-        url: `/message/conn?type=conn&time=${Date.now()}`
-    });
-}
-
-// 获取离线消息
-function getOfflineMsg(params) {
-    return $.ajax({
-        type: 'post',
-        url: '/message/offlinemsg/get.htm',
-        contentType: 'application/json; charset=utf-8',
-        dataType: 'json'
-    });
-}
-
-// 发送消息
-function sendMsg(targetUserId, data) {
-    data.time = moment().format('YYYY-MM-DD HH:mm:SS');
-    data.type = targetUserId === botId ? 3 : 2;
-    data.dialogId = window.dialogId;
-    return $.ajax({
-        url: `/message/onlinemsg/send.htm?targetUserId=${targetUserId}`,
-        type: 'post',
-        contentType: 'application/json; charset=utf-8',
-        data
-    });
-}
-
-// 获取分组列表
-function getServiceList(data = {
-    source: '03'
-}) {
-    return $.ajax({
-        type: 'post',
-        url: '/IncomingLine/selectShownBusiness.htm',
-        contentType: 'application/json; charset=utf-8',
-        data,
-    });
-}
-
-// 查询客服ID
-function queryServiceId(groupId) {
-    return $.ajax({
-        type: 'post',
-        url: '/IncomingLine/selectCustomerServiceInGroup.htm',
-        contentType: 'application/json; charset=utf-8',
-        data: {
-            groupId,
-            initSource: '03'
-        }
-    });
-}
-
-/**
- * {
-        msgType:"01",//消息类型，参照ImmediateMsgTypeEnum。必填项
-        userA:"sunyinjie", //用户1的userId，当msgType！=02时，必填。
-        userB:"liwei", //用户2的userId，当msgType！=02时，必填。
-        groupId:"12545",//群组ID，当msgType==02时，必填。
-        pageSize:10,//页面大小
-        currentPage:1,//查询页数 
-        startDate:起始时间,
-        endDate:结束时间
-    } 
-
-    ONLINE("1","上线"),
-    TALK("2","即时消息"),
-    ROBOT_TALK("3","即时消息机器人"),
-    FILE("4","文件"),
-    OFFLINE("9","下线");
- */
-function historyMsg(data) {
-
-    data.userA = targetServiceId;
-    data.userB = window.userId;
-    data.msgType = targetServiceId === botId ? 3 : 2;
-    return $.ajax({
-        url: '/webpage/records/get.htm',
-        contentType: 'application/json; charset=utf-8',
-        type: 'post',
-        data
-    })
-}
-
 
 // 消息体解析
 function parseContent(xml) {
@@ -621,7 +467,7 @@ function parseContent(xml) {
 function stringifyContent(html) {
     let htmlStr = '';
 
-    if (targetServiceId === botId) {
+    if (globalVar.targetServiceId === botId) {
         return $(`<body>${html}</body>`).text();
     }
 
@@ -706,5 +552,80 @@ function showRateTool(dom) {
 
 
     // 如果已评价，则不提示
-    !window.isRate && dom.find('.rate-tooltip').show();
+    !globalVar.isRate && dom.find('.rate-tooltip').show();
+}
+
+
+const onlineServiceClick = (function () {
+    let onlineClick = false;
+    return () => {
+        if (onlineClick) {
+            return;
+        }
+        onlineClick = true;
+
+        service.getServiceList().then(function (result) {
+            const data = result.data;
+            const list = data.showBusinessInfo;
+            addMsg({
+                serviceGroup: true,
+                serviceList: list,
+                time: moment()
+            });
+        });
+    }
+})();
+
+
+// 添加消息
+
+// 提前缓存
+mustache.parse(msgTpl);
+let lastTime;
+let intervalTime = 6 * 60 * 1000; // 间隔5分钟以上才会显示时间条
+// append false 代表是历史记录
+function addMsg(data, append = true) {
+    if (Array.isArray(data)) {
+        data = {
+            list: data
+        }
+    } else {
+        data = {
+            list: [data]
+        }
+    }
+
+
+
+    for (let i = 0; i < data.list.length; i++) {
+        let item = data.list[i];
+        let time = moment(item.time || Date.now());
+
+        if (!lastTime || time - lastTime > intervalTime) {
+            lastTime = time;
+            data.list.splice(i, 0, {
+                timeShow: true,
+                message: lastTime.format('HH:mm')
+            });
+        }
+
+    }
+
+
+    const serviceListHtml = mustache.render(msgTpl, data);
+    let dom = $(serviceListHtml);
+
+    if (append) {
+        msgBox.append(dom);
+        scroll.scrollTop(msgBox.height());
+    } else {
+        historyDom.after(dom);
+    }
+
+    return dom;
+}
+
+export {
+    onlineServiceClick,
+    addMsg
 }

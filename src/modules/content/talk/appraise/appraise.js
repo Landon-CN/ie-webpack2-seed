@@ -1,6 +1,7 @@
 import tpl from './appraise.html';
 import mustache from 'mustache';
 import $ from 'jquery';
+import moment from 'moment';
 import './appraise.less';
 import {
     rate as Rate
@@ -8,6 +9,8 @@ import {
 import {
     componentShow
 } from 'utils';
+import globalVar from 'globalVar';
+import {addMsg} from '../talk';
 
 const rateText = ['非常不满意', '不满意', '一般', '满意', '非常满意'];
 const reasonList = [{
@@ -23,7 +26,6 @@ const reasonList = [{
         text: '问题没得到解决'
     }
 ];
-window.isRate = false;
 
 
 export default function appraise(parent, top = false, cb = () => {}) {
@@ -61,21 +63,21 @@ export default function appraise(parent, top = false, cb = () => {}) {
         }
 
         // 防止重复提交
-        if (isRate) {
+        if (globalVar.isRate) {
             return;
         }
-        isRate = true;
+        globalVar.isRate = true;
         disabled(dom);
         top && dom.hide();
         let reasonText = dom.find('.reason-text').val();
 
         const data = {
-            toUser: window.targetServiceId,
+            toUser: globalVar.targetServiceId,
             sendTime: moment().format('YYYY-MM-DD HH:mm:SS'),
             score: rateSocre,
             reason: reason.join(','),
             userSay: reasonText,
-            dialogId: window.dialogId
+            dialogId: globalVar.dialogId
         }
         sendRate(data);
         // 提交评价后回调
@@ -113,7 +115,7 @@ export default function appraise(parent, top = false, cb = () => {}) {
     let id = '';
     return {
         open: function () {
-            if (isRate) {
+            if (globalVar.isRate) {
                 return;
             }
 
@@ -150,22 +152,22 @@ function sendRate(params) {
         type: 'post',
         data: params,
         headers: {
-            web_personal_key: window.webPersonalKey
+            web_personal_key: globalVar.webPersonalKey
         }
     }).then((result) => {
         if (result.data == '01') {
-            window.addMsg({
+            addMsg({
                 dialog: true,
                 message: '评价成功'
             });
         } else if (result.data == '02') {
             // 重复评价
-            window.addMsg({
+            addMsg({
                 dialog: true,
                 message: '请勿重复评价'
             });
         } else {
-            window.addMsg({
+            addMsg({
                 dialog: true,
                 message: '系统开小差啦~请稍后再试'
             });

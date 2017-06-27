@@ -1,11 +1,12 @@
 const webpackDevServer = require('webpack-dev-server');
 const webpack = require('webpack');
 const webapckDevConfig = require('./webpack.dev.conf');
+const webapckProConfig = require('./webpack.pro.conf');
 const fetch = require('node-fetch');
 webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/");
-var compiler = webpack(webapckDevConfig);
+var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
-let targetUrl = '10.9.46.147';
+let targetUrl = '10.9.46.158';
 
 var server = new webpackDevServer(compiler, {
     // webpack-dev-server options
@@ -29,11 +30,11 @@ var server = new webpackDevServer(compiler, {
     // Use "**" to proxy all paths to the specified server.
     // This is useful if you want to get rid of 'http://localhost:8080/' in script[src],
     // and has many other use cases (see https://github.com/webpack/webpack-dev-server/pull/127 ).
-    disableHostCheck:true,
+    disableHostCheck: true,
     setup: function (app) {
         app.all('/', function (req, res, next) {
-        
-            
+
+
             fetch(`http://${targetUrl}:8090/index.htm`, {
                 redirect: 'manual',
                 headers: req.headers,

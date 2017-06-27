@@ -5,14 +5,29 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 
-const proConf = merge(devConfig,{
-    devtool:false,
-    plugins:[
-        new CleanWebpackPlugin(path.resolve(__dirname,pathConf.distPath),{
-            root: path.resolve(__dirname,'../')
-        }),
-        new webpack.optimize.UglifyJsPlugin()
+const proConf = merge(devConfig, {
+    devtool: false,
+    plugins: [
+
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                screw_ie8: false
+            },
+            mangle: {
+                screw_ie8: false
+            },
+            output: {
+                screw_ie8: false
+            },
+            exclude: /\.less$/i
+        })
     ]
 });
 
-module.exports=proConf;
+if (process.env.NODE_ENV != 'pre') {
+    proConf.plugins.push(new CleanWebpackPlugin(path.resolve(__dirname, pathConf.distPath), {
+        root: path.resolve(__dirname, '../')
+    }))
+}
+
+module.exports = proConf;

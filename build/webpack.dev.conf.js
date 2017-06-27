@@ -11,7 +11,7 @@ const package = require('../package.json');
 const vender = ['jquery', 'blueimp-file-upload', 'blueimp-file-upload/js/jquery.iframe-transport.js', 'mustache'];
 
 module.exports = {
-    devtool: '#cheap-source-map',
+    devtool: '#inline-source-map',
     entry: {
         index: [pathConf.indexPath],
         vendor: vender
@@ -37,21 +37,16 @@ module.exports = {
             {
                 test: /\.less$/,
                 include: pathConf.srcPath,
-                loader: 'style-loader!css-loader!sprite-loader!postcss-loader!less-loader'
+                loader: 'style-loader!css-loader!postcss-loader!less-loader'
             },
             {
                 test: /\.css$/,
                 loader: 'style-loader!css-loader'
             },
             {
-                test: /\.(png|jpg)$/,
-                exclude: /sprite/,
+                test: /\.(png|jpg|gif)$/,
+                // exclude: /sprite/,
                 loader: 'url-loader?limit=8192&name=imgs/[hash].[ext]' // 小于10K做成base64 url
-            },
-            {
-                test: /\.gif$/,
-                include: pathConf.srcPath,
-                loader: "file-loader?name=imgs/[name].[ext]"
             },
             {
                 test: /\.html$/,
@@ -73,7 +68,6 @@ module.exports = {
     ],
     postcss: function () {
         return [
-            // sprites(spriteOpts),
             oldie({
                 opacity: {
                     method: 'copy'
