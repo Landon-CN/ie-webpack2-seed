@@ -6,9 +6,11 @@ const path = require('path');
 const webpack = require('webpack');
 
 const proConf = merge(devConfig, {
+    output:{
+        publicPath: '/dist/'
+    },
     devtool: false,
     plugins: [
-
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warn: false,
