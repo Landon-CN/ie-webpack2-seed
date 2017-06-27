@@ -28,6 +28,7 @@ const placeholderClassName = 'placeholder';
 globalVar.targetServiceId = botId;
 
 let dom, historyDom, msgBox, scroll;
+let onlineClick = false;
 export default function (parent) {
     dom = $(mustache.render(tpl, {}));
 
@@ -82,22 +83,28 @@ export default function (parent) {
     }
 
 
-
+    const imgReg = /(\.|\/)(gif|jpe?g|png)$/i;
     dom.find('.fileinput-button').fileupload({
+        pasteZone: inputBox,
+        dropZone: $(document),
         dataType: 'json',
         url: '/webpage/file/upload.htm',
+        acceptFileTypes: imgReg,
         done: function (e, result) {
+
             let data = result.result.data[0];
             let url = data.url;
             let msg = `<img src='${url}'>`;
-            service.sendMsg(globalVar.targetServiceId, {
-                content: stringifyContent(msg)
-            }).then(() => {
-                addMsg({
-                    user: true,
-                    message: msg
-                });
-            });
+            // service.sendMsg(globalVar.targetServiceId, {
+            //     content: stringifyContent(msg)
+            // }).then(() => {
+                // addMsg({
+                //     user: true,
+                //     message: msg
+                // });
+                inputBoxPlaceholderJudge(inputBox);
+                inputBox.append(msg);
+            // });
         }
     });
 
@@ -556,25 +563,24 @@ function showRateTool(dom) {
 }
 
 
-const onlineServiceClick = (function () {
-    let onlineClick = false;
-    return () => {
-        if (onlineClick) {
-            return;
-        }
-        onlineClick = true;
+const onlineServiceClick = function () {
 
-        service.getServiceList().then(function (result) {
-            const data = result.data;
-            const list = data.showBusinessInfo;
-            addMsg({
-                serviceGroup: true,
-                serviceList: list,
-                time: moment()
-            });
-        });
+    if (onlineClick) {
+        return;
     }
-})();
+    onlineClick = true;
+
+    service.getServiceList().then(function (result) {
+        const data = result.data;
+        const list = data.showBusinessInfo;
+        addMsg({
+            serviceGroup: true,
+            serviceList: list,
+            time: moment()
+        });
+    });
+
+};
 
 
 // 添加消息
