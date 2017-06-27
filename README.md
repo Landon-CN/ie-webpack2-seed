@@ -3,13 +3,12 @@
 - 要求兼容IE7
 
 # 使用说明
-- `npm run start` 开发环境
-- `npm run test` 预览环境
+- `npm run dev` 开发环境
+- `npm run pre` 预览环境
 - `npm run build` 上线打包 dist目录
-- `npm run clean` 清除所有生成文件
 
 # 技术栈
-- gulp
+- webpack1
 - es6+less
 - jquery@1.12.4 兼容IE7
 - es5-shim es5-sham
@@ -18,8 +17,6 @@
 - 图片上传 jquery-file-upload(blueimp-file-upload)，兼容性>=-ie6+ Mozilla Firefox 3.0+
 - 模板渲染 mustache.js 后续可以转化为nodejs渲染
 - 表情库 采用和京东在线客户一样的表情库，已download所有图片
-- 图片粘贴 onPaste事件监听
-    - 问题1： 兼容性 IE>11(未证实)
 
 
 # 目录结构
@@ -35,8 +32,4 @@
 - dist 上线编译目录，压缩，无sourcemap
 
 # 开发环境
-- gulp+babel+browsersync
-
-# dev环境密码
-- huiasd123
-- 123
+- webpack
