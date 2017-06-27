@@ -51,6 +51,8 @@ export function emoji(parent, change = () => {}) {
     let pos = $(this).position();
     let id = $(this).data('id');
     let img = $(this).children('.emoji').css('backgroundImage');
+
+
     img = extractBase64(img);
 
     setTip(true, pos, img);
@@ -97,7 +99,7 @@ export function emoji(parent, change = () => {}) {
  */
 function extractBase64(src) {
 
-  let result = src.match(/url\("([\s\S]+)?"\)/);
+  let result = src.match(/url\("?([\s\S]+)?"?\)/);
   return result[1];
 
 }

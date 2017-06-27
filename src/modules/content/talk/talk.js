@@ -15,6 +15,9 @@ import {
 } from '../../header/header';
 import globalVar from 'globalVar';
 import * as service from './talkService';
+import * as line from './line/line';
+
+// line.open();
 
 const botId = globalVar.botId;
 const msgText = {
@@ -648,7 +651,3 @@ export {
   onlineServiceClick,
   addMsg
 }
-setTimeout(function() {
-  console.log(parseContent('<body><e t="d" s="s01" /></body>'));
-}, 1000);
-
