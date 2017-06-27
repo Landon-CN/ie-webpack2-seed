@@ -1,6 +1,10 @@
-const NAME = 'emoji';
-const tpl = __inline('./emoji.html');
-const mustache = window.Mustache;
+import tpl from './emoji.html';
+import mustache from 'mustache';
+import $ from 'jquery';
+import './emoji.less';
+import {
+    componentShow
+} from 'utils';
 
 let tip;
 
@@ -25,7 +29,7 @@ function setTip(show, pos, img) {
     }).find('img').attr('src', img)
 }
 
-window.components[NAME] = function (parent, change = () => {}) {
+export function emoji(parent, change = () => {}) {
     let dom;
     let showStatus = false;
     let classics = [];
@@ -33,8 +37,11 @@ window.components[NAME] = function (parent, change = () => {}) {
         let index = parseInt(i / 12);
         classics[index] = classics[index] || [];
         let num = i + 1;
-        classics[index][i % 12] = num>10?num:'0'+num ;
+        classics[index][i % 12] = num >= 10 ? num : '0' + num;
+
     }
+
+
     const renderResult = mustache.render(tpl, {
         classics
     });
@@ -54,7 +61,7 @@ window.components[NAME] = function (parent, change = () => {}) {
 
     dom.on('click', '.emoji-item', function (event) {
         let id = $(this).children('.emoji-border').data('id');
-        change(genrateImgSrc(id),id);
+        change(genrateImgSrc(id), id);
     });
 
     tip = dom.find('.emoji-show-body');

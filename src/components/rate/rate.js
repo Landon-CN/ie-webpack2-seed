@@ -1,13 +1,15 @@
-const tpl = __inline('./rate.html');
-const NAME = 'rate';
-const mustache = window.Mustache;
+import tpl from './rate.html';
+import mustache from 'mustache';
+import $ from 'jquery';
+import './rate.less';
+
 
 /**
  * @param  {number} max=5 评分数量
  * @param  {function} change 评分变化
  * @param  {number} currentRate 初始评分
  */
-window.components[NAME] = function (parent,change = () => {},max = 5 , currentRate = 0) {
+export function rate(parent,change = () => {},max = 5 , currentRate = 0) {
     let maxRate = [];
     for (let i = 1; i <= max; i++) {
         maxRate[i - 1] = i;

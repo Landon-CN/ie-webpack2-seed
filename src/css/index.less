@@ -1,0 +1,94 @@
+@width: 1200px;
+@height: 90%;
+@min-height: 638px;
+
+html,
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    position: relative;
+    min-height: @min-height;
+    font-size: 14px;
+    font-family: 'Hiragino Sans GB', 'Microsoft YaHei', tahoma, arial, '\\5b8b\4f53', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    img {
+        border:none;
+    }
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+.wrapper {
+    background: #d8d8d8;
+    min-height: @min-height;
+    height: 100%;
+    position: relative;
+    
+    .bg-box {
+        position: absolute;
+        left:0;right:0;bottom:0;top:0;
+    }
+
+    .wrapper-bg {
+        min-height: @min-height;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.center {
+    width: @width;
+    height: @height;
+    // box-shadow: 2px 2px 5px 0 #dedede;
+    position: relative;
+    margin: 0px auto;
+    padding-top: 30px;
+}
+
+.pull-left {
+    float: left;
+}
+
+.inline-list {
+    list-style: none;
+    display: table;
+    /* 调教webkit*/
+    word-spacing: -1em;
+    >li {
+        word-spacing: 0;
+    }
+}
+
+.red {
+    color:red;
+}
+
+.clear {
+    clear: both;
+    height: 0;
+    line-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.btn {
+    cursor: pointer;
+    display: inline-block;
+    user-select: none;
+   
+
+    &:active {
+        box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+    }
+}
+
