@@ -1,3 +1,4 @@
+@import '../../../../css/variable.less';
 .vertical-body {
     position: fixed;
     left: 0;
@@ -19,8 +20,32 @@
 
 .line-body {
     // display: none;
+    .bg {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        left: 0;
+        top: 0;
+        background: #000;
+        opacity: 0.1;
+    }
 
     .line-box {
+        border: 1px solid @border-color;
+        background: #fff;
+        margin: 0 auto;
+        width: 400px;
+        height: 200px;
+        border-radius: 5px;
+        position: relative;
+        z-index: 999;
+    }
 
+    .btn-continue {
+        box-sizing:  border-box;
+        background: #f9444e;
+        color:#fff;
+        font-size: 12px;
+        padding: 5px 10px;
     }
 }

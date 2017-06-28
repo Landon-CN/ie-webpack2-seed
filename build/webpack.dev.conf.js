@@ -11,7 +11,8 @@ const package = require('../package.json');
 const vender = ['jquery', 'blueimp-file-upload', 'blueimp-file-upload/js/jquery.iframe-transport.js', 'mustache'];
 
 module.exports = {
-    devtool: '#inline-source-map',
+    // devtool: '#inline-source-map',
+    devtool: '#eval',
     entry: {
         index: [pathConf.indexPath],
         vendor: vender

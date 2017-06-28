@@ -99,10 +99,11 @@ export function emoji(parent, change = () => {}) {
  */
 function extractBase64(src) {
 
-  let result = src.match(/url\("?([\s\S]+)?"?\)/);
-  return result[1];
+  let result = src.match(/url\("([\s\S]+)?"\)|url\(([\s\S]+)?\)/);
+  return result[1] || result[2];
 
 }
+
 
 /**
  * 根据ID获取src路径
