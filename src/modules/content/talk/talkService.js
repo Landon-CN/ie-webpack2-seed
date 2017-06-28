@@ -9,10 +9,10 @@ import moment from 'moment';
        userB:"liwei", //用户2的userId，当msgType！=02时，必填。
        groupId:"12545",//群组ID，当msgType==02时，必填。
        pageSize:10,//页面大小
-       currentPage:1,//查询页数 
+       currentPage:1,//查询页数
        startDate:起始时间,
        endDate:结束时间
-   } 
+   }
 
    ONLINE("1","上线"),
    TALK("2","即时消息"),
@@ -88,5 +88,25 @@ export function getServiceList(data = {
         url: '/IncomingLine/selectShownBusiness.htm',
         contentType: 'application/json; charset=utf-8',
         data,
+    });
+}
+
+/**
+ * 消息回执
+ * @param {*} params
+ * "msgId": "asdf", //消息ID
+ * "toUserId": "10231233111", //对方用户ID
+ * "packetId": "322345" //包ID，用户PC端
+ */
+export function msgReceipt(params) {
+    return $.ajax({
+        type: 'post',
+        url: '/message/ack/handler.htm',
+        contentType: 'application/json; charset=utf-8',
+        data: {
+            msgId: params.msgId,
+            toUserId: params.toUserId,
+            packetId: params.packetId
+        }
     });
 }

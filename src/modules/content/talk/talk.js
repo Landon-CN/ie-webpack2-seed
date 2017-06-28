@@ -154,7 +154,7 @@ export default function (parent) {
             return;
         }
 
-        inputBox.html('').blur();
+        inputBox.html('');
         htmlText = $(`<div>${htmlText}</div>`);
         htmlText.find('.remove').remove()
         htmlText = htmlText.html();
@@ -321,23 +321,7 @@ export default function (parent) {
             }
 
             if (data.channel === 'hello') {
-                let resData = data.data;
-                let msgList = [];
-                for (let i = 0; i < resData.length; i++) {
-                    let item = resData[i];
-
-                    if (item.type == 5) {
-                        addAppraise();
-                        break;
-                    }
-
-                    msgList.push({
-                        service: true,
-                        message: parseContent(item.content),
-                        time: item.sendTime
-                    });
-                }
-                addMsg(msgList);
+                resolveMsg(data.data)
             }
 
             pollInterval();
@@ -359,27 +343,42 @@ export default function (parent) {
     function offlineMsgInteval() {
         setTimeout(function () {
             service.getOfflineMsg().then((result) => {
-                let data = result.data;
-                let msgList = [];
-                for (let i = 0; i < data.length; i++) {
-                    let item = data[i];
-
-                    if (item.type == 5) {
-                        addAppraise();
-                        break;
-                    }
-
-                    msgList.push({
-                        service: true,
-                        message: parseContent(item.content),
-                        time: item.sendTime
-                    });
-                }
-
-                addMsg(msgList);
+                resolveMsg(result.data);
                 offlineMsgInteval();
             });
         }, offlineTimeout);
+    }
+
+    /**
+     * 处理服务端返回结果
+     * @param {*} resData
+     */
+    function resolveMsg(resData) {
+        let msgList = [];
+        for (let i = 0; i < resData.length; i++) {
+            let item = resData[i];
+
+            if (item.type == 5) {
+                addAppraise();
+                break;
+            }
+
+            // 真人客服需要消息回执
+            if (item.type == 2 && false) {
+                service.msgReceipt({
+                    msgId: item.id || item.msgId,
+                    toUserId: globalVar.targetServiceId,
+                    packetId: item.packetId
+                })
+            }
+
+            msgList.push({
+                service: true,
+                message: parseContent(item.content),
+                time: item.sendTime
+            });
+        }
+        addMsg(msgList);
     }
 
     dom.on('mouseenter', '.rate-tool', () => {
