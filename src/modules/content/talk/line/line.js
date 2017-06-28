@@ -5,19 +5,25 @@ import tpl from './line.html';
 import mustache from 'mustache';
 import $ from 'jquery';
 import './line.less';
+import {modal} from 'components';
 
-let dom;
+
+let lineModal;
 
 function init() {
-    dom = $(mustache.render(tpl,{}));
+    let dom = $(mustache.render(tpl,{}));
+    dom.on('click','.btn-continu',(event)=>{
 
+    });
+
+    lineModal = modal(dom);
 }
 init();
 
 export function open() {
-    $('body').append(dom);
+    lineModal.open();
 }
 
-export function close(params) {
-
+export function close() {
+    lineModal.close();
 }

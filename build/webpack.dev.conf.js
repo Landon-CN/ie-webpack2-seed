@@ -12,7 +12,7 @@ const vender = ['jquery', 'blueimp-file-upload', 'blueimp-file-upload/js/jquery.
 
 module.exports = {
     // devtool: '#inline-source-map',
-    devtool: '#eval',
+    // devtool: '#eval',
     entry: {
         index: [pathConf.indexPath],
         vendor: vender

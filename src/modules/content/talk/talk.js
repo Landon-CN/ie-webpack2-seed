@@ -17,6 +17,8 @@ import globalVar from 'globalVar';
 import * as service from './talkService';
 import * as line from './line/line';
 
+// line.open();
+
 const botId = globalVar.botId;
 const msgText = {
     botHelloMsg: '亲爱的京东金融用户，金融小M智能机器人很高兴为您服务！',
@@ -83,7 +85,7 @@ export default function (parent) {
             date: Date.now()
         });
 
-        components.appraise(dom.find('.message-text'), undefined, submitRateCallback).open();
+        Appraise(dom.find('.message-text'), undefined, submitRateCallback).open();
     }
 
 
@@ -445,6 +447,45 @@ export default function (parent) {
     setTimeout(function () {
         resize();
     }, 0);
+
+    // 处理粘贴富文本
+    // inputBox.on('paste', (e) => {
+
+    //     let text;
+
+    //     if (window.clipboardData && clipboardData.setData) {
+    //         // IE
+    //         text = window.clipboardData.getData('text');
+    //     } else {
+    //         text = (e.originalEvent || e).clipboardData.getData('text/plain');
+    //     }
+    //     if (text) {
+    //         e.preventDefault();
+    //         if (document.body.createTextRange) {
+    //             if (document.selection) {
+    //                 textRange = document.selection.createRange();
+    //             } else if (window.getSelection) {
+    //                 sel = window.getSelection();
+    //                 var range = sel.getRangeAt(0);
+
+    //                 // 创建临时元素，使得TextRange可以移动到正确的位置
+    //                 var tempEl = document.createElement("span");
+    //                 tempEl.innerHTML = "&#FEFF;";
+    //                 range.deleteContents();
+    //                 range.insertNode(tempEl);
+    //                 textRange = document.body.createTextRange();
+    //                 textRange.moveToElementText(tempEl);
+    //                 tempEl.parentNode.removeChild(tempEl);
+    //             }
+    //             textRange.text = text;
+    //             textRange.collapse(false);
+    //             textRange.select();
+    //         } else {
+    //             // Chrome之类浏览器
+    //             document.execCommand("insertText", false, text);
+    //         }
+    //     }
+    // });
 
 }
 

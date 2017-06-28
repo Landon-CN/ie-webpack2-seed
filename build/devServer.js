@@ -34,7 +34,6 @@ var server = new webpackDevServer(compiler, {
     setup: function (app) {
         app.all('/', function (req, res, next) {
 
-            console.log('有人来了',req.header.host);
 
             fetch(`http://${targetUrl}:8090/index.htm`, {
                 redirect: 'manual',
