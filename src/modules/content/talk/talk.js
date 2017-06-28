@@ -132,12 +132,14 @@ export default function (parent) {
 
         if (keyType === 'one' && keyCode === 13 && event.ctrlKey) {
             addBr();
+            event.preventDefault();
         } else if (keyType === 'two' && keyCode === 13 && !event.ctrlKey) {
             addBr();
         }
 
         if (keyType === 'one' && keyCode === 13 && !event.ctrlKey) {
             submit();
+            event.preventDefault();
         } else if (keyType === 'two' && keyCode === 13 && event.ctrlKey) {
             submit();
         }
@@ -177,7 +179,7 @@ export default function (parent) {
     // 添加换行
     function addBr() {
         try {
-            document.execCommand("insertHTML", false, "<br/><br class=remove'/>")
+            document.execCommand("insertHTML", false, "<br /><br />")
         } catch (e) {
             if (document.selection) {
                 const range = document.selection.createRange();
