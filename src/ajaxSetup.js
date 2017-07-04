@@ -15,7 +15,8 @@ jquery.ajaxSetup({
     },
     error(xhr, text, error) {
 
-        if (xhr.readyState !== 0) {
+        // 轮训暂时报错不提示
+        if (xhr.readyState !== 0 && xhr.setting.url.indexOf('conn') == -1) {
             console.error(xhr.setting, xhr, text, error);
             dialog.open('错误:' + error + '  path:' + xhr.setting.url);
         }

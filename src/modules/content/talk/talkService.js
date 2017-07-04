@@ -69,8 +69,11 @@ export function getOfflineMsg(params) {
 // 发送消息
 export function sendMsg(targetUserId, data) {
     data.time = moment().format('YYYY-MM-DD HH:mm:SS');
-    data.type = globalVar.targetUserId === globalVar.botId ? 3 : 2;
+
+    data.type = globalVar.targetServiceId == globalVar.botId ? 3 : 2;
     data.dialogId = globalVar.dialogId;
+    console.log('发送消息==>',data.content);
+
     return $.ajax({
         url: `/message/onlinemsg/send.htm?targetUserId=${targetUserId}`,
         type: 'post',

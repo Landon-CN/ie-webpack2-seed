@@ -13,10 +13,10 @@ function init() {
         globalVar.webPersonalKey = result.data.webPersonalKey;
         globalVar.userId = result.data.userId;
     }).then(() => {
-        
+        domInit();
     });
 }
-domInit();
+
 function domInit() {
     header('.body-content');
     content('.body-content');

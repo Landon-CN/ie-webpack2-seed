@@ -15,15 +15,13 @@ import {
 } from '../../header/header';
 import globalVar from 'globalVar';
 import * as service from './talkService';
-import * as line from './line/line';
-
-// line.open();
+import line from './line/line';
 
 const botId = globalVar.botId;
 const msgText = {
     botHelloMsg: '亲爱的京东金融用户，金融小M智能机器人很高兴为您服务！',
     serviceError: '系统开小差啦~让小M在为您服务一会吧~',
-    reconnect: '京东金融客服很高兴为您服务',
+    reconnect: '上次聊到这里',
     serviceSuccess: '京东金融客服很高兴为您服务',
     isRate: '您已经评价过了'
 }
@@ -46,10 +44,12 @@ export default function (parent) {
     let keyType = 'one';
     scroll = dom.find('.scroll');
     let pageSize = 10;
-    let pageNo = 1;
-    let maxPageSize = Number.MAX_SAFE_INTEGER;
     historyDom = dom.find('.history-msg');
     let rateTooltip = dom.find('.rate-tooltip');
+
+    let lineModal = line(() => {
+
+    });
 
 
     let msgType = '3';
@@ -165,12 +165,16 @@ export default function (parent) {
 
         let content = stringifyContent(htmlText);
 
-        service.sendMsg(globalVar.targetServiceId, {
-            content
-        });
+        // 有消息才发送
+        if (content) {
+            service.sendMsg(globalVar.targetServiceId, {
+                content
+            });
+        }
+
         addMsg({
             user: true,
-            message: parseContent(content)
+            message: htmlText
         });
     }
 
@@ -211,23 +215,28 @@ export default function (parent) {
 
         groupClick = true;
         let id = $(this).data('id');
+        globalVar.groupId = id;
         $(this).find('.group-name').addClass('active');
         service.queryServiceId(id).then((result) => {
-            globalVar.targetServiceId = result.data.customerServiceId;
+            let customerServiceId = result.data.customerServiceId;
+            if (!customerServiceId) {
+                // 要排队
+                lineModal.change(result.data.queueLength);
+                return lineModal.open();
+            }
+
+            globalVar.targetServiceId = customerServiceId;
             globalVar.dialogId = result.data.dialogId;
 
             // 进线成功删除和机器人聊天记录
             dom.find('.message-row').remove();
+            inService(msgText.serviceSuccess);
 
-            onlineServiceShow(dom);
             addMsg([{
-                dialog: true,
-                message: msgText.serviceSuccess
-            }, {
                 service: true,
                 message: result.data.welcomeWords
             }]);
-            headerChangeToSerice();
+
         }, () => {
             groupClick = false;
             addMsg([{
@@ -239,13 +248,13 @@ export default function (parent) {
     // 点击状态
     let noMorePage = false,
         pageLoading = false,
-        backMsg = '';
+        backMsg = '',
+        historyTime = moment();
     dom.on('click', '.history-msg', getHistory);
 
     function getHistory() {
-
-        // 暂时不用
-        if (noMorePage || pageLoading || true) {
+        // debugger;
+        if (noMorePage || pageLoading) {
             return;
         }
         pageLoading = true;
@@ -254,28 +263,33 @@ export default function (parent) {
 
 
         let params = {
-            pageSize,
-            current: pageNo
+            expectSize: pageSize,
+            endDate: historyTime.format('YYYY-MM-DD HH:mm:SS')
         };
-        pageNo++;
-        service.historyMsg(params).then((result) => {
-            maxPageSize = Math.ceil(result.total / pageSize);
-            if (pageNo > maxPageSize) {
+
+        return service.historyMsg(params).then((result) => {
+            let data = result.data;
+            if (data.length < pageSize) {
                 noMorePage = true;
                 historyDom.text('没有更多了');
             } else {
                 historyDom.text(backMsg);
             }
 
-            let data = result.data;
+
 
             let userId = globalVar.userId;
             let msgList = [];
             for (let i = 0; i < data.length; i++) {
                 let item = data[i];
+                if (i === 0) {
+                    historyTime = moment(item.sendTime)
+                }
+
+
                 msgList.push({
-                    service: item.toUser != userId,
-                    user: item.toUser == userId,
+                    service: item.from != globalVar.userId,
+                    user: item.from == globalVar.userId,
                     message: parseContent(item.content),
                     time: item.sendTime
                 });
@@ -331,7 +345,6 @@ export default function (parent) {
             pollInterval();
 
 
-
         }, () => {
 
             // 错误，5s后尝试重新连接
@@ -347,7 +360,9 @@ export default function (parent) {
     function offlineMsgInteval() {
         setTimeout(function () {
             service.getOfflineMsg().then((result) => {
-                resolveMsg(result.data);
+                if (result.data.length > 0) {
+                    resolveMsg(result.data);
+                }
                 offlineMsgInteval();
             });
         }, offlineTimeout);
@@ -358,6 +373,8 @@ export default function (parent) {
      * @param {*} resData
      */
     function resolveMsg(resData) {
+        console.log('收到推送消息==>', resData);
+
         let msgList = [];
         for (let i = 0; i < resData.length; i++) {
             let item = resData[i];
@@ -367,8 +384,16 @@ export default function (parent) {
                 break;
             }
 
+            // 排队进线
+            if (item.type == 6) {
+                globalVar.targetServiceId = item.fromUserId;
+                lineModal.close();
+                inService(msgText.serviceSuccess);
+                break;
+            }
+
             // 真人客服需要消息回执
-            if (item.type == 2 && false) {
+            if (item.type == 2) {
                 service.msgReceipt({
                     msgId: item.id || item.msgId,
                     toUserId: globalVar.targetServiceId,
@@ -403,6 +428,19 @@ export default function (parent) {
         dom.find('.rate-tooltip').hide();
     });
 
+    // 进线
+    function inService(message) {
+        onlineClick = true; //防止再次进线
+        headerChangeToSerice();
+        onlineServiceShow(dom);
+
+        addMsg({
+            dialog: true,
+            message,
+            time: moment()
+        });
+    }
+
     function init() {
         offlineMsgInteval();
         pollInterval();
@@ -412,16 +450,17 @@ export default function (parent) {
             if (result.data.continuePreviousDialog) {
                 globalVar.targetServiceId = result.data.customerServiceId;
                 globalVar.dialogId = result.data.previousDialogId;
-                onlineClick = true; //防止再次进线
-                headerChangeToSerice();
-                onlineServiceShow(dom);
-                addMsg({
-                    dialog: true,
-                    message: msgText.reconnect,
-                    time: moment()
-                });
 
-                return getHistory();
+
+                return getHistory().then(() => {
+                    inService(msgText.reconnect);
+                });
+            }
+
+            if (result.data.queueLength > 0) {
+                globalVar.groupId = result.data.groupId;
+                lineModal.change(result.data.queueLength);
+                return lineModal.open();
             }
 
             // 添加默认对话
@@ -644,9 +683,13 @@ const onlineServiceClick = function () {
 // 提前缓存
 mustache.parse(msgTpl);
 let lastTime;
-let intervalTime = 6 * 60 * 1000; // 间隔5分钟以上才会显示时间条
+const intervalTime = 5 * 60 * 1000; // 间隔5分钟以上才会显示时间条
+const previousDayTime = [];
+const timeNow = moment();
 // append false 代表是历史记录
 function addMsg(data, append = true) {
+    console.log('添加消息==>', data);
+
     if (Array.isArray(data)) {
         data = {
             list: data
@@ -663,7 +706,24 @@ function addMsg(data, append = true) {
         let item = data.list[i];
         let time = moment(item.time || Date.now());
 
-        if (!lastTime || time - lastTime > intervalTime) {
+        // 历史记录，只展示最早的那个日期,按天算
+        if (time < timeNow) {
+            let day = time.format('YYYY-MM-DD');
+
+            // 已经有时间展示记录，跳过
+            if (previousDayTime.indexOf(day) > -1) {
+                continue;
+            }
+            previousDayTime.push(day);
+            data.list.splice(i, 0, {
+                timeShow: true,
+                message: time.format('YYYY-MM-DD HH:mm')
+            });
+            i++;
+        }
+
+        // 日期为当天
+        else if (!lastTime || time - lastTime > intervalTime) {
             lastTime = time;
             data.list.splice(i, 0, {
                 timeShow: true,

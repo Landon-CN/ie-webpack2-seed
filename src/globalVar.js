@@ -6,4 +6,5 @@ export default {
     isRate: false, // 是否评价过
     targetServiceId: null, // 对话方ID
     botId: 10001, // 机器人ID
+    groupId: null //分组ID,进线后使用
 }

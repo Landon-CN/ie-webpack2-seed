@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/");
 var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
-let targetUrl = '10.9.46.158';
+let targetUrl = '10.9.46.141';
 
 var server = new webpackDevServer(compiler, {
     // webpack-dev-server options
@@ -33,7 +33,6 @@ var server = new webpackDevServer(compiler, {
     disableHostCheck: true,
     setup: function (app) {
         app.all('/', function (req, res, next) {
-
 
             fetch(`http://${targetUrl}:8090/index.htm`, {
                 redirect: 'manual',
