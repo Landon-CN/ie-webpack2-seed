@@ -21,6 +21,7 @@ export default function init(queue, cb = () => {}) {
     let dom = $(mustache.render(tpl, {}));
     dom.on('click', '.btn-continue', (event) => {
         cb();
+        this.cancel();
         this.close();
     });
 
@@ -29,14 +30,26 @@ export default function init(queue, cb = () => {}) {
     this.queue = dom.find('.queue');
 }
 
+init.prototype.cancel = function () {
+    return $.ajax({
+        url: '/IncomingLine/cancelInQueue.htm',
+        contentType: 'application/json; charset=utf-8',
+        type: 'post',
+        data: {
+            initSource: '03',
+            groupId: globalVar.groupId
+        }
+    })
+}
+
 init.prototype.open = function () {
     this.lineModal.open();
     this.interval();
     return this;
 }
 init.prototype.close = function () {
-    // TODO: 取消定时器
     this.lineModal.close();
+    this.timer && clearTimeout(this.timer);
 }
 
 init.prototype.change = function (queue) {
@@ -45,7 +58,7 @@ init.prototype.change = function (queue) {
 }
 
 init.prototype.interval = function () {
-    setTimeout(() => {
+    this.timer = setTimeout(() => {
         queryQueueLenght().then((result) => {
             let data = result.data;
 

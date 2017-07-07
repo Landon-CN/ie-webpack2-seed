@@ -23,7 +23,8 @@ const msgText = {
     serviceError: '系统开小差啦~让小M在为您服务一会吧~',
     reconnect: '上次聊到这里',
     serviceSuccess: '京东金融客服很高兴为您服务',
-    isRate: '您已经评价过了'
+    isRate: '您已经评价过了',
+    close: '本次会话已结束'
 }
 
 const defaultText = '请描述您遇到的问题~';
@@ -166,10 +167,15 @@ export default function (parent) {
         let content = stringifyContent(htmlText);
 
         // 有消息才发送
-        if (content) {
+        if (content && !globalVar.isClose) {
             service.sendMsg(globalVar.targetServiceId, {
                 content
             });
+        }
+
+        if (globalVar.isClose) {
+            onlineClick = false;
+            onlineServiceClick();
         }
 
         addMsg({
@@ -185,7 +191,6 @@ export default function (parent) {
     // 添加换行
     function addBr() {
         try {
-            document.execCommand("insertHTML", false, "<br /><br />")
         } catch (e) {
             if (document.selection) {
                 const range = document.selection.createRange();
@@ -219,6 +224,7 @@ export default function (parent) {
         $(this).find('.group-name').addClass('active');
         service.queryServiceId(id).then((result) => {
             let customerServiceId = result.data.customerServiceId;
+            globalVar.isClose = false;
             if (!customerServiceId) {
                 // 要排队
                 lineModal.change(result.data.queueLength);
@@ -384,10 +390,27 @@ export default function (parent) {
                 break;
             }
 
-            // 排队进线
+            if (item.type == 7) {
+                // 结束会话
+                globalVar.targetServiceId = globalVar.botId;
+                globalVar.isRate = false;
+                globalVar.groupId = null;
+                globalVar.dialogId = null;
+                globalVar.isClose = true;
+                groupClick =false;
+                addMsg({
+                    dialog: true,
+                    message: msgText.close,
+                    time: moment()
+                });
+                break;
+            }
+
+            // 排队进线成功
             if (item.type == 6) {
                 globalVar.targetServiceId = item.fromUserId;
                 lineModal.close();
+                globalVar.isClose = false;
                 inService(msgText.serviceSuccess);
                 break;
             }
@@ -458,9 +481,9 @@ export default function (parent) {
             }
 
             if (result.data.queueLength > 0) {
-                globalVar.groupId = result.data.groupId;
+                globalVar.groupId = result.data.previousGroupId;
                 lineModal.change(result.data.queueLength);
-                return lineModal.open();
+                lineModal.open();
             }
 
             // 添加默认对话
@@ -688,7 +711,7 @@ const previousDayTime = [];
 const timeNow = moment();
 // append false 代表是历史记录
 function addMsg(data, append = true) {
-    console.log('添加消息==>', data);
+    // console.log('添加消息==>', data);
 
     if (Array.isArray(data)) {
         data = {
