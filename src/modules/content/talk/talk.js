@@ -94,6 +94,7 @@ export default function (parent) {
     dom.find('.fileinput-button').fileupload({
         pasteZone: inputBox,
         dropZone: $(document),
+        maxFileSize: '5000000',
         dataType: 'json',
         url: '/webpage/file/upload.htm',
         acceptFileTypes: imgReg,
