@@ -128,12 +128,14 @@ export default function (parent) {
     // 处理输入框快捷键
     dom.on('keydown', '.input-box', function (event) {
         const keyCode = event.keyCode;
+
         if (keyCode === 13) {
             event.preventDefault();
         }
 
 
         if (keyType === 'one' && keyCode === 13 && event.ctrlKey) {
+
             addBr();
             event.preventDefault();
         } else if (keyType === 'two' && keyCode === 13 && !event.ctrlKey) {
@@ -191,6 +193,7 @@ export default function (parent) {
     // 添加换行
     function addBr() {
         try {
+            document.execCommand("insertHTML", false, "<br /><br />")
         } catch (e) {
             if (document.selection) {
                 const range = document.selection.createRange();
@@ -397,7 +400,7 @@ export default function (parent) {
                 globalVar.groupId = null;
                 globalVar.dialogId = null;
                 globalVar.isClose = true;
-                groupClick =false;
+                groupClick = false;
                 addMsg({
                     dialog: true,
                     message: msgText.close,
