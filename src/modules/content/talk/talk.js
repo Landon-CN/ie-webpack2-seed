@@ -693,7 +693,7 @@ const onlineServiceClick = function () {
 
     service.getServiceList().then(function (result) {
         const data = result.data;
-        const list = data.showBusinessInfo;
+        const list = data.showBusinessInfo.sort((a, b) => a.groupId > b.groupId);
         addMsg({
             serviceGroup: true,
             serviceList: list,
