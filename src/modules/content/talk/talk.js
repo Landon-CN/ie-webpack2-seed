@@ -420,7 +420,7 @@ export default function (parent) {
             }
 
             // 真人客服需要消息回执
-            if (item.type == 2) {
+            if (item.type == 2 && item.isOffline === false) {
                 service.msgReceipt({
                     msgId: item.id || item.msgId,
                     toUserId: globalVar.targetServiceId,
