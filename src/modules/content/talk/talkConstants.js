@@ -8,3 +8,6 @@ export const CLOSE_MESSAGE = '本次会话已结束';
 
 // 输入框文本
 export const INPUT_PLACEHOLDER = '请描述您遇到的问题~';
+export const INPUT_PLACEHOLDER_CALSS = 'placeholder';
+
+export const OFFLINE_MSG_TIME = 25000; // 离线消息抓取间隔时间

@@ -12,7 +12,7 @@ const vender = ['jquery', 'blueimp-file-upload', 'blueimp-file-upload/js/jquery.
 
 module.exports = {
     // devtool: '#inline-source-map',
-    // devtool: '#eval',
+    // devtool: '#cheap-eval-source-map',
     entry: {
         index: [pathConf.indexPath],
         vendor: vender
@@ -24,9 +24,8 @@ module.exports = {
         }
     },
     output: {
-        filename: 'index.[hash].js',
+        filename: 'index.js',
         path: pathConf.distPath,
-        chunkFilename: '[name].[chunkhash].js',
         publicPath: '/'
     },
     module: {
@@ -60,12 +59,13 @@ module.exports = {
             inject: true,
             template: pathConf.publicPath,
         }),
-        new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[hash].js"),
+        new webpack.optimize.CommonsChunkPlugin("vendor", "libary.js"),
         new es3ifyPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
-        })
+        }),
+        // new webpack.HotModuleReplacementPlugin()
     ],
     postcss: function () {
         return [

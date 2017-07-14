@@ -3,14 +3,21 @@ const webpack = require('webpack');
 const webapckDevConfig = require('./webpack.dev.conf');
 const webapckProConfig = require('./webpack.pro.conf');
 const fetch = require('node-fetch');
-webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/");
+
+webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/", "webpack/hot/dev-server");
+webapckDevConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
-let targetUrl = '10.9.46.153';
+let targetUrl = '172.25.47.40';
+let messageUrl = '172.25.47.37';
+let local = true;
+if (local) {
+
+}
 
 var server = new webpackDevServer(compiler, {
     // webpack-dev-server options
-
+    hot: true,
     contentBase: webapckDevConfig.output.path,
     // Can also be an array, or: contentBase: "http://localhost/",
 
@@ -23,8 +30,8 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
-        '/jtalk/message/**': `http://${targetUrl}:8090`,
-        '/jtalk/**': `http://${targetUrl}:8000`
+        '/jtalk/message/**': `http://${messageUrl}:8090`,
+        '/jtalk/**': `http://${targetUrl}:8088`
     },
     // Set this if you want webpack-dev-server to delegate a single path to an arbitrary server.
     // Use "**" to proxy all paths to the specified server.
@@ -34,7 +41,7 @@ var server = new webpackDevServer(compiler, {
     setup: function (app) {
         app.all('/', function (req, res, next) {
 
-            fetch(`http://${targetUrl}:8090/index.htm`, {
+            fetch(`http://${messageUrl}:8090/index.htm`, {
                 redirect: 'manual',
                 headers: req.headers,
                 timeout: 2000

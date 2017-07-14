@@ -6,6 +6,32 @@ import * as utils from './talkUtils';
 import * as service from './talkService';
 import globalVar from 'globalVar';
 
+
+export default function (talk) {
+    Object.assign(talk.prototype, {
+        inputKeyListener,
+        submitListener,
+        submit,
+        inputBoxPlaceholderJudge,
+        inputBoxPlaceholder,
+        inputResize,
+        pasteListener,
+        closeWindowListener
+    });
+
+    const init = talk.prototype.init;
+    talk.prototype.init = function (...args) {
+        init.apply(this, args);
+        this.inputKeyListener();
+        this.submitListener();
+        this.inputBox = this.dom.find('.input-box');
+        this.inputBoxPlaceholder();
+        this.inputResize();
+        this.pasteListener();
+        this.closeWindowListener();
+    }
+}
+
 function submitListener() {
     this.dom.on('click', '.btn-submit', (event) => {
         this.submit();
@@ -61,11 +87,11 @@ function submit() {
     }
 
     if (globalVar.isClose) {
-        onlineClick = false;
-        onlineServiceClick();
+        this.onlineClick = false;
+        this.onlineServiceClick();
     }
 
-    addMsg({
+    this.addMsg({
         user: true,
         message: htmlText
     });
@@ -83,18 +109,103 @@ function addBr() {
     }
 }
 
-export default function (talk) {
-    Object.assign(talk.prototype, {
-        inputKeyListener,
-        submitListener,
-        submit,
-    });
-
-    const init = talk.prototype.init;
-    talk.prototype.init = function () {
-        init.call(this);
-        this.inputKeyListener();
-        this.submitListener();
-        this.inputBox = this.dom.find('.input-box');
+const placeholderClassName = Constants.INPUT_PLACEHOLDER_CALSS;
+const defaultText = Constants.INPUT_PLACEHOLDER;
+// 判断是否placeholder需要删除
+function inputBoxPlaceholderJudge() {
+    let inputBox = this.inputBox;
+    if (inputBox.html() == defaultText) {
+        inputBox.removeClass(placeholderClassName);
+        inputBox.text('');
     }
+}
+
+/**
+ * 输入框的placehloder
+ * @param {*} dom
+ */
+function inputBoxPlaceholder() {
+    let dom = this.dom;
+    let inputBox = this.inputBox;
+    inputBox.addClass(placeholderClassName);
+    inputBox.text(defaultText);
+    inputBox.on('focus', () => {
+
+        this.inputBoxPlaceholderJudge(inputBox);
+        dom.find('.rate-tooltip').hide();
+    });
+    inputBox.on('blur', () => {
+        if (inputBox.html() == '') {
+            inputBox.addClass(placeholderClassName);
+            inputBox.text(defaultText);
+        }
+    });
+}
+
+
+/**
+ * 动态调整输入框高度
+ */
+function inputResize() {
+
+    const resize = () => {
+        let height = $('.talk-editor').height();
+
+        this.inputBox.outerHeight(height - 70 - 10);
+    }
+
+    $(window).on('resize', resize);
+    setTimeout(function () {
+        resize();
+    }, 0);
+}
+
+
+function pasteListener() {
+    // 处理粘贴富文本
+    this.inputBox.on('paste', (e) => {
+
+        let text;
+
+        if (window.clipboardData && clipboardData.setData) {
+            // IE
+            text = window.clipboardData.getData('text');
+        } else {
+            text = (e.originalEvent || e).clipboardData.getData('text/plain');
+        }
+        if (text) {
+            e.preventDefault();
+            if (document.body.createTextRange) {
+                if (document.selection) {
+                    textRange = document.selection.createRange();
+                } else if (window.getSelection) {
+                    sel = window.getSelection();
+                    var range = sel.getRangeAt(0);
+
+                    // 创建临时元素，使得TextRange可以移动到正确的位置
+                    var tempEl = document.createElement("span");
+                    tempEl.innerHTML = "&#FEFF;";
+                    range.deleteContents();
+                    range.insertNode(tempEl);
+                    textRange = document.body.createTextRange();
+                    textRange.moveToElementText(tempEl);
+                    tempEl.parentNode.removeChild(tempEl);
+                }
+                textRange.text = text;
+                textRange.collapse(false);
+                textRange.select();
+            } else {
+                // Chrome之类浏览器
+                document.execCommand("insertText", false, text);
+            }
+        }
+    });
+}
+
+
+function closeWindowListener() {
+    // 结束对话
+    this.dom.on('click', '.btn-close', function name() {
+        window.location.href = "about:blank";
+    });
 }

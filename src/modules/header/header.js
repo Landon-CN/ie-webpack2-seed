@@ -2,14 +2,14 @@ import tpl from './header.html';
 import mustache from 'mustache';
 import $ from 'jquery';
 import './header.less';
-import {onlineServiceClick} from '../content/talk/talk';
+import talk from '../content/talk/talk';
 
 let dom;
 export default function (parent) {
     dom = $(mustache.render(tpl, {}));
 
     dom.on('click', '.online', function (event) {
-        onlineServiceClick();
+        talk.onlineServiceClick();
     });
 
     $(parent).append(dom);

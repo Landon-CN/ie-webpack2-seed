@@ -6,7 +6,9 @@ const path = require('path');
 const webpack = require('webpack');
 
 const proConf = merge(devConfig, {
-    output:{
+    devtool: '#hidden-source-map',
+    output: {
+        filename: 'index.[chunkhash].js',
         publicPath: '/dist/'
     },
     devtool: false,
@@ -23,9 +25,12 @@ const proConf = merge(devConfig, {
                 screw_ie8: false
             },
             exclude: /\.less$/i
-        })
+        }),
+        new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[chunkhash].js"),
     ]
 });
+
+
 
 if (process.env.NODE_ENV != 'pre') {
     proConf.plugins.push(new CleanWebpackPlugin(path.resolve(__dirname, pathConf.distPath), {

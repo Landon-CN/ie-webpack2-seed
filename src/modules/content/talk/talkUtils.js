@@ -1,5 +1,7 @@
 import globalVar from 'globalVar';
-
+import {
+    getImgSrcById
+} from 'components/emoji/emoji';
 // 消息体解析
 export function parseContent(xml) {
 

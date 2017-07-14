@@ -6,14 +6,13 @@ import talk from './talk/talk';
 import notice from './notice/notice';
 
 
-
 export default function(parent) {
     const dom = $(mustache.render(tpl,{}));
 
-    // 加载公告栏    
+    // 加载公告栏
     notice(dom.find('.right'));
     // 加载聊天框
-    talk(dom.find('.left'));
+    talk.init(dom.find('.left'));
 
     $(parent).append(dom);
 

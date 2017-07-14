@@ -10,7 +10,7 @@ import {
     componentShow
 } from 'utils';
 import globalVar from 'globalVar';
-import {addMsg} from '../talk';
+import talk from '../talk';
 
 const rateText = ['非常不满意', '不满意', '一般', '满意', '非常满意'];
 const reasonList = [{
@@ -156,18 +156,18 @@ function sendRate(params) {
         }
     }).then((result) => {
         if (result.data == '01') {
-            addMsg({
+            talk.addMsg({
                 dialog: true,
                 message: '评价成功'
             });
         } else if (result.data == '02') {
             // 重复评价
-            addMsg({
+            talk.addMsg({
                 dialog: true,
                 message: '请勿重复评价'
             });
         } else {
-            addMsg({
+            talk.addMsg({
                 dialog: true,
                 message: '系统开小差啦~请稍后再试'
             });

@@ -11,11 +11,11 @@ import {
 import globalVar from 'globalVar';
 
 
-export default function init(queue, cb = () => {}) {
+export default function init(queueLength, cb = () => {}) {
 
 
     if (!(this instanceof init)) {
-        return new init(queue, cb);
+        return new init(queueLength, cb);
     }
 
     let dom = $(mustache.render(tpl, {}));
@@ -28,6 +28,7 @@ export default function init(queue, cb = () => {}) {
     this.lineModal = modal(dom);
     this.dom = dom;
     this.queue = dom.find('.queue');
+    this.change(queueLength);
 }
 
 init.prototype.cancel = function () {
