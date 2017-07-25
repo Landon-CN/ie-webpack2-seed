@@ -14,4 +14,3 @@ export const componentShow = (function () {
         return id;
     }
 })();
-

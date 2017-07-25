@@ -1,4 +1,5 @@
 import jquery from 'jquery';
+
 import {
     dialog
 } from './components';
@@ -10,7 +11,7 @@ jquery.ajaxSetup({
     processData: false,
     success(result, status, xhr) {
 
-        if (result.resultCode !== '00000' && xhr.setting.url.indexOf('/message/conn?type=conn&time=') === -1) {
+        if (result.resultCode !== '00000' && !!xhr.setting.errorIgnore === false) {
             dialog.open('错误:' + JSON.stringify(result) + '  path:' + xhr.setting.url);
             throw new Error(result.msg);
         }
@@ -28,16 +29,10 @@ jquery.ajaxSetup({
         xhr.setting = setting;
         setting.url = '/jtalk' + setting.url;
 
-        setting.contentType = setting.contentType === false ? setting.contentType : 'application/json; charset=utf-8';
-
-        if (setting.contentType && setting.contentType.indexOf('json') > -1) {
+        if (setting.contentType && setting.contentType.indexOf('application/json') > -1) {
             let data = setting.data || {};
             setting.data = JSON.stringify(data);
         }
-
-
-
-        xhr.setRequestHeader('web_personal_key', window.webPersonalKey);
 
     }
 });

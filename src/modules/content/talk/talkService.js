@@ -42,7 +42,7 @@ export function queryServiceId(groupId) {
         data: {
             groupId,
             initSource: '03'
-        }
+        },
     });
 }
 
@@ -51,8 +51,10 @@ export function pollMsg() {
     return $.ajax({
         type: 'post',
         timeout: 60000,
-        contentType: 'application/json; charset=utf-8',
-        url: `/message/conn?type=conn&time=${Date.now()}`
+        contentType: 'application/x-www-form-urlencoded; charset=utf-8',
+        url: `/message/conn?type=conn&time=${Date.now()}`,
+        errorIgnore: true,
+        data: `jtalkUserId=${globalVar.userId}&webUniqueKey=${globalVar.uuid}`
     });
 }
 
@@ -70,9 +72,9 @@ export function getOfflineMsg(params) {
 export function sendMsg(targetUserId, data) {
     data.time = moment().format('YYYY-MM-DD HH:mm:SS');
 
-    data.type = globalVar.targetServiceId == globalVar.botId ? 3 : 2;
+    data.type = globalVar.msgType;
     data.dialogId = globalVar.dialogId;
-    console.log('发送消息==>',data.content);
+    console.log('发送消息==>', data.content);
 
     return $.ajax({
         url: `/message/onlinemsg/send.htm?targetUserId=${targetUserId}`,

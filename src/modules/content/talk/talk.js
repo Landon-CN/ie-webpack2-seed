@@ -19,6 +19,7 @@ import moment from 'moment';
 globalVar.targetServiceId = globalVar.botId;
 
 talk.prototype.init = function (parent) {
+
     $(parent).append(this.dom);
 }
 
@@ -37,7 +38,6 @@ function talk() {
         this.cancelLine();
     });
     this.onlineClick = false;
-    this.judgePrviousService();
 
 }
 
@@ -84,6 +84,7 @@ talk.prototype.inService = function inService(message, del = false) {
     });
 };
 
+// 废弃
 talk.prototype.judgePrviousService = function () {
     // 上次处于进线状态
     service.getServiceList().then((result) => {
@@ -91,7 +92,7 @@ talk.prototype.judgePrviousService = function () {
         if (result.data.continuePreviousDialog) {
             globalVar.targetServiceId = result.data.customerServiceId;
             globalVar.dialogId = result.data.previousDialogId;
-
+            globalVar.isRate = result.data.previousDialogAppraise; // 会话是否已经评价过
             return this.getHistory().then(() => {
                 this.inService(Constants.RECONNECT_MESSAGE);
             });
@@ -101,6 +102,8 @@ talk.prototype.judgePrviousService = function () {
             globalVar.groupId = result.data.previousGroupId;
             this.lineModal.change(result.data.queueLength).open();
         }
+
+
 
         // 添加默认对话
         setTimeout(() => {

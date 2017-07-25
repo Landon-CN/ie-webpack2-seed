@@ -5,10 +5,10 @@ import './modal.less';
 
 export default function (dom) {
     let modal = $(mustache.render(tpl, {}));
-    modal.find('.vertical-center').append(dom);
+    modal.find('.vertical-center>div').append(dom);
 
     return {
-        open(){
+        open() {
             $('body').append(modal);
         },
         close() {

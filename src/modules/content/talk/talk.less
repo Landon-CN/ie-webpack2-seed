@@ -61,10 +61,15 @@
                         border-right-color: #fff;
                     }
                 }
-                .service-group {
+                .service-group,
+                .answers-group {
                     list-style: none;
                     .help-icon {
                         vertical-align: middle;
+                        background-image: url('./imgs/help.png');
+                        display: inline-block;
+                        height: 16px;
+                        width: 16px;
                     }
                     .group-name {
                         vertical-align: middle;
@@ -88,14 +93,6 @@
                     color: #fff;
                     float: right;
                     border-color: #27bafc;
-                    .service-group {
-                        .help-icon {
-                            background-image: url('./imgs/help.png');
-                            display: inline-block;
-                            height: 16px;
-                            width: 16px;
-                        }
-                    }
                 }
                 .head-portrait {
                     float: right;
@@ -136,6 +133,19 @@
                         margin-left: 20px;
                         display: inline-block;
                     }
+                }
+            }
+            &.bot {
+                .bot-appraise {
+                    display: none;
+                }
+                &.bot-plain-text {
+                    .bot-appraise {
+                        // display: inline-block;
+                    }
+                }
+                .change-other {
+                    text-align: right;
                 }
             }
         }
@@ -328,6 +338,23 @@
                 }
             }
         }
+    }
+}
+
+.mutipage-body {
+    width: 300px;
+    height: 200px;
+    background: #fff;
+    margin: 0 auto;
+    .title {
+        text-align: center;
+        height: 150xp;
+        line-height: 150px;
+    }
+    .btn {
+        background: #f3565f;
+        color: #fff;
+        padding: 5px 20px;
     }
 }
 

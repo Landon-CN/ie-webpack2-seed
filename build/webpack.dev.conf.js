@@ -51,6 +51,10 @@ module.exports = {
             {
                 test: /\.html$/,
                 loader: 'html-loader'
+            },
+            {
+                test: /\jquery-form/,
+                loader: "imports?define=>false"
             }
         ]
     },
