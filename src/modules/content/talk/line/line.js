@@ -38,14 +38,16 @@ init.prototype.cancel = function () {
         type: 'post',
         data: {
             initSource: '03',
-            groupId: globalVar.groupId
+            groupId: globalVar.groupId,
+            previousDialogId: globalVar.dialogId
         }
     })
 }
 
 init.prototype.open = function () {
     this.lineModal.open();
-    this.interval();
+    // 立即去取一次排队数据
+    this.interval(0);
     return this;
 }
 init.prototype.close = function () {
@@ -58,15 +60,17 @@ init.prototype.change = function (queue) {
     return this;
 }
 
-init.prototype.interval = function () {
+init.prototype.interval = function (timeout = 30000) {
     this.timer = setTimeout(() => {
         queryQueueLenght().then((result) => {
             let data = result.data;
+            if (data.length > 0) {
+                this.change(data.length);
+                this.interval();
+            }
 
-            this.change(data.length);
-            this.interval();
         });
-    }, 30000);
+    }, timeout);
 
 }
 

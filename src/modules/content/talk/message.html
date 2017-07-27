@@ -70,7 +70,7 @@
     </div>
     <div class="message-text" data-id="{{msgId}}}">
         <span class="triangle"></span>
-        <span class="triangle border"></span> {{{message}}}
+        <span class="triangle border"></span> {{{answer}}}
     </div>
     <div class="bot-appraise">
         1
@@ -86,7 +86,7 @@
         <span class="triangle"></span>
         <span class="triangle border"></span>
         <div class="title">
-            {{{message}}}
+            {{{answer}}}
         </div>
         {{#change}}
         <div class="change-other">
@@ -95,7 +95,7 @@
         {{/change}}
         <ul class="answers-group">
             {{#list}}
-            <li data-id="{{id}}">
+            <li data-item="{{id}}" data-id="{{msgId}}" data-type="{{msgType}}" data-code="{{scene}}">
                 <span class="help-icon"></span>
                 <a href="javascript:;" class="group-name">{{title}}</a>
             </li>

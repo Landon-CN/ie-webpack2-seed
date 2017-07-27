@@ -2,6 +2,8 @@ import globalVar from 'globalVar';
 import {
     getImgSrcById
 } from 'components/emoji/emoji';
+import * as Constants from './talkConstants';
+
 // 消息体解析
 export function parseContent(xml) {
 
@@ -39,7 +41,7 @@ export function parseContent(xml) {
 export function stringifyContent(html) {
     let htmlStr = '';
 
-    if (globalVar.targetServiceId === globalVar.botId) {
+    if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
         return $(`<body>${html}</body>`).text();
     }
 

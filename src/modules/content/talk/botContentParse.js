@@ -15,6 +15,13 @@ export default function contentParse(content) {
         return false;
     }
 
+    if(content.result === false){
+        console.log('机器人接口调用失败',content);
+        return false;
+    }
+
+
+    content = content.data;
     let answers;
     try {
         answers = JSON.parse(content.answerModel.answers);
@@ -30,15 +37,17 @@ export default function contentParse(content) {
                 answer: answers.answer,
                 title: answers.title,
                 msgId: content.msgId,
-                more: []
+                list: [],
+                scene: answers.scene
             }
-        case 'render_fold_text':
+        case 'render_fold_answer':
             return {
                 type: Constants.BOT_MESSAGE_FLOD,
                 answer: answers.answer,
                 title: answers.title,
                 msgId: content.msgId,
-                more: answers.more
+                list: answers.more,
+                scene: answers.scene
             }
         case 'render_user_suggestion':
             return {
@@ -46,7 +55,8 @@ export default function contentParse(content) {
                 answer: answers.answer,
                 title: answers.title,
                 msgId: content.msgId,
-                more: answers.more
+                list: answers.more,
+                scene: answers.scene
             }
         default:
             return false;

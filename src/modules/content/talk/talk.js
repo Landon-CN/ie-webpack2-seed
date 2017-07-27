@@ -19,7 +19,9 @@ import moment from 'moment';
 globalVar.targetServiceId = globalVar.botId;
 
 talk.prototype.init = function (parent) {
-
+    if (globalVar.queueLength > 0) {
+        this.lineModal.change(globalVar.queueLength).open();
+    }
     $(parent).append(this.dom);
 }
 
@@ -39,6 +41,7 @@ function talk() {
     });
     this.onlineClick = false;
 
+
 }
 
 
@@ -52,16 +55,25 @@ talk.prototype.onlineServiceClick = function () {
         return;
     }
     this.onlineClick = true;
-
+    const errorHandler = () => {
+        console.log('获取分组失败');
+        this.onlineClick = false;
+    }
     service.getServiceList().then((result) => {
+
+        if(result.resultCode !== Constants.AJAX_SUCCESS_CODE){
+            return errorHandler();
+        }
+
         const data = result.data;
-        const list = data.showBusinessInfo.sort((a, b) => a.groupId > b.groupId);
+
+        const list = data.showBusinessInfo.sort((a, b) => a.groupId - b.groupId);
         this.addMsg({
             serviceGroup: true,
             serviceList: list,
             time: moment()
         });
-    });
+    },errorHandler);
 
 };
 

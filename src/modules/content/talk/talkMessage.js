@@ -11,6 +11,7 @@ import globalVar from 'globalVar';
 import {
     modal
 } from 'components';
+import botParse from './botContentParse';
 
 // 最多显示多少个列表
 const BOT_LIST_MAX_SHOW = 3;
@@ -46,41 +47,19 @@ export default function (talk) {
         this.botAnswersListener();
         this.botMsgList = {};
 
-        this.addMsg({
-            service: true,
-            message: globalVar.welcomeWords,
-            time: moment()
-        });
-        /* this.addMsg({
-            bot: true,
-            type: Constants.BOT_MESSAGE_TEXT,
-            message: '<p><span style=\"font-size: 16px; font-family: 微软雅黑;\">这是置顶的第一个问题</span><br/></p>',
-            msgId: "ec169131-5aa4-4234-9446-cdd0a9294c20"
-        });
 
-        this.addMsg({
-            bot: true,
-            type: Constants.BOT_MESSAGE_FLOD,
-            message: "<span style=\"font-family:微软雅黑;font-size:14px;\">有，若任务失败，请确保照片清晰、网络环境良好再次尝试，每天最多可尝试3次。同时提示您不要频繁操作，一个月最多尝试激活两次。</span>",
-            msgId: "ec169131-5aa4-4234-9446-cdd0a9294c20",
-            list: [{
-                "id": "165111750",
-                "score": 0,
-                "title": "白条可以分几期付款"
-            }, {
-                "id": "165111691",
-                "score": 0,
-                "title": "激活白条时，运营商密码错误怎么"
-            }, {
-                "id": "165111597",
-                "score": 0,
-                "title": "白条激活失败怎么"
-            }, {
-                "id": "165111907",
-                "score": 0,
-                "title": "白条联名卡如何申请"
-            }]
-        }); */
+        // 重新进线
+        if (globalVar.msgType === Constants.MSG_TYPE_SERVICE) {
+            this.getHistory().then(() => {
+                this.inService(Constants.RECONNECT_MESSAGE);
+            });
+        } else {
+            this.addMsg({
+                service: true,
+                message: globalVar.welcomeWords,
+                time: moment()
+            });
+        }
 
     }
 }
@@ -163,6 +142,7 @@ function resolveBotMsg(context, msg) {
     switch (msg.type) {
         case Constants.BOT_MESSAGE_TEXT:
             msg.botPlainText = true;
+            msg.msgType = Constants.INTERACTION_TEXT;
             break;
         case Constants.BOT_MESSAGE_SUGGESTION:
         case Constants.BOT_MESSAGE_FLOD:
@@ -177,6 +157,12 @@ function resolveBotMsg(context, msg) {
                 msg.change = true;
                 msg.index = 0;
             }
+            if (Constants.BOT_MESSAGE_FLOD === msg.type) {
+                msg.msgType = Constants.INTERACTION_NORMAL_SELECT;
+            } else {
+                msg.msgType = Constants.INTERACTION_FEEDBACK_SELECT;
+            }
+
         default:
             break;
     }
@@ -186,7 +172,7 @@ function resolveBotMsg(context, msg) {
 
 // 列表模板
 const listTpl = `{{#list}}
-            <li data-id="{{id}}">
+            <li data-item="{{id}}" data-id="{{msgId}}" data-type="{{msgType}}" data-code="{{scene}}">
                 <span class="help-icon"></span>
                 <a href="javascript:;" class="group-name">{{title}}</a>
             </li>
@@ -204,10 +190,8 @@ function botMsgChangeListener() {
             msg.index = 0;
         }
         const nextList = msg.originList.slice(msg.index, msg.index + BOT_LIST_MAX_SHOW);
-
-        let $list = mustache.render(listTpl, {
-            list: nextList
-        });
+        msg.list = nextList;
+        let $list = mustache.render(listTpl, msg);
 
 
         $item.parent().next('.answers-group').html($list);
@@ -226,13 +210,22 @@ function botAnswersListener() {
         event.preventDefault();
         const $dom = $(this);
         const msgId = $dom.data('id');
+        const sceneItem = $dom.data('item');
+        const sceneCode = $dom.data('code');
         const message = $dom.text();
+        const type = $dom.data('type');
 
         that.addMsg({
             user: true,
             message
         });
-        // TODO: 添加ajax消息发送
+
+        service.sendMsg(globalVar.targetServiceId, {}, {
+            type,
+            sceneCode,
+            sceneItem,
+            msgId
+        });
     });
 }
 
@@ -271,7 +264,17 @@ function getHistory() {
         endDate: historyTime.format('YYYY-MM-DD HH:mm:SS')
     };
 
+    const errorHandler = () => {
+        pageLoading = false;
+        historyDom.text(backMsg)
+    }
+
     return service.historyMsg(params).then((result) => {
+
+        if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
+            return errorHandler();
+        }
+
         let data = result.data;
         if (data.length < pageSize) {
             noMorePage = true;
@@ -290,29 +293,70 @@ function getHistory() {
                 historyTime = moment(item.sendTime)
             }
 
-            msgList.push({
-                service: item.from != globalVar.userId,
-                user: item.from == globalVar.userId,
-                message: utils.parseContent(item.content),
-                time: item.sendTime
-            });
+            switch (item.msgType) {
+                case Constants.HISTORY_OLD_BOT_ASK:
+                case Constants.HISTORY_OLD_BOT_REPLY:
+                    msgList.push({
+                        service: item.from != globalVar.userId,
+                        user: item.from == globalVar.userId,
+                        message: item.content,
+                        time: item.sendTime
+                    });
+                    break;
+                case Constants.HISTORY_SERVICE:
+                    msgList.push({
+                        service: item.from != globalVar.userId,
+                        user: item.from == globalVar.userId,
+                        message: utils.parseContent(item.content),
+                        time: item.sendTime
+                    });
+                    break;
+                case Constants.HISTORY_NEW_BOT_ASK:
+                    let content;
+                    try {
+                        content = JSON.parse(item.content);
+                    } catch (e) {
+                        console.log('历史消息解析:HISTORY_NEW_BOT_ASK', e);
+                        break;
+                    }
+                    msgList.push({
+                        service: item.from != globalVar.userId,
+                        user: item.from == globalVar.userId,
+                        message: content.question,
+                        time: item.sendTime
+                    });
+                    break;
+                case Constants.HISTORY_NEW_BOT_REPLY:
+                    let botMsg = botParse(item.content);
+                    if (botMsg) {
+                        botMsg.bot = true;
+                        msgList.push(botMsg);
+                    }
+                    break;
+                default:
+                    console.log('历史消息解析:未知类型', item.msgType);
+
+                    break;
+            }
+
+
         }
 
         this.addMsg(msgList, false);
         pageLoading = false;
-    }, function (event) {
-        pageLoading = false;
-        historyDom.text(backMsg)
-    });
+    }, errorHandler);
 }
 
 
 function offlineMsgInteval() {
     this.offlineTimer = setTimeout(() => {
         service.getOfflineMsg().then((result) => {
-            if (result.data.length > 0) {
-                this.resolveMsg(result.data);
+            if (result.resultCode === Constants.AJAX_SUCCESS_CODE) {
+                if (result.data.length > 0) {
+                    this.resolveMsg(result.data);
+                }
             }
+
             this.offlineMsgInteval();
         });
     }, Constants.OFFLINE_MSG_TIME);
@@ -341,8 +385,10 @@ function resolveMsg(resData) {
             globalVar.groupId = null;
             globalVar.dialogId = null;
             globalVar.isClose = true;
-            this.groupClick = false;
-            this.addMsg({
+            service.inlineInit().then(() => {
+                this.groupClick = false;
+            });
+            msgList.push({
                 dialog: true,
                 message: Constants.CLOSE_MESSAGE_TEXT,
                 time: moment()
@@ -353,6 +399,8 @@ function resolveMsg(resData) {
         // 排队进线成功
         if (item.type == Constants.INLINE_MESSAGE) {
             globalVar.targetServiceId = item.fromUserId;
+            globalVar.dialogId = item.dialogId;
+            globalVar.msgType = Constants.MSG_TYPE_SERVICE;
             this.lineModal.close();
             globalVar.isClose = false;
             this.inService(Constants.INSERVICE_EMSSAGE);
@@ -368,12 +416,62 @@ function resolveMsg(resData) {
             });
         }
 
-        msgList.push({
-            service: true,
-            message: utils.parseContent(item.content),
-            time: item.sendTime
-        });
+        // 转接成功
+        if (item.type == Constants.DIALOG_TRANSFER_SUCCESS) {
+
+            let nextServiceInfo;
+            try {
+                nextServiceInfo = JSON.parse(item.content);
+            } catch (e) {
+                console.error('解析转接消息失败');
+                break;
+            }
+
+            globalVar.dialogId = nextServiceInfo.afterJkDialogId;
+            globalVar.targetServiceId = nextServiceInfo.afterCustomerServiceUserId;
+            globalVar.groupId = nextServiceInfo.afterBusinessLineId;
+            msgList.push({
+                dialog: true,
+                message: Constants.TRANSFER_MESSAGE_SUCCESS,
+                time: moment()
+            });
+            break;
+        }
+
+        // 转接排队
+        if (item.type == Constants.DIALOG_TRANSFER_QUEUE) {
+            this.lineModal.open();
+            break;
+        }
+
+        // 机器人v2
+        if (item.type == Constants.ROBOT_MESSAGE_V2) {
+            let botMsg = botParse(item.content);
+            if (botMsg) {
+                botMsg.bot = true;
+                msgList.push(botMsg);
+            }
+
+            break;
+        }
+
+        if (item.type == Constants.ROBOT_MESSAGE || item.type == Constants.INSTANT_MESSAGE) {
+            // 旧机器人
+            msgList.push({
+                service: true,
+                message: utils.parseContent(item.content),
+                time: item.sendTime
+            });
+            break;
+        }
+
+        console.error('消息类型未知:' + item.type);
+
+
+
     }
+
+
     this.addMsg(msgList);
 }
 
@@ -381,6 +479,14 @@ function resolveMsg(resData) {
 // 建立长连接
 function pollInterval() {
     console.log('尝试建立长连接');
+
+    const errorHandler = (error) => {
+        // 错误，5s后尝试重新连接
+        console.log('5s后重新尝试建立长连接', error);
+        setTimeout(() => {
+            this.pollInterval();
+        }, 5000);
+    }
 
     let t = service.pollMsg().then((result) => {
 
@@ -396,25 +502,23 @@ function pollInterval() {
             if (data.channel === 'hello') {
                 this.resolveMsg(data.data)
             }
+            return this.pollInterval();
         }
 
         // 打开多个网页
-        if (result.resultCode === 'JTK10000018') {
+        else if (result.resultCode === 'JTK10000018') {
 
             console.info('多窗口登录，取消消息获取');
             this.offlineTimer && clearTimeout(this.offlineTimer);
             return this.mutiPageModal();
+        } else {
+            errorHandler(result)
         }
-        this.pollInterval();
 
 
-    }, (error) => {
-        // 错误，5s后尝试重新连接
-        console.log('5s后重新尝试建立长连接', error);
-        setTimeout(() => {
-            this.pollInterval();
-        }, 5000);
-    });
+
+    }, errorHandler);
+
 
 }
 
@@ -434,7 +538,15 @@ function serviceGroupListener(params) {
     // 选择问题分组
     // 有且只能点一次
     this.groupClick = false;
+    const errorHandler = () => {
+        console.log('进线失败');
 
+        this.groupClick = false;
+        this.addMsg([{
+            dialog: true,
+            message: Constants.ERROR_MESSAGE
+        }]);
+    }
     this.dom.on('click', '.service-group > li', (event) => {
         if (this.groupClick) {
             return;
@@ -445,6 +557,11 @@ function serviceGroupListener(params) {
         globalVar.groupId = id;
         item.find('.group-name').addClass('active');
         service.queryServiceId(id).then((result) => {
+
+            if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
+                return errorHandler();
+            }
+
             let customerServiceId = result.data.customerServiceId;
             globalVar.isClose = false;
             if (!customerServiceId) {
@@ -469,13 +586,7 @@ function serviceGroupListener(params) {
                 message: result.data.welcomeWords
             }]);
 
-        }, () => {
-            this.groupClick = false;
-            this.addMsg([{
-                dialog: true,
-                message: Constants.ERROR_MESSAGE
-            }]);
-        });
+        }, errorHandler);
     });
 
 }

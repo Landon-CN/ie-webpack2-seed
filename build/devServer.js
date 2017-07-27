@@ -8,9 +8,10 @@ webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost
 webapckDevConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
-let targetUrl = '10.9.46.147';
-let messageUrl = '172.25.47.37';
-// let messageUrl = '10.9.46.133';
+// let targetUrl = '10.9.46.147'; // server
+let targetUrl = '10.9.46.145';
+// let messageUrl = '172.25.47.37'; // server
+let messageUrl = '10.9.46.145';
 let local = false;
 if (local) {
 

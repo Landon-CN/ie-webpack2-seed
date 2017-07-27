@@ -1,7 +1,8 @@
 import jquery from 'jquery';
 import globalVar from 'globalVar';
 import moment from 'moment';
-
+import * as Constants from './talkConstants';
+import botParse from './botContentParse';
 /**
 * {
        msgType:"01",//消息类型，参照ImmediateMsgTypeEnum。必填项
@@ -68,13 +69,49 @@ export function getOfflineMsg(params) {
     });
 }
 
-// 发送消息
-export function sendMsg(targetUserId, data) {
+
+/**
+ * 发送消息
+ * @param {string} targetUserId 接收用户ID
+ * @param {object} data {content:'xx'} 发送内容
+ * @param {object} ext
+ * {
+ *  type:'request_text',
+ *  sceneCode:'ask',
+ *  sceneItem: id,
+ *  msgId: 123
+ * }
+ */
+export function sendMsg(targetUserId, data = {}, ext = {}) {
     data.time = moment().format('YYYY-MM-DD HH:mm:SS');
 
     data.type = globalVar.msgType;
     data.dialogId = globalVar.dialogId;
     console.log('发送消息==>', data.content);
+    if (data.type === Constants.MSG_TYPE_BOT) {
+        let extendData = {
+            identityId: globalVar.jdPin,
+            currentUser: globalVar.userId,
+            terminalType: 'pc',
+            msgId: '123',
+            interactionType: ext.type
+        };
+
+        // request_text（文本）question必填
+        if (ext.type === Constants.INTERACTION_TEXT) {
+            extendData.question = data.content;
+        }
+
+        // request_normal_select||request_feedback_select sceneCode、sceneItem必填；
+        if (ext.type === Constants.INTERACTION_FEEDBACK_SELECT || ext.type === Constants.INTERACTION_NORMAL_SELECT) {
+            extendData.sceneCode = ext.sceneCode;
+            extendData.sceneItem = ext.sceneItem;
+            extendData.msgId = ext.msgId;
+        }
+
+        data.content = JSON.stringify(extendData);
+
+    }
 
     return $.ajax({
         url: `/message/onlinemsg/send.htm?targetUserId=${targetUserId}`,
@@ -113,5 +150,34 @@ export function msgReceipt(params) {
             toUserId: params.toUserId,
             packetId: params.packetId
         }
+    });
+}
+
+
+export function inlineInit() {
+    return jquery.ajax({
+        url: '/IncomingLine/incomingLine.htm',
+        type: 'post',
+        contentType: 'application/json; charset=utf-8',
+        noParse: true,
+        data: {
+            initSource: '03'
+        }
+    }).then((result) => {
+        const data = result.data;
+
+        if (data.queueLength) {
+            return globalVar.queueLength = data.queueLength;
+        }
+
+        globalVar.dialogId = data.currentDialogId;
+        globalVar.targetServiceId = data.toUserId;
+        globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
+        if (data.content) {
+            let botContent = botParse(data.content);
+            globalVar.welcomeWords = botContent.answer;
+        }
+
+
     });
 }

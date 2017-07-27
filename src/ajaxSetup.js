@@ -13,8 +13,8 @@ jquery.ajaxSetup({
 
         if (result.resultCode !== '00000' && !!xhr.setting.errorIgnore === false) {
             dialog.open('错误:' + JSON.stringify(result) + '  path:' + xhr.setting.url);
-            throw new Error(result.msg);
         }
+        return result;
     },
     error(xhr, text, error) {
 

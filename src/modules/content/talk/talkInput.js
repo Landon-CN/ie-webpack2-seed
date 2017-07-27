@@ -83,6 +83,8 @@ function submit() {
     if (content && !globalVar.isClose) {
         service.sendMsg(globalVar.targetServiceId, {
             content
+        },{
+            type: Constants.INTERACTION_TEXT
         });
     }
 
