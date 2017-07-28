@@ -9,9 +9,9 @@ webapckDevConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
 var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
 // let targetUrl = '10.9.46.147'; // server
-let targetUrl = '10.9.46.145';
+let targetUrl = '10.9.46.147';
 // let messageUrl = '172.25.47.37'; // server
-let messageUrl = '10.9.46.145';
+let messageUrl = '10.9.46.147';
 let local = false;
 if (local) {
 
@@ -49,6 +49,7 @@ var server = new webpackDevServer(compiler, {
                 timeout: 2000
             }).then((response) => {
                 let statusCode = response.status;
+                console.log(statusCode);
 
 
                 if (statusCode == 302 || statusCode == 304) {

@@ -9,6 +9,7 @@ import {
     modal
 } from 'components';
 import globalVar from 'globalVar';
+import * as Constants from '../talkConstants';
 
 
 export default function init(queueLength, cb = () => {}) {
@@ -21,8 +22,9 @@ export default function init(queueLength, cb = () => {}) {
     let dom = $(mustache.render(tpl, {}));
     dom.on('click', '.btn-continue', (event) => {
         cb();
-        this.cancel();
-        this.close();
+        this.cancel().then((result) => {
+            result && this.close();
+        });
     });
 
     this.lineModal = modal(dom);
@@ -41,7 +43,16 @@ init.prototype.cancel = function () {
             groupId: globalVar.groupId,
             previousDialogId: globalVar.dialogId
         }
-    })
+    }).then((res) => {
+        if (res.resultCode === Constants.AJAX_SUCCESS_CODE && !!res.data.result) {
+            const data = res.data;
+            globalVar.dialogId = data.currentDialogId;
+            globalVar.targetServiceId = data.toUserId;
+            globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
+            return true;
+        }
+        return false;
+    });
 }
 
 init.prototype.open = function () {

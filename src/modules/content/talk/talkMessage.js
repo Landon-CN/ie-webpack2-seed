@@ -478,7 +478,7 @@ function resolveMsg(resData) {
 
 // 建立长连接
 function pollInterval() {
-    console.log('尝试建立长连接');
+
 
     const errorHandler = (error) => {
         // 错误，5s后尝试重新连接
@@ -495,7 +495,6 @@ function pollInterval() {
 
             // 重新建立长连接
             if (data.data && data.data === 'dying') {
-                console.log('长连接正常结束,无消息返回')
                 return this.pollInterval();
             }
 

@@ -34,7 +34,7 @@ export const BOT_MESSAGE_FLOD = 'BOT_MESSAGE_FLOD';
 export const BOT_MESSAGE_SUGGESTION = 'BOT_MESSAGE_SUGGESTION';
 
 // 发送消息类型
-export const MSG_TYPE_BOT = 18;
+export const MSG_TYPE_BOT = 42;
 export const MSG_TYPE_SERVICE = 2;
 
 // 机器人回复类型

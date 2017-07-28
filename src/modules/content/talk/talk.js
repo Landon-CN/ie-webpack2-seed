@@ -88,12 +88,6 @@ talk.prototype.inService = function inService(message, del = false) {
     this.historyRest(); // 进线后可以再次查看历史记录
     headerChangeToSerice();
     this.onlineServiceShow();
-
-    this.addMsg({
-        dialog: true,
-        message,
-        time: moment()
-    });
 };
 
 // 废弃
