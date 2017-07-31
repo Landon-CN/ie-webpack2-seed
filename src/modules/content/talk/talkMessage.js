@@ -445,7 +445,7 @@ function resolveMsg(resData) {
         }
 
         // 机器人v2
-        if (item.type == Constants.ROBOT_MESSAGE_V2) {
+        if (item.type == Constants.HISTORY_NEW_BOT_REPLY) {
             let botMsg = botParse(item.content);
             if (botMsg) {
                 botMsg.bot = true;
