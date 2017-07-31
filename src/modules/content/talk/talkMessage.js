@@ -292,8 +292,8 @@ function getHistory() {
             if (i === 0) {
                 historyTime = moment(item.sendTime)
             }
-
-            switch (item.msgType) {
+            let type = parseInt(item.msgType, 10);
+            switch (type) {
                 case Constants.HISTORY_OLD_BOT_ASK:
                 case Constants.HISTORY_OLD_BOT_REPLY:
                     msgList.push({

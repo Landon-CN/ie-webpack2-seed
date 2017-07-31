@@ -46,8 +46,8 @@ export const INTERACTION_FEEDBACK_SELECT = 'request_feedback_select';
 export const AJAX_SUCCESS_CODE = '00000';
 
 // 历史记录返回消息类型
-export const HISTORY_OLD_BOT_ASK = '40'; // 发送旧版机器人
-export const HISTORY_OLD_BOT_REPLY = '41'; // 旧版机器人回执
-export const HISTORY_NEW_BOT_ASK = '42'; // 发送新版机器人
-export const HISTORY_NEW_BOT_REPLY = '43'; // 新版机器人回执
-export const HISTORY_SERVICE = '2'; // 和客服聊天
+export const HISTORY_OLD_BOT_ASK = 40; // 发送旧版机器人
+export const HISTORY_OLD_BOT_REPLY = 41; // 旧版机器人回执
+export const HISTORY_NEW_BOT_ASK = 42; // 发送新版机器人
+export const HISTORY_NEW_BOT_REPLY = 43; // 新版机器人回执
+export const HISTORY_SERVICE = 2; // 和客服聊天
