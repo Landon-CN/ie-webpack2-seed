@@ -53,15 +53,15 @@ export default function (talk) {
 
         // 重新进线
         if (globalVar.msgType === Constants.MSG_TYPE_SERVICE) {
-            this.getHistory().then(() => {
-                this.inService(Constants.RECONNECT_MESSAGE);
-            });
+            this.inService(Constants.RECONNECT_MESSAGE);
+            this.getHistory();
+
         } else {
-            // this.addMsg({
-            //     service: true,
-            //     message: globalVar.welcomeWords,
-            //     time: moment()
-            // });
+            this.addMsg({
+                service: true,
+                message: globalVar.welcomeWords,
+                time: moment()
+            });
         }
 
     }
@@ -571,16 +571,12 @@ function serviceGroupListener(params) {
 
                 return;
             }
-            let delTalkContent = false;
-            if (globalVar.targetServiceId === globalVar.botId) {
-                delTalkContent = true;
-            }
 
             globalVar.targetServiceId = customerServiceId;
             globalVar.dialogId = result.data.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
 
-            this.inService(Constants.INSERVICE_EMSSAGE, delTalkContent);
+            this.inService(Constants.INSERVICE_EMSSAGE);
 
             // this.addMsg([{
             //     service: true,

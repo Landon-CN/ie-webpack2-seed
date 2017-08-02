@@ -78,50 +78,17 @@ talk.prototype.onlineServiceClick = function () {
 
 };
 
-talk.prototype.inService = function inService(message, del = false) {
-    // 进线成功前一个聊天记录
-
-    if (del) {
-        this.dom.find('.message-row').remove();
-    }
-
+talk.prototype.inService = function inService(message) {
     this.onlineClick = true; //防止再次进线
     this.historyRest(); // 进线后可以再次查看历史记录
     headerChangeToSerice();
     this.onlineServiceShow();
+    this.addMsg({
+        dialog: true,
+        message: message
+    })
 };
 
-// 废弃
-talk.prototype.judgePrviousService = function () {
-    // 上次处于进线状态
-    service.getServiceList().then((result) => {
-        let message = Constants.BOT_HEELO_MESSAGE;
-        if (result.data.continuePreviousDialog) {
-            globalVar.targetServiceId = result.data.customerServiceId;
-            globalVar.dialogId = result.data.previousDialogId;
-            globalVar.isRate = result.data.previousDialogAppraise; // 会话是否已经评价过
-            return this.getHistory().then(() => {
-                this.inService(Constants.RECONNECT_MESSAGE);
-            });
-        }
-
-        if (result.data.queueLength > 0) {
-            globalVar.groupId = result.data.previousGroupId;
-            this.lineModal.change(result.data.queueLength).open();
-        }
-
-
-
-        // 添加默认对话
-        setTimeout(() => {
-            this.addMsg({
-                service: true,
-                message,
-                time: moment()
-            });
-        }, 100);
-    });
-}
 // 进线成功后，显示某些元素
 talk.prototype.onlineServiceShow = function onlineServiceShow() {
     // 显示图片上传和评价按钮
