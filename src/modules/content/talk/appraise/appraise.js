@@ -28,7 +28,7 @@ const reasonList = [{
 ];
 
 
-export default function appraise(parent, top = false, cb = () => {}) {
+export default function appraise(parent, top = false, cb = () => {}, showClose = true) {
     let dom, rateSocre = -1,
         reason = [];
     dom = $(mustache.render(tpl, {
@@ -38,6 +38,12 @@ export default function appraise(parent, top = false, cb = () => {}) {
     if (top) {
         dom.addClass('top')
     }
+
+    // 不显示关闭按钮
+    if(!showClose){
+        dom.find('.close').hide();
+    }
+
 
     let rate = Rate(dom.find('.rate-content'), rateChange);
 

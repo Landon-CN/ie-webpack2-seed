@@ -529,7 +529,7 @@ function addAppraise() {
     });
 
     // TODO: cb暂时变为空，看下效果
-    Appraise(dom.find('.message-text'), undefined, undefined).open();
+    Appraise(dom.find('.message-text'), undefined, undefined, false).open();
 }
 
 function serviceGroupListener(params) {
