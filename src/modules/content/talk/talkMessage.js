@@ -146,7 +146,6 @@ function resolveBotMsg(context, msg) {
             break;
         case Constants.BOT_MESSAGE_SUGGESTION:
         case Constants.BOT_MESSAGE_FLOD:
-            msg.answer = msg.answer || msg.title;
             msg.botFlodText = true;
             msg.change = false;
             // 超过

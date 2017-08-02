@@ -20,7 +20,7 @@ globalVar.targetServiceId = globalVar.botId;
 
 talk.prototype.init = function (parent) {
     if (globalVar.queueLength > 0) {
-        this.lineModal.change(globalVar.queueLength).open();
+        this.lineModal.open().change(globalVar.queueLength);
     }
     $(parent).append(this.dom);
 }

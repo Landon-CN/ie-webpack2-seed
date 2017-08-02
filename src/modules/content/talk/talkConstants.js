@@ -34,7 +34,7 @@ export const BOT_MESSAGE_FLOD = 'BOT_MESSAGE_FLOD';
 export const BOT_MESSAGE_SUGGESTION = 'BOT_MESSAGE_SUGGESTION';
 
 // 发送消息类型
-export const MSG_TYPE_BOT = 42;
+export const MSG_TYPE_BOT = 43;
 export const MSG_TYPE_SERVICE = 2;
 
 // 机器人回复类型
@@ -49,5 +49,5 @@ export const AJAX_SUCCESS_CODE = '00000';
 export const HISTORY_OLD_BOT_ASK = 40; // 发送旧版机器人
 export const HISTORY_OLD_BOT_REPLY = 41; // 旧版机器人回执
 export const HISTORY_NEW_BOT_ASK = 42; // 发送新版机器人
-export const HISTORY_NEW_BOT_REPLY = 43; // 新版机器人回执
+export const HISTORY_NEW_BOT_REPLY = MSG_TYPE_BOT; // 新版机器人回执
 export const HISTORY_SERVICE = 2; // 和客服聊天

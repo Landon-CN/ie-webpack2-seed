@@ -12,25 +12,15 @@ import globalVar from 'globalVar';
 import * as Constants from '../talkConstants';
 
 
-export default function init(queueLength, cb = () => {}) {
+export default function init(queueLength = 0, cb = () => {}) {
 
 
     if (!(this instanceof init)) {
         return new init(queueLength, cb);
     }
+    this.queueLength = queueLength;
+    this.callback = cb;
 
-    let dom = $(mustache.render(tpl, {}));
-    dom.on('click', '.btn-continue', (event) => {
-        cb();
-        this.cancel().then((result) => {
-            result && this.close();
-        });
-    });
-
-    this.lineModal = modal(dom);
-    this.dom = dom;
-    this.queue = dom.find('.queue');
-    this.change(queueLength);
 }
 
 init.prototype.cancel = function () {
@@ -56,6 +46,21 @@ init.prototype.cancel = function () {
 }
 
 init.prototype.open = function () {
+
+    let dom = $(mustache.render(tpl, {}));
+    dom.on('click', '.btn-continue', (event) => {
+        this.callback();
+        this.cancel().then((result) => {
+            result && this.close();
+        });
+    });
+
+    this.lineModal = modal(dom);
+
+    this.dom = dom;
+    this.queue = dom.find('.queue');
+    this.change(this.queueLength);
+
     this.lineModal.open();
     // 立即去取一次排队数据
     this.interval(0);

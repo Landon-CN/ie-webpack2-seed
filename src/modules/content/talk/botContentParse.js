@@ -15,8 +15,8 @@ export default function contentParse(content) {
         return false;
     }
 
-    if(content.result === false){
-        console.log('机器人接口调用失败',content);
+    if (content.result === false) {
+        console.log('机器人接口调用失败', content);
         return false;
     }
 
@@ -43,7 +43,7 @@ export default function contentParse(content) {
         case 'render_fold_answer':
             return {
                 type: Constants.BOT_MESSAGE_FLOD,
-                answer: answers.answer,
+                answer: answers.answer || answers.title,
                 title: answers.title,
                 msgId: content.msgId,
                 list: answers.more,
@@ -52,7 +52,7 @@ export default function contentParse(content) {
         case 'render_user_suggestion':
             return {
                 type: Constants.BOT_MESSAGE_SUGGESTION,
-                answer: answers.answer,
+                answer: answers.answer || answers.title,
                 title: answers.title,
                 msgId: content.msgId,
                 list: answers.more,
