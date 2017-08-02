@@ -67,7 +67,7 @@ function imgUploadListener() {
 
             let data = result.result.data[0];
             let url = data.url;
-            let msg = `<img src='${url}'>`;
+            let msg = `<img src='${url}' class="open-img">`;
 
             this.inputBoxPlaceholderJudge();
             this.inputBox.append(msg);

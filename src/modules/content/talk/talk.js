@@ -22,6 +22,7 @@ talk.prototype.init = function (parent) {
     if (globalVar.queueLength > 0) {
         this.lineModal.open().change(globalVar.queueLength);
     }
+
     $(parent).append(this.dom);
 }
 
@@ -61,7 +62,7 @@ talk.prototype.onlineServiceClick = function () {
     }
     service.getServiceList().then((result) => {
 
-        if(result.resultCode !== Constants.AJAX_SUCCESS_CODE){
+        if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
             return errorHandler();
         }
 
@@ -73,7 +74,7 @@ talk.prototype.onlineServiceClick = function () {
             serviceList: list,
             time: moment()
         });
-    },errorHandler);
+    }, errorHandler);
 
 };
 

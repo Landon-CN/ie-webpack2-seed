@@ -26,6 +26,10 @@
         >div {
             position: relative;
             z-index: 999;
+            transition: transform 0.1s ease-in-out;
+            &.active-in {
+                transform: scale(0.7);
+            }
         }
     }
 }

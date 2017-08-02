@@ -28,7 +28,7 @@ export function parseContent(xml) {
                 htmlStr += `<img src='${src}' />`;
                 break;
             case 'img':
-                htmlStr += `<a href="${element.attr('src')}" target="_blank"><img src='${element.attr('src')}' /></a>`
+                htmlStr += `<img src='${element.attr('src')}' / class="open-img">`
                 break;
             default:
                 break;

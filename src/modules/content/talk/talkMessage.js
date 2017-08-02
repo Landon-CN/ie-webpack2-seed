@@ -2,6 +2,7 @@ import moment from 'moment';
 import mustache from 'mustache';
 import msgTpl from './message.html';
 import mutiPageTpl from './mutiPage.html';
+import imgModalTpl from './imgModal.html';
 import * as service from './talkService';
 import * as utils from './talkUtils';
 import * as Constants from './talkConstants';
@@ -30,7 +31,8 @@ export default function (talk) {
         cancelLine,
         botMsgChangeListener,
         botAnswersListener,
-        mutiPageModal
+        mutiPageModal,
+        imgModalListener
     });
 
     const init = talk.prototype.init;
@@ -45,6 +47,7 @@ export default function (talk) {
         this.serviceGroupListener();
         this.botMsgChangeListener();
         this.botAnswersListener();
+        this.imgModalListener();
         this.botMsgList = {};
 
 
@@ -605,4 +608,19 @@ function mutiPageModal() {
         window.location.href = 'about:black';
     });
     modal($dom).open();
+}
+
+/**
+ * 点击消息图片弹出modal
+ */
+function imgModalListener() {
+    this.dom.on('click', '.open-img', (event) => {
+        const $img = $(event.currentTarget);
+        const src = $img.attr('src');
+        const imgDom = mustache.render(imgModalTpl, {
+            src
+        });
+        const imgModal = modal(imgDom, true);
+        imgModal.open();
+    });
 }
