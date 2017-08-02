@@ -57,11 +57,11 @@ export default function (talk) {
                 this.inService(Constants.RECONNECT_MESSAGE);
             });
         } else {
-            this.addMsg({
-                service: true,
-                message: globalVar.welcomeWords,
-                time: moment()
-            });
+            // this.addMsg({
+            //     service: true,
+            //     message: globalVar.welcomeWords,
+            //     time: moment()
+            // });
         }
 
     }
@@ -582,10 +582,10 @@ function serviceGroupListener(params) {
 
             this.inService(Constants.INSERVICE_EMSSAGE, delTalkContent);
 
-            this.addMsg([{
-                service: true,
-                message: result.data.welcomeWords
-            }]);
+            // this.addMsg([{
+            //     service: true,
+            //     message: result.data.welcomeWords
+            // }]);
 
         }, errorHandler);
     });
