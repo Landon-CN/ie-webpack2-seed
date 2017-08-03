@@ -41,12 +41,13 @@ var server = new webpackDevServer(compiler, {
     // and has many other use cases (see https://github.com/webpack/webpack-dev-server/pull/127 ).
     disableHostCheck: true,
     setup: function (app) {
+
         app.all('/', function (req, res, next) {
 
             fetch(`http://${messageUrl}:8090/index.htm`, {
                 redirect: 'manual',
                 headers: req.headers,
-                timeout: 2000
+                timeout: 1000
             }).then((response) => {
                 let statusCode = response.status;
                 console.log(statusCode);

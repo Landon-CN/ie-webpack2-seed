@@ -16,7 +16,8 @@ export default function (talk) {
         inputBoxPlaceholder,
         inputResize,
         pasteListener,
-        closeWindowListener
+        closeWindowListener,
+        autoCompleteListener
     });
 
     const init = talk.prototype.init;
@@ -29,6 +30,7 @@ export default function (talk) {
         this.inputResize();
         this.pasteListener();
         this.closeWindowListener();
+        // this.autoCompleteListener();
     }
 }
 
@@ -83,7 +85,7 @@ function submit() {
     if (content && !globalVar.isClose) {
         service.sendMsg(globalVar.targetServiceId, {
             content
-        },{
+        }, {
             type: Constants.INTERACTION_TEXT
         });
     }
@@ -209,5 +211,20 @@ function closeWindowListener() {
     // 结束对话
     this.dom.on('click', '.btn-close', function name() {
         window.location.href = "about:blank";
+    });
+}
+
+function autoCompleteListener() {
+    this.dom.on('keydown', '.input-box', (event) => {
+        console.log(111);
+        const $target = $(event.currentTarget);
+        console.log($target.text());
+
+
+
+        // service.autoComplete().then((result)=>{
+        //     console.log(result);
+        // });
+
     });
 }

@@ -68,13 +68,17 @@
     <div class="head-portrait">
         <img src="./imgs/service-head.png" alt="头像">
     </div>
-    <div class="message-text" data-id="{{msgId}}}">
+    <div class="message-text" data-id="{{msgId}}">
         <span class="triangle"></span>
-        <span class="triangle border"></span> {{{answer}}}
+        <span class="triangle border"></span>
+        <span>{{{answer}}}</span>
+        <div class="bot-appraise">
+            是否对您有帮助：
+            <a class="bot-answer-rate" data-msgid="{{msgId}}" data-type="1">解决</a>
+            <a class="bot-answer-rate" data-msgid="{{msgId}}" data-type="0">未解决</a>
+        </div>
     </div>
-    <div class="bot-appraise">
-        1
-    </div>
+
     <div class="clear"></div>
 </div>
 {{/botPlainText}} {{#botFlodText}}
@@ -82,7 +86,7 @@
     <div class="head-portrait">
         <img src="./imgs/service-head.png" alt="头像">
     </div>
-    <div class="message-text" data-id="{{msgId}}}">
+    <div class="message-text" data-id="{{msgId}}">
         <span class="triangle"></span>
         <span class="triangle border"></span>
         <div class="title">

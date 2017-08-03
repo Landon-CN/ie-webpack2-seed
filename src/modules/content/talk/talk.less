@@ -138,14 +138,21 @@
             &.bot {
                 .bot-appraise {
                     display: none;
+                    margin: 5px -20px 0;
+                    border-top: 1px solid #e6e5e6;
+                    padding: 5px 20px 0;
+                    text-align: right;
+                    >a.bot-answer-rate {
+                        cursor: pointer;
+                    }
+                }
+                .change-other {
+                    text-align: right;
                 }
                 &.bot-plain-text {
                     .bot-appraise {
                         // display: inline-block;
                     }
-                }
-                .change-other {
-                    text-align: right;
                 }
             }
         }
@@ -263,6 +270,25 @@
                     padding: 0 5px;
                 }
             }
+            .bot-rate {
+                position: absolute;
+                bottom: 37px;
+                left: 80px;
+                padding: 10px;
+                border: 1px solid @border-color;
+                border-radius: 4px;
+                background-color: #fff;
+                display: none;
+                .btn {
+                    box-sizing: border-box;
+                    background-color: #307dcd;
+                    color: #fff;
+                    font-size: 12px;
+                    padding: 5px 10px;
+                    width: 60px;
+                    text-align: center;
+                }
+            }
         }
         .input-box {
             box-sizing: border-box;
@@ -339,6 +365,25 @@
             }
         }
     }
+    .auto-complete {
+        position: relative;
+        .complete-list {
+            position: absolute;
+            bottom: 40px;
+            padding: 10px 20px;
+            background: #3e99e0;
+            color: #fff;
+            ul {
+                list-style: none;
+                li {
+                    cursor: pointer;
+                    &:hover {
+                        color: #eee;
+                    }
+                }
+            }
+        }
+    }
 }
 
 .mutipage-body {
@@ -385,9 +430,7 @@
     border-radius: 5px;
     display: inline-block;
     font-size: 0;
-
     >img {
-
         max-width: 500px;
         max-height: 500px;
     }

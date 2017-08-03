@@ -32,7 +32,8 @@ export default function (talk) {
         botMsgChangeListener,
         botAnswersListener,
         mutiPageModal,
-        imgModalListener
+        imgModalListener,
+        botAnswerRateListener
     });
 
     const init = talk.prototype.init;
@@ -48,6 +49,7 @@ export default function (talk) {
         this.botMsgChangeListener();
         this.botAnswersListener();
         this.imgModalListener();
+        this.botAnswerRateListener();
         this.botMsgList = {};
 
 
@@ -618,5 +620,13 @@ function imgModalListener() {
         });
         const imgModal = modal(imgDom, true);
         imgModal.open();
+    });
+}
+
+function botAnswerRateListener() {
+    this.dom.on('click','.bot-answer-rate',(event)=>{
+        const $target = $(event.currentTarget);
+        console.log($target.data('msgid'));
+        this.dom.find('.bot-appraise').text('已反馈')
     });
 }

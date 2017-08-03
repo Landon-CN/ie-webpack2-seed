@@ -12,7 +12,8 @@ export default function (talk) {
         emojiChange,
         closeOther,
         addEmoji,
-        rateListener
+        rateListener,
+        botRateListener
     });
 
     const init = talk.prototype.init;
@@ -24,10 +25,12 @@ export default function (talk) {
         this.toolItemListener();
         this.closeListener();
         this.rateListener();
+        this.botRateListener();
     }
 }
 
 function toolItemListener() {
+    const $botRate = this.dom.find('.bot-rate');
     this.dom.on('click', '.tool-item', (event) => {
         event.stopPropagation();
         const type = $(event.currentTarget).data('type');
@@ -38,7 +41,11 @@ function toolItemListener() {
                 this.emoji.toggle();
                 break;
             case 'rate':
-                this.appraise.toggle();
+                // 机器人和客服是两种评价界面
+                if (globalVar.msgType === Constants.MSG_TYPE_SERVICE)
+                    this.appraise.toggle();
+                else if (!globalVar.botRate)
+                    $botRate.toggle();
                 break;
             default:
                 break;
@@ -103,6 +110,7 @@ function closeOther(type) {
     }
 
     if (type !== 'rate') {
+        this.dom.find('.bot-rate').hide();
         this.appraise.close();
     }
 
@@ -141,4 +149,14 @@ function rateListener() {
         dom.find('.rate-tooltip').hide();
     });
 
+}
+
+function botRateListener() {
+    this.dom.on('click', '.bot-rate .btn', (event) => {
+        globalVar.botRate=true;
+        const $target = $(event.currentTarget);
+        const type = $target.data('type');
+        console.log(type);
+
+    });
 }

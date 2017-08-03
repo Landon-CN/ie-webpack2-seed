@@ -181,3 +181,27 @@ export function inlineInit() {
 
     });
 }
+
+/**
+ * 获取智能提示的文案
+ * @param {*} inputText 输入文案
+ */
+export function autoComplete(inputText) {
+    return new Promise((resolve) => {
+        setTimeout(function () {
+            let data = [{
+                text: '提示1'
+            }, {
+                text: '提示2'
+            }];
+            data.push({
+                text: Math.random()
+            })
+
+            resolve({
+                data
+            });
+        }, Math.ceil(Math.random() * 2000));
+    });
+
+}
