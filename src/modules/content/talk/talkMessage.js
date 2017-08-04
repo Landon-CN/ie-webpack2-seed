@@ -265,7 +265,7 @@ function getHistory() {
 
     let params = {
         expectSize: pageSize,
-        endDate: historyTime.format('YYYY-MM-DD HH:mm:SS')
+        endDate: historyTime.format('YYYY-MM-DD HH:mm:ss:SSS')
     };
 
     const errorHandler = () => {
