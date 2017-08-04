@@ -1,0 +1,30 @@
+@import './variable.less';
+@height: 130px;
+.talk-input {
+    padding: 16px 22px;
+    height: @height;
+    background: @bg-white-color;
+    .input-box {
+        height: 70px;
+    }
+
+    .tool-list{
+        font-size: 0;
+    }
+
+
+    .tool-item {
+        cursor: pointer;
+        display: inline-block;
+        width: 22px;
+        height: 35px;
+        margin-right: 25px;
+        &.tool-emoji {
+            background: url('../public/imgs/emoji.png') no-repeat center center;
+        }
+
+        &.tool-file {
+            background: url('../public/imgs/file.png') no-repeat center center;
+        }
+    }
+}

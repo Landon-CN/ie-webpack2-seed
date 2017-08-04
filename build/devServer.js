@@ -41,7 +41,7 @@ var server = new webpackDevServer(compiler, {
     // and has many other use cases (see https://github.com/webpack/webpack-dev-server/pull/127 ).
     disableHostCheck: true,
     setup: function (app) {
-
+        return;
         app.all('/', function (req, res, next) {
 
             fetch(`http://${messageUrl}:8090/index.htm`, {

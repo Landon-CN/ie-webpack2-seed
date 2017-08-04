@@ -1,0 +1,83 @@
+@import './variable.less';
+@height: 362px;
+.talk-message {
+    height: @height;
+    border-bottom: 1px solid @border-color;
+    background: @bg-talkbody-color;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 23px 38px;
+    .message-row {
+        margin-bottom: 20px;
+        .message-text {
+            display: inline-block;
+            max-width: 583px;
+            word-wrap: break-word;
+        }
+        .service {
+            display: inline-block;
+            border-radius: 5px;
+            padding: 10px 20px;
+            position: relative;
+            border-top-left-radius: 0;
+            background-color: @bg-white-color;
+            .service-border {
+                display: inline-block;
+                width: 8px;
+                height: 20px;
+                background: url('../public/imgs/service_border.png') no-repeat;
+                position: absolute;
+                left: -7px;
+                top: 0;
+            }
+        }
+        .user {
+            display: inline-block;
+            border-radius: 5px;
+            padding: 10px 20px;
+            position: relative;
+            border-top-right-radius: 0;
+            background-color: @bg-blue-color;
+            color: @text-white-color;
+            .user-border {
+                display: inline-block;
+                width: 8px;
+                height: 20px;
+                background: url('../public/imgs/user_border.png') no-repeat;
+                position: absolute;
+                right: -7px;
+                top: 0;
+            }
+        }
+        .bot-plain-text {
+            .bot-answer-rate {
+                margin-top: 16px;
+                border-top: 1px solid #efeff3;
+                padding-top: 16px;
+                .title {
+                    color: @text-gray-light;
+                    margin-right: 25px;
+                }
+                .resolve {
+                    cursor: pointer;
+                    padding-left: 23px;
+                    background: url('../public/imgs/ding.png') no-repeat;
+                }
+                .not-resolve {
+                    cursor: pointer;
+                    padding-left: 23px;
+                    margin-left: 25px;
+                    background: url('../public/imgs/cai.png') no-repeat 0 1px;
+                }
+            }
+        }
+        .bot-list,.service-group {
+            .bot-list-item {
+                display: inline-block;
+                margin-top: 8px;
+                cursor: pointer;
+                color: @text-blue-color;
+            }
+        }
+    }
+}

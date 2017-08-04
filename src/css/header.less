@@ -1,0 +1,31 @@
+@import './variable.less';
+@header-height: 61px;
+.talk-header {
+    height: @header-height;
+    background: url('../public/imgs/header_text.png') no-repeat top right;
+    background-color: @bg-header-color;
+    .title {
+        font-size: 16px;
+        font-weight: bold;
+        color: @text-white-color;
+        line-height: @header-height;
+        display: inline-block;
+        padding-left: 42px;
+        margin-left: 27px;
+        &.bot-title {
+            background: url('../public/imgs/bot.png') no-repeat left center;
+        }
+        &.user-title {
+            background: url('../public/imgs/user.png') no-repeat left center;
+        }
+    }
+
+    .close{
+        display: inline-block;
+        width: 16px;
+        height: @header-height;
+        background: url('../public/imgs/header_close.png') no-repeat left center;
+        margin-right: 22px;
+        cursor: pointer;
+    }
+}

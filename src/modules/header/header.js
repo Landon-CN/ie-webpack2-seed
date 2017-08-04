@@ -1,7 +1,7 @@
 import tpl from './header.html';
 import mustache from 'mustache';
 import $ from 'jquery';
-import './header.less';
+// import './header.less';
 import talk from '../content/talk/talk';
 
 let dom;
