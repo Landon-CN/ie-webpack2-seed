@@ -9,6 +9,51 @@
     padding: 23px 38px;
     .message-row {
         margin-bottom: 20px;
+        .history-msg {
+            cursor: pointer;
+            display: none;
+            font-size: 12px;
+            text-align: center;
+            color: @text-blue-color;
+            background: url('../public/imgs/history.png') no-repeat 0 center;
+            padding-left: 20px;
+
+            .loading-body {
+                display: none;
+            }
+
+            &.loading {
+                .loading-body{
+                    display: inline-block;
+                }
+            }
+        }
+        .dialog {
+            @dialog-height: 30px;
+            padding: 0 20px;
+            display: inline-block;
+            margin: 0 auto;
+            border-radius: @dialog-height;
+            color: @text-gray-light;
+            height: @dialog-height;
+            line-height: @dialog-height;
+            font-size: 12px;
+            &.normal {
+                padding-left: 40px;
+                background: url('../public/imgs/dialog.png') no-repeat 20px center;
+                background-color: @bg-dialog-color;
+            }
+            &.queue {
+                background-color: @bg-dialog-color;
+                .queue-num {
+                    color: @text-blue-color;
+                }
+                .cancel {
+                    color: @text-blue-color;
+                    cursor: pointer;
+                }
+            }
+        }
         .message-text {
             display: inline-block;
             max-width: 583px;
@@ -71,13 +116,107 @@
                 }
             }
         }
-        .bot-list,.service-group {
+        .bot-list,
+        .service-group {
             .bot-list-item {
                 display: inline-block;
+                width: 100%;
                 margin-top: 8px;
                 cursor: pointer;
                 color: @text-blue-color;
             }
         }
+        .rate {
+            dl {
+                margin: 18px 0 0 0;
+                dt {
+                    color: @text-gray-light;
+                    width: 116px;
+                    text-align: right;
+                }
+                dt,
+                dd {
+                    display: inline-block;
+                    vertical-align: middle;
+                }
+                dd {
+                    margin-left: 22px;
+                }
+            }
+            .dl-reason {
+                display: none;
+                white-space: nowrap;
+            }
+            .rate-submit {
+                margin-top: 10px;
+            }
+            .score {
+                font-size: 0;
+            }
+            .score-item {
+                cursor: pointer;
+                background: url('../public/imgs/star.png');
+                display: inline-block;
+                width: 28px;
+                height: 27px;
+                &.active {
+                    background: url('../public/imgs/star_on.png');
+                }
+            }
+            .reason {
+                li {
+                    height: 27px;
+                    line-height: 27px;
+                    padding: 0 20px;
+                    border: 1px solid #cacaca;
+                    color: @text-gray-light;
+                    margin-right: 10px;
+                    cursor: pointer;
+                    &.last {
+                        margin-right: 0;
+                    }
+                    &.active {
+                        background: @bg-blue-color;
+                        color: @text-white-color;
+                        border: none;
+                    }
+                }
+            }
+        }
+        .open-img {
+            max-width: 100px;
+            max-height: 100px;
+            cursor: pointer;
+        }
+    }
+}
+
+@keyframes loading {
+    0% {
+        width: 0;
+    }
+    25% {
+        width: 25%;
+    }
+    50% {
+        width: 50%;
+    }
+    75% {
+        width: 75%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.loading-body {
+    width: 11.55px;
+    display: inline-block;
+    text-align: left;
+    .loading {
+        display: inline-block;
+        overflow: hidden;
+        animation: loading 2s linear infinite;
+        vertical-align: middle;
     }
 }

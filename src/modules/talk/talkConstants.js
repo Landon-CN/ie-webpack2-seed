@@ -6,6 +6,7 @@ export const INSERVICE_EMSSAGE = '京东金融客服很高兴为您服务';
 export const ALREADY_RATE_MESSAGE = '您已经评价过了';
 export const CLOSE_MESSAGE_TEXT = '本次会话已结束';
 export const TRANSFER_MESSAGE_SUCCESS = '已为您转接到新的客服';
+export const TEXT_CANCEL_QUEUE = '已取消排队';
 
 // 输入框文本
 export const INPUT_PLACEHOLDER = '请描述您遇到的问题~';

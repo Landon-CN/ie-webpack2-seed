@@ -11,7 +11,7 @@ var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webap
 let targetUrl = '172.25.47.40'; // server
 let messageUrl = '172.25.47.37'; // server
 
-let local = true;
+let local = false;
 if (local) {
     targetUrl = '10.9.46.154';
     messageUrl = '10.9.46.154';
@@ -41,7 +41,7 @@ var server = new webpackDevServer(compiler, {
     // and has many other use cases (see https://github.com/webpack/webpack-dev-server/pull/127 ).
     disableHostCheck: true,
     setup: function (app) {
-        return;
+
         app.all('/', function (req, res, next) {
 
             fetch(`http://${messageUrl}:8090/index.htm`, {
@@ -50,7 +50,7 @@ var server = new webpackDevServer(compiler, {
                 timeout: 1000
             }).then((response) => {
                 let statusCode = response.status;
-                console.log(statusCode);
+                // console.log(statusCode);
 
 
                 if (statusCode == 302 || statusCode == 304) {

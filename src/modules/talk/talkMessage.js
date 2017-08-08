@@ -6,13 +6,15 @@ import imgModalTpl from './imgModal.html';
 import * as service from './talkService';
 import * as utils from './talkUtils';
 import * as Constants from './talkConstants';
-import Appraise from './appraise/appraise';
-import line from './line/line';
+// import Appraise from './appraise/appraise';
+// import line from './line/line';
 import globalVar from 'globalVar';
 import {
     modal
 } from 'components';
-import botParse from './botContentParse';
+import botParse, {
+    suggest
+} from './botContentParse';
 
 // 最多显示多少个列表
 const BOT_LIST_MAX_SHOW = 3;
@@ -29,28 +31,37 @@ export default function (talk) {
         serviceGroupListener,
         addAppraise,
         cancelLine,
-        botMsgChangeListener,
         botAnswersListener,
         mutiPageModal,
         imgModalListener,
-        botAnswerRateListener
+        botAnswerRateListener,
+        cancelQueueListener
     });
 
     const init = talk.prototype.init;
     talk.prototype.init = function (...args) {
         init.apply(this, args);
-        this.historyDom = this.dom.find('.history-msg');
-        this.msgBox = this.dom.find('.message-box');
-        this.scroll = this.dom.find('.scroll');
+        this.historyDom = this.$dom.find('.history-msg');
+        this.msgBox = this.$dom.find('.talk-message');
+
         this.historyClickListener();
         this.pollInterval();
         this.offlineMsgInteval();
         this.serviceGroupListener();
-        this.botMsgChangeListener();
-        this.botAnswersListener();
-        this.imgModalListener();
-        this.botAnswerRateListener();
+        this.cancelQueueListener();
+        // this.botAnswersListener();
+        // this.imgModalListener();
+        // this.botAnswerRateListener();
         this.botMsgList = {};
+
+
+        // 需要排队
+        if (globalVar.queueLength > 0) {
+            this.addMsg({
+                queue: true,
+                number: globalVar.queueLength
+            });
+        }
 
 
         // 重新进线
@@ -65,6 +76,22 @@ export default function (talk) {
                 time: moment()
             });
         }
+
+
+
+        this.addMsg({
+            user: true,
+            message: "测试112313"
+        });
+
+        this.addMsg({
+            bot: true,
+            type: Constants.BOT_MESSAGE_TEXT,
+            answer: '机器人测试',
+            msgId: 123,
+            scene: 'asfsd'
+        });
+        this.resolveMsg(suggest);
 
     }
 }
@@ -133,7 +160,7 @@ function addMsg(data, append = true) {
     if (append) {
         this.msgBox.append(dom);
         // this.scroll.scrollTop(this.msgBox.height());
-        this.scroll.stop().animate({
+        this.msgBox.stop().animate({
             scrollTop: this.msgBox.height()
         }, 'normal');
     } else {
@@ -147,60 +174,23 @@ function resolveBotMsg(context, msg) {
     switch (msg.type) {
         case Constants.BOT_MESSAGE_TEXT:
             msg.botPlainText = true;
-            msg.msgType = Constants.INTERACTION_TEXT;
             break;
         case Constants.BOT_MESSAGE_SUGGESTION:
         case Constants.BOT_MESSAGE_FLOD:
             msg.botFlodText = true;
-            msg.change = false;
-            // 超过
-            msg.originList = msg.list;
-
-            if (msg.list.length > BOT_LIST_MAX_SHOW) {
-                msg.list = msg.list.slice(0, BOT_LIST_MAX_SHOW);
-                msg.change = true;
-                msg.index = 0;
-            }
-            if (Constants.BOT_MESSAGE_FLOD === msg.type) {
-                msg.msgType = Constants.INTERACTION_NORMAL_SELECT;
-            } else {
-                msg.msgType = Constants.INTERACTION_FEEDBACK_SELECT;
-            }
+            msg.list.forEach((item, index) => {
+                item.idx = index + 1;
+            });
+            break;
 
         default:
             break;
     }
 
-    context.botMsgList[msg.msgId] = msg;
+    // context.botMsgList[msg.msgId] = msg;
 }
 
-// 列表模板
-const listTpl = `{{#list}}
-            <li data-item="{{id}}" data-id="{{msgId}}" data-type="{{msgType}}" data-code="{{scene}}">
-                <span class="help-icon"></span>
-                <a href="javascript:;" class="group-name">{{title}}</a>
-            </li>
-            {{/list}}`;
 
-function botMsgChangeListener() {
-    let that = this;
-    this.dom.on('click', '.change-other>a', function (event) {
-        event.preventDefault();
-        let $item = $(this);
-        const msgId = $item.data('id');
-        const msg = that.botMsgList[msgId];
-        msg.index += BOT_LIST_MAX_SHOW;
-        if (msg.index > msg.originList.length) {
-            msg.index = 0;
-        }
-        const nextList = msg.originList.slice(msg.index, msg.index + BOT_LIST_MAX_SHOW);
-        msg.list = nextList;
-        let $list = mustache.render(listTpl, msg);
-
-
-        $item.parent().next('.answers-group').html($list);
-    });
-}
 
 /**
  * 机器人回复列表点击监听
@@ -242,7 +232,7 @@ let noMorePage = false,
 let pageSize = 10;
 
 function historyClickListener() {
-    this.dom.on('click', '.history-msg', () => {
+    this.$dom.on('click', '.history-msg', () => {
         this.getHistory();
     });
 }
@@ -550,7 +540,7 @@ function serviceGroupListener(params) {
             message: Constants.ERROR_MESSAGE
         }]);
     }
-    this.dom.on('click', '.service-group > li', (event) => {
+    this.$dom.on('click', '.service-group  li', (event) => {
         if (this.groupClick) {
             return;
         }
@@ -612,7 +602,7 @@ function mutiPageModal() {
  * 点击消息图片弹出modal
  */
 function imgModalListener() {
-    this.dom.on('click', '.open-img', (event) => {
+    this.$dom.on('click', '.open-img', (event) => {
         const $img = $(event.currentTarget);
         const src = $img.attr('src');
         const imgDom = mustache.render(imgModalTpl, {
@@ -624,9 +614,48 @@ function imgModalListener() {
 }
 
 function botAnswerRateListener() {
-    this.dom.on('click','.bot-answer-rate',(event)=>{
+    this.$dom.on('click', '.bot-answer-rate', (event) => {
         const $target = $(event.currentTarget);
         console.log($target.data('msgid'));
         this.dom.find('.bot-appraise').text('已反馈')
+    });
+}
+
+
+/**
+ * 排队取消按钮监听
+ */
+function cancelQueueListener() {
+    this.$dom.on('click', '.queue .cancel', (event) => {
+
+        // 防重复点击
+        if (event.currentTarget.ajaxLoading) return;
+        event.currentTarget.ajaxLoading = true;
+
+
+        $.ajax({
+            url: '/IncomingLine/cancelInQueue.htm',
+            contentType: 'application/json; charset=utf-8',
+            type: 'post',
+            data: {
+                initSource: '03',
+                groupId: globalVar.groupId,
+                previousDialogId: globalVar.dialogId
+            }
+        }).then((res) => {
+            if (res.resultCode === Constants.AJAX_SUCCESS_CODE && !!res.data.result) {
+                const data = res.data;
+                globalVar.dialogId = data.currentDialogId;
+                globalVar.targetServiceId = data.toUserId;
+                globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
+
+                // 修改文字
+                const $target = $(event.currentTarget);
+                const $dialog = $target.parent('.dialog');
+                $dialog.text(Constants.TEXT_CANCEL_QUEUE);
+                return true;
+            }
+            return false;
+        });
     });
 }

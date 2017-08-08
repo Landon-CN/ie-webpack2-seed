@@ -1,7 +1,7 @@
 import {
     emoji as Emoji
 } from 'components/emoji/emoji';
-import Appraise from './appraise/appraise';
+// import Appraise from './appraise/appraise';
 import * as Constants from './talkConstants';
 import globalVar from 'globalVar';
 export default function (talk) {

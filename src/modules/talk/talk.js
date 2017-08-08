@@ -1,12 +1,7 @@
-import tpl from './talk.html';
 import mustache from 'mustache';
 import $ from 'jquery';
-// import './talk.less';
-import line from './line/line';
 
-import {
-    headerChangeToSerice
-} from '../../header/header';
+import header from '../header/header';
 import globalVar from 'globalVar';
 import * as service from './talkService';
 import * as Constants from './talkConstants';
@@ -18,17 +13,19 @@ import moment from 'moment';
 // 默认对话机器人
 globalVar.targetServiceId = globalVar.botId;
 
-talk.prototype.init = function (parent) {
-    if (globalVar.queueLength > 0) {
-        this.lineModal.open().change(globalVar.queueLength);
-    }
+talk.prototype.init = function () {
 
-    $(parent).append(this.dom);
+
+    this.$dom.show();
+
+
+
+    this.onlineServiceClick();
 }
 
-talkInput(talk);
+// talkInput(talk);
 talkMessage(talk);
-talkTool(talk);
+// talkTool(talk);
 
 function talk() {
 
@@ -36,10 +33,7 @@ function talk() {
         return new talk();
     }
 
-    this.dom = $(mustache.render(tpl, {}));
-    this.lineModal = line(0, () => {
-        this.cancelLine();
-    });
+    this.$dom = $('.talk-body');
     this.onlineClick = false;
 
 
@@ -69,6 +63,9 @@ talk.prototype.onlineServiceClick = function () {
         const data = result.data;
 
         const list = data.showBusinessInfo.sort((a, b) => a.groupId - b.groupId);
+        list.forEach(function (element, index) {
+            element.idx = index + 1;
+        }, this);
         this.addMsg({
             serviceGroup: true,
             serviceList: list,

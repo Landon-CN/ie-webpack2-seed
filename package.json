@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node --max_old_space_size=4096  ./build/devServer.js",
+    "dev": "node  ./build/devServer.js",
     "pre": "NODE_ENV=pre node ./build/devServer.js",
     "build": "webpack --progress --display-chunks --display-modules  --config  ./build/webpack.pro.conf.js"
   },

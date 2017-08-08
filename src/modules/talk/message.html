@@ -1,0 +1,103 @@
+{{#list}} {{#timeShow}}
+<!-- <div class="message-row time">
+    {{message}}
+</div> -->
+{{/timeShow}} {{#loading}}
+<div class="message-row time">
+    正在转接中，请稍后...
+</div>
+{{/loading}}
+
+
+
+<!--进线列表  -->
+{{#serviceGroup}}
+<div class="message-row">
+    <div class="service service-group">
+        <span class="service-border"></span>
+        <span class="message-text">请选择分组</span>
+        <ul class="non-style">
+            {{#serviceList}}
+            <li data-name="{{businessName}}" }>
+                <a class="bot-list-item">{{idx}}.{{businessName}}</a>
+            </li>
+            {{/serviceList}}
+        </ul>
+    </div>
+</div>
+{{/serviceGroup}}
+
+<!--客服消息  -->
+{{#service}}
+<div class="message-row">
+    <div class="service">
+        <span class="service-border"></span>
+        <span class="message-text">{{{message}}}</span>
+    </div>
+</div>
+{{/service}}
+
+<!--用户消息  -->
+{{#user}}
+<div class="message-row clearfix">
+    <div class="user pull-right">
+        <span class="user-border"></span>
+        <span class="message-text">{{{message}}}</span>
+    </div>
+</div>
+{{/user}}
+
+<!--提示消息  -->
+{{#dialog}}
+<div class="message-row" style="text-align:center;">
+    <div class="dialog normal">
+        {{message}}
+    </div>
+</div>
+{{/dialog}}
+
+<!--排队消息  -->
+{{#queue}}
+<div class="message-row" style="text-align:center;">
+    <div class="dialog queue">
+        前方还有<span class="queue-num">{{number}}</span>个人,请稍后<span class="loading-body"><span class="loading">....</span></span>&nbsp;
+        <a class="cancel">取消排队</a>
+    </div>
+</div>
+{{/queue}}
+
+<!--机器人纯文本  -->
+{{#botPlainText}}
+<div class="message-row">
+    <div class="service bot-plain-text">
+        <span class="service-border"></span>
+        <span class="message-text">{{{answer}}}</span>
+        <div class="bot-answer-rate">
+            <span class="title">问题是否解决:</span>
+            <span class="resolve" data-msgid="{{msgId}}" data-type="1">解决</span>
+            <span class="not-resolve" data-msgid="{{msgId}}" data-type="0">未解决</span>
+        </div>
+    </div>
+</div>
+{{/botPlainText}}
+
+<!--机器人列表  -->
+{{#botFlodText}}
+
+<div class="message-row">
+    <div class="service bot-list service-group">
+        <span class="service-border"></span>
+        <span class="message-text">{{{answer}}}</span>
+        <ul class="non-style">
+            {{#list}}
+            <li data-item="{{id}}" data-id="{{msgId}}" data-type="{{msgType}}" data-code="{{scene}}">
+                <a class="bot-list-item">{{idx}}.{{title}}</a>
+            </li>
+            {{/list}}
+        </ul>
+    </div>
+</div>
+{{/botFlodText}}
+
+<!-- 结束 -->
+{{/list}}

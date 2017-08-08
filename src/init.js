@@ -1,15 +1,9 @@
 import jquery from 'jquery';
-import {
-    content,
-    header
-} from './modules';
 import globalVar from 'globalVar';
+import * as service from './modules/talk/talkService';
 import {
-    postFrom
-} from './utils';
-import * as Constants from './modules/content/talk/talkConstants';
-import botParse from './modules/content/talk/botContentParse';
-import * as service from './modules/content/talk/talkService';
+    talk
+} from './modules';
 
 function keyInit() {
 
@@ -23,15 +17,13 @@ function keyInit() {
         globalVar.jdPin = result.data.jdPin;
         globalVar.webPersonalKey = result.data.webPersonalKey;
         globalVar.userId = result.data.userId;
-    })
+    });
 
 }
 
 
-
 function domInit() {
-    header('.body-content');
-    content('.body-content');
+    talk.init()
 }
 
 function init() {
