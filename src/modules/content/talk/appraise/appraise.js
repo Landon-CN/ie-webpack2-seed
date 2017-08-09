@@ -79,7 +79,7 @@ export default function appraise(parent, top = false, cb = () => {}, showClose =
 
         const data = {
             toUser: globalVar.targetServiceId,
-            sendTime: moment().format('YYYY-MM-DD HH:mm:ss:SSS'),
+            sendTime: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
             score: rateSocre,
             reason: reason.join(','),
             userSay: reasonText,
