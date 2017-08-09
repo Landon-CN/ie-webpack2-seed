@@ -29,17 +29,7 @@ const proConf = merge(devConfig, {
         }),
         new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[chunkhash].js"),
         new ExtractTextPlugin("index.[hash].css")
-    ],
-    module: {
-        loaders: [{
-            test: /\.less$/,
-            include: pathConf.srcPath,
-            loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader')
-        }, {
-            test: /\.css$/,
-            loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
-        }]
-    }
+    ]
 });
 
 

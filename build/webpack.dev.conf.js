@@ -38,13 +38,11 @@ module.exports = {
             {
                 test: /\.less$/,
                 include: pathConf.srcPath,
-                loader: 'style-loader!css-loader!postcss-loader!less-loader'
-            },
-            {
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader')
+            }, {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader'
-            },
-            {
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader')
+            }, {
                 test: /\.(png|jpg|gif)$/,
                 // exclude: /sprite/,
                 loader: 'url-loader?limit=8192&name=imgs/[hash].[ext]' // 小于10K做成base64 url
@@ -73,7 +71,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': '"development"'
         }),
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new ExtractTextPlugin("index.[hash].css")
 
     ],
     postcss: function () {
