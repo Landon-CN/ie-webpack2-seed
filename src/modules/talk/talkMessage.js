@@ -387,6 +387,12 @@ function resolveMsg(resData) {
         }
 
         if (item.type == Constants.CLOSE_MESSAGE) {
+
+            if(globalVar.msgType === Constants.MSG_TYPE_BOT){
+                // 机器人会话，刷新整个页面
+                return window.location.reload();
+            }
+
             // 结束会话
             globalVar.targetServiceId = null;
             globalVar.isRate = false;
@@ -475,6 +481,8 @@ function resolveMsg(resData) {
             });
             break;
         }
+
+
 
         console.error('消息类型未知:' + item.type);
 
