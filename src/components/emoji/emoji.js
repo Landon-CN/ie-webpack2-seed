@@ -45,7 +45,7 @@ export function emoji(parent, change = () => {}) {
     return {
         open: () => {
             showStatus = true;
-            dom.show();
+            dom.show('fast');
         },
         close: () => {
             showStatus = false;

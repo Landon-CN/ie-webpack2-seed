@@ -83,7 +83,8 @@ export function getOfflineMsg(params) {
  * }
  */
 export function sendMsg(targetUserId, data = {}, ext = {}) {
-    data.time = moment().format('YYYY-MM-DD HH:mm:ss:SSS');
+    data.time = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
+    console.log(data.time);
 
     data.type = globalVar.msgType;
     data.dialogId = globalVar.dialogId;

@@ -53,7 +53,7 @@ export default function (talk) {
         this.imgModalListener();
         // this.botAnswerRateListener();
         this.botMsgList = {};
-
+        this.$queueDom = null; // 排队消息
 
 
 
@@ -75,6 +75,7 @@ export default function (talk) {
         if (globalVar.queueLength > 0) {
             this.addLine(globalVar.queueLength);
         }
+
 
 
         // this.addMsg({
@@ -266,7 +267,7 @@ function getHistory() {
 
     let params = {
         expectSize: pageSize,
-        endDate: historyTime.format('YYYY-MM-DD HH:mm:ss:SSS')
+        endDate: historyTime.format('YYYY-MM-DD HH:mm:ss.SSS')
     };
 
     const errorHandler = () => {
@@ -297,7 +298,7 @@ function getHistory() {
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
             if (i === 0) {
-                historyTime = moment(item.sendTime)
+                historyTime = moment(item.sendTime, 'YYYY-MM-DD HH:mm:ss.SSS')
             }
             let type = parseInt(item.msgType, 10);
             switch (type) {
@@ -408,7 +409,9 @@ function resolveMsg(resData) {
             globalVar.targetServiceId = item.fromUserId;
             globalVar.dialogId = item.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
-            this.lineModal.close();
+            this.$queueDom.hide('fast', () => {
+                this.$queueDom.remove();
+            });
             globalVar.isClose = false;
             this.inService(Constants.INSERVICE_EMSSAGE);
             break;
@@ -675,12 +678,12 @@ function cancelQueueListener() {
 function addLine(num) {
     let $queueDom;
     if (!!num) {
-        $queueDom = this.addMsg({
+        this.$queueDom = $queueDom = this.addMsg({
             queue: true,
             number: num
         });
     }
-    queueInterval($queueDom);
+    queueInterval.call(this, $queueDom);
 }
 
 /**
@@ -699,6 +702,7 @@ function queueInterval($dom, timeout = 30000) {
                     queue: true,
                     number: data.length
                 });
+                this.$queueDom = $dom;
             } else if (data.length > 0 && globalVar.queueLength > 0) {
                 $dom.find('.queue-num').text(data.length);
                 queueInterval($dom);

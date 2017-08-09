@@ -38,10 +38,11 @@ module.exports = {
             {
                 test: /\.less$/,
                 include: pathConf.srcPath,
-                loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader!less-loader')
-            }, {
+                loader: 'style-loader!css-loader!postcss-loader!less-loader'
+            },
+            {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract('style-loader','css-loader')
+                loader: 'style-loader!css-loader'
             },
             {
                 test: /\.(png|jpg|gif)$/,
