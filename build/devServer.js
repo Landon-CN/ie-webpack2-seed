@@ -13,8 +13,8 @@ let messageUrl = '172.25.47.37'; // server
 
 let local = true;
 if (local) {
-    targetUrl = '10.9.46.154';
-    messageUrl = '10.9.46.154';
+    targetUrl = '10.9.46.133';
+    messageUrl = '10.9.46.133';
 }
 
 var server = new webpackDevServer(compiler, {
