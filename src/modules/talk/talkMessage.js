@@ -409,6 +409,7 @@ function resolveMsg(resData) {
             globalVar.targetServiceId = item.fromUserId;
             globalVar.dialogId = item.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+            globalVar.queueLength = 0;
             this.$queueDom.hide('fast', () => {
                 this.$queueDom.remove();
             });
