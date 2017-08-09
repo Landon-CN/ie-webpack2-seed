@@ -16,7 +16,6 @@ export default function (talk) {
         inputBoxPlaceholder,
         inputResize,
         pasteListener,
-        closeWindowListener,
         autoCompleteListener
     });
 
@@ -25,17 +24,16 @@ export default function (talk) {
         init.apply(this, args);
         this.inputKeyListener();
         this.submitListener();
-        this.inputBox = this.dom.find('.input-box');
+        this.$inputBox = this.$dom.find('.input-box');
         this.inputBoxPlaceholder();
-        this.inputResize();
+        // this.inputResize();
         this.pasteListener();
-        this.closeWindowListener();
         // this.autoCompleteListener();
     }
 }
 
 function submitListener() {
-    this.dom.on('click', '.btn-submit', (event) => {
+    this.$dom.on('click', '.btn-submit', (event) => {
         this.submit();
     });
 }
@@ -43,7 +41,7 @@ function submitListener() {
 function inputKeyListener() {
     // 处理输入框快捷键
     // TODO: 暂时保留两种快捷键
-    this.dom.on('keydown', '.input-box', (event) => {
+    this.$dom.on('keydown', '.input-box', (event) => {
         const keyCode = event.keyCode;
         let keyType = 'one';
         if (keyCode === 13) {
@@ -69,12 +67,12 @@ function inputKeyListener() {
 
 
 function submit() {
-    let htmlText = this.inputBox.html();
+    let htmlText = this.$inputBox.html();
     if (htmlText == '' || htmlText == Constants.INPUT_PLACEHOLDER) {
         return;
     }
 
-    this.inputBox.html('');
+    this.$inputBox.html('');
     htmlText = $(`<div>${htmlText}</div>`);
     htmlText.find('.remove').remove()
     htmlText = htmlText.html();
@@ -117,10 +115,10 @@ const placeholderClassName = Constants.INPUT_PLACEHOLDER_CALSS;
 const defaultText = Constants.INPUT_PLACEHOLDER;
 // 判断是否placeholder需要删除
 function inputBoxPlaceholderJudge() {
-    let inputBox = this.inputBox;
-    if (inputBox.html() == defaultText) {
-        inputBox.removeClass(placeholderClassName);
-        inputBox.text('');
+    let $inputBox = this.$inputBox;
+    if ($inputBox.html() == defaultText) {
+        $inputBox.removeClass(placeholderClassName);
+        $inputBox.text('');
     }
 }
 
@@ -129,19 +127,19 @@ function inputBoxPlaceholderJudge() {
  * @param {*} dom
  */
 function inputBoxPlaceholder() {
-    let dom = this.dom;
-    let inputBox = this.inputBox;
-    inputBox.addClass(placeholderClassName);
-    inputBox.text(defaultText);
-    inputBox.on('focus', () => {
+    let dom = this.$dom;
+    let $inputBox = this.$inputBox;
+    $inputBox.addClass(placeholderClassName);
+    $inputBox.text(defaultText);
+    $inputBox.on('focus', () => {
 
-        this.inputBoxPlaceholderJudge(inputBox);
+        this.inputBoxPlaceholderJudge($inputBox);
         dom.find('.rate-tooltip').hide();
     });
-    inputBox.on('blur', () => {
-        if (inputBox.html() == '') {
-            inputBox.addClass(placeholderClassName);
-            inputBox.text(defaultText);
+    $inputBox.on('blur', () => {
+        if ($inputBox.html() == '') {
+            $inputBox.addClass(placeholderClassName);
+            $inputBox.text(defaultText);
         }
     });
 }
@@ -155,7 +153,7 @@ function inputResize() {
     const resize = () => {
         let height = $('.talk-editor').height();
 
-        this.inputBox.outerHeight(height - 70 - 10);
+        this.$inputBox.outerHeight(height - 70 - 10);
     }
 
     $(window).on('resize', resize);
@@ -167,7 +165,7 @@ function inputResize() {
 
 function pasteListener() {
     // 处理粘贴富文本
-    this.inputBox.on('paste', (e) => {
+    this.$inputBox.on('paste', (e) => {
 
         let text;
 
@@ -203,14 +201,6 @@ function pasteListener() {
                 document.execCommand("insertText", false, text);
             }
         }
-    });
-}
-
-
-function closeWindowListener() {
-    // 结束对话
-    this.dom.on('click', '.btn-close', function name() {
-        window.location.href = "about:blank";
     });
 }
 

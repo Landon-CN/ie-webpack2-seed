@@ -4,15 +4,18 @@
     padding: 16px 22px;
     height: @height;
     background: @bg-white-color;
+    position: relative;
     .input-box {
         height: 70px;
+        img {
+            vertical-align: middle;
+            max-height: 100px;
+            max-width: 100px;
+        }
     }
-
-    .tool-list{
+    .tool-list {
         font-size: 0;
     }
-
-
     .tool-item {
         cursor: pointer;
         display: inline-block;
@@ -22,9 +25,15 @@
         &.tool-emoji {
             background: url('../public/imgs/emoji.png') no-repeat center center;
         }
-
         &.tool-file {
+            display: none;
             background: url('../public/imgs/file.png') no-repeat center center;
         }
+        &.tool-service {
+            background: url('../public/imgs/service.png') no-repeat center center;
+        }
+    }
+    .placeholder {
+        color: #ccc;
     }
 }

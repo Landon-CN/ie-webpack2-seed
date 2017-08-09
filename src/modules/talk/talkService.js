@@ -83,7 +83,7 @@ export function getOfflineMsg(params) {
  * }
  */
 export function sendMsg(targetUserId, data = {}, ext = {}) {
-    data.time = moment().format('YYYY-MM-DD HH:mm:SS');
+    data.time = moment().format('YYYY-MM-DD HH:mm:ss:SSS');
 
     data.type = globalVar.msgType;
     data.dialogId = globalVar.dialogId;
@@ -204,4 +204,20 @@ export function autoComplete(inputText) {
         }, Math.ceil(Math.random() * 2000));
     });
 
+}
+
+
+
+/**
+ * 查询队列长度
+ */
+export function queryQueueLenght() {
+    return $.ajax({
+        url: '/IncomingLine/queryQueueLength.htm',
+        contentType: 'application/json; charset=utf-8',
+        type: 'post',
+        data: {
+            groupId: globalVar.groupId
+        }
+    })
 }

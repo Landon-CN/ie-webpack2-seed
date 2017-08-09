@@ -4,15 +4,17 @@
         <tr>
             {{#.}}
             <td class="emoji-item">
-                <div class="emoji-border" data-id="{{.}}">
-                    <span class="emoji emoji-classics-{{.}}" ></span>
+                <div class="emoji-border" data-id="{{id}}" data-idx="{{idx}}">
+                    <span class="emoji">
+                        <img src="{{src}}" alt="{{id}}">
+                    </span>
                 </div>
             </td>
             {{/.}}
         </tr>
         {{/classics}}
     </table>
-    <div class="emoji-show-body">
+    <!-- <div class="emoji-show-body">
         <img />
-    </div>
+    </div> -->
 </div>

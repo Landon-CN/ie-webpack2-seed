@@ -6,6 +6,7 @@ const autoprefixer = require('autoprefixer');
 const oldie = require('oldie');
 const es3ifyPlugin = require('es3ify-webpack-plugin');
 const package = require('../package.json');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 //'es5-shim','es5-shim/es5-sham,'jquery', 'blueimp-file-upload' ,'blueimp-file-upload/js/jquery.iframe-transport.js','mustache'
 const vender = ['jquery', 'blueimp-file-upload', 'blueimp-file-upload/js/jquery.iframe-transport.js', 'mustache'];
@@ -37,11 +38,10 @@ module.exports = {
             {
                 test: /\.less$/,
                 include: pathConf.srcPath,
-                loader: 'style-loader!css-loader!postcss-loader!less-loader'
-            },
-            {
+                loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader!less-loader')
+            }, {
                 test: /\.css$/,
-                loader: 'style-loader!css-loader'
+                loader: ExtractTextPlugin.extract('style-loader','css-loader')
             },
             {
                 test: /\.(png|jpg|gif)$/,
@@ -69,7 +69,11 @@ module.exports = {
             $: "jquery",
             jQuery: "jquery"
         }),
-        // new webpack.HotModuleReplacementPlugin()
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': '"development"'
+        }),
+        new webpack.HotModuleReplacementPlugin()
+
     ],
     postcss: function () {
         return [

@@ -9,9 +9,14 @@
     padding: 23px 38px;
     .message-row {
         margin-bottom: 20px;
+
+        &.message-history{
+            display: none;
+        }
+
         .history-msg {
             cursor: pointer;
-            display: none;
+            display: inline-block;
             font-size: 12px;
             text-align: center;
             color: @text-blue-color;
@@ -218,5 +223,28 @@
         overflow: hidden;
         animation: loading 2s linear infinite;
         vertical-align: middle;
+    }
+}
+
+.mutipage-body {
+    width: 300px;
+    height: 200px;
+    background: #fff;
+    margin: 0 auto;
+    .title {
+        text-align: center;
+        height: 150xp;
+        line-height: 150px;
+    }
+    .btn {
+        background: #f3565f;
+        color: #fff;
+        padding: 5px 20px;
+    }
+}
+
+.img-modal {
+    img {
+        max-width: 60%;
     }
 }

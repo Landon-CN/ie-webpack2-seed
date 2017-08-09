@@ -1,13 +1,13 @@
-{{#list}} {{#timeShow}}
-<!-- <div class="message-row time">
-    {{message}}
-</div> -->
-{{/timeShow}} {{#loading}}
-<div class="message-row time">
-    正在转接中，请稍后...
-</div>
-{{/loading}}
+{{#list}}
 
+<!-- 时间 -->
+{{#timeShow}}
+<div class="message-row" style="text-align:center;margin-bottom:0;">
+    <div class="dialog">
+        {{message}}
+    </div>
+</div>
+{{/timeShow}}
 
 
 <!--进线列表  -->
@@ -18,8 +18,8 @@
         <span class="message-text">请选择分组</span>
         <ul class="non-style">
             {{#serviceList}}
-            <li data-name="{{businessName}}" }>
-                <a class="bot-list-item">{{idx}}.{{businessName}}</a>
+            <li data-name="{{businessName}}" data-id="{{groupId}}">
+                <a class="bot-list-item" >{{idx}}. {{businessName}}</a>
             </li>
             {{/serviceList}}
         </ul>
@@ -72,11 +72,11 @@
     <div class="service bot-plain-text">
         <span class="service-border"></span>
         <span class="message-text">{{{answer}}}</span>
-        <div class="bot-answer-rate">
+        <!-- <div class="bot-answer-rate">
             <span class="title">问题是否解决:</span>
             <span class="resolve" data-msgid="{{msgId}}" data-type="1">解决</span>
             <span class="not-resolve" data-msgid="{{msgId}}" data-type="0">未解决</span>
-        </div>
+        </div> -->
     </div>
 </div>
 {{/botPlainText}}
@@ -85,13 +85,13 @@
 {{#botFlodText}}
 
 <div class="message-row">
-    <div class="service bot-list service-group">
+    <div class="service bot-list">
         <span class="service-border"></span>
         <span class="message-text">{{{answer}}}</span>
         <ul class="non-style">
             {{#list}}
-            <li data-item="{{id}}" data-id="{{msgId}}" data-type="{{msgType}}" data-code="{{scene}}">
-                <a class="bot-list-item">{{idx}}.{{title}}</a>
+            <li data-item="{{id}}" data-id="{{msgId}}" data-type="{{msgType}}" data-code="{{scene}}" data-text="{{title}}">
+                <a class="bot-list-item">{{idx}}. {{title}}</a>
             </li>
             {{/list}}
         </ul>

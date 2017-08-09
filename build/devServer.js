@@ -11,10 +11,10 @@ var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webap
 let targetUrl = '172.25.47.40'; // server
 let messageUrl = '172.25.47.37'; // server
 
-let local = false;
+let local = true;
 if (local) {
-    targetUrl = '10.9.46.154';
-    messageUrl = '10.9.46.154';
+    targetUrl = '10.9.46.133';
+    messageUrl = '10.9.46.133';
 }
 
 var server = new webpackDevServer(compiler, {

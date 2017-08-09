@@ -18,14 +18,12 @@ talk.prototype.init = function () {
 
     this.$dom.show();
 
-
-
-    this.onlineServiceClick();
+    // this.onlineServiceClick();
 }
 
-// talkInput(talk);
+talkInput(talk);
 talkMessage(talk);
-// talkTool(talk);
+talkTool(talk);
 
 function talk() {
 
@@ -71,6 +69,7 @@ talk.prototype.onlineServiceClick = function () {
             serviceList: list,
             time: moment()
         });
+        this.onlineClick = false;
     }, errorHandler);
 
 };
@@ -78,7 +77,7 @@ talk.prototype.onlineServiceClick = function () {
 talk.prototype.inService = function inService(message) {
     this.onlineClick = true; //防止再次进线
     this.historyRest(); // 进线后可以再次查看历史记录
-    headerChangeToSerice();
+    header.headerInservice();
     this.onlineServiceShow();
     this.addMsg({
         dialog: true,
@@ -89,13 +88,11 @@ talk.prototype.inService = function inService(message) {
 // 进线成功后，显示某些元素
 talk.prototype.onlineServiceShow = function onlineServiceShow() {
     // 显示图片上传和评价按钮
-    this.dom.find('.rate-tool,.fileinput-button').css('display', 'inline-block');
-
-    // 如果已评价，则不提示
-    !globalVar.isRate && this.dom.find('.rate-tooltip').show();
-
+    this.$dom.find('.tool-file').css('display', 'inline-block');
+    this.$dom.find('.tool-service').hide();
     // 显示历史记录按钮
     this.historyDom.show();
+    this.$dom.find('.message-history').show();
     this.imgUploadListener();
 }
 

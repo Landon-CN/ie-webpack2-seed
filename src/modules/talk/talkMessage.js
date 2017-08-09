@@ -30,12 +30,12 @@ export default function (talk) {
         pollInterval,
         serviceGroupListener,
         addAppraise,
-        cancelLine,
         botAnswersListener,
         mutiPageModal,
         imgModalListener,
         botAnswerRateListener,
-        cancelQueueListener
+        cancelQueueListener,
+        addLine
     });
 
     const init = talk.prototype.init;
@@ -49,19 +49,12 @@ export default function (talk) {
         this.offlineMsgInteval();
         this.serviceGroupListener();
         this.cancelQueueListener();
-        // this.botAnswersListener();
-        // this.imgModalListener();
+        this.botAnswersListener();
+        this.imgModalListener();
         // this.botAnswerRateListener();
         this.botMsgList = {};
 
 
-        // 需要排队
-        if (globalVar.queueLength > 0) {
-            this.addMsg({
-                queue: true,
-                number: globalVar.queueLength
-            });
-        }
 
 
         // 重新进线
@@ -70,6 +63,7 @@ export default function (talk) {
             this.getHistory();
 
         } else {
+            // 机器人，发送欢迎语
             this.addMsg({
                 service: true,
                 message: globalVar.welcomeWords,
@@ -77,21 +71,29 @@ export default function (talk) {
             });
         }
 
+        // 需要排队
+        if (globalVar.queueLength > 0) {
+            this.addLine(globalVar.queueLength);
+        }
 
 
-        this.addMsg({
-            user: true,
-            message: "测试112313"
-        });
+        // this.addMsg({
+        //     user: true,
+        //     message: "测试112313"
+        // });
 
-        this.addMsg({
-            bot: true,
-            type: Constants.BOT_MESSAGE_TEXT,
-            answer: '机器人测试',
-            msgId: 123,
-            scene: 'asfsd'
-        });
-        this.resolveMsg(suggest);
+        // this.addMsg({
+        //     bot: true,
+        //     type: Constants.BOT_MESSAGE_TEXT,
+        //     answer: '机器人测试',
+        //     msgId: 123,
+        //     scene: 'asfsd'
+        // });
+        // this.addMsg({
+        //     user:true,
+        //     message:'<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502254226145&di=8d0aa8b710538eaa4961aa012bf3592d&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F267f9e2f07082838b5168c32b299a9014c08f1f9.jpg" class="open-img">'
+        // })
+        // this.resolveMsg(suggest);
 
     }
 }
@@ -160,11 +162,13 @@ function addMsg(data, append = true) {
     if (append) {
         this.msgBox.append(dom);
         // this.scroll.scrollTop(this.msgBox.height());
+        let scrollHeight = this.msgBox.prop('scrollHeight');
+
         this.msgBox.stop().animate({
-            scrollTop: this.msgBox.height()
+            scrollTop: scrollHeight
         }, 'normal');
     } else {
-        this.historyDom.after(dom);
+        this.$dom.find('.message-history').after(dom);
     }
 
     return dom;
@@ -199,14 +203,14 @@ function resolveBotMsg(context, msg) {
  */
 function botAnswersListener() {
     const that = this;
-    this.dom.on('click', '.answers-group>li', function (event) {
+    this.$dom.on('click', '.bot-list li', function (event) {
         event.stopPropagation();
         event.preventDefault();
         const $dom = $(this);
         const msgId = $dom.data('id');
         const sceneItem = $dom.data('item');
         const sceneCode = $dom.data('code');
-        const message = $dom.text();
+        const message = $dom.data('text');
         const type = $dom.data('type');
 
         that.addMsg({
@@ -243,24 +247,32 @@ function historyRest() {
     backMsg && this.historyDom.text(backMsg);
 }
 
+/**
+ * 获取聊天历史
+ */
 function getHistory() {
     if (noMorePage || pageLoading) {
         return;
     }
     let historyDom = this.historyDom;
+    let $textDom = historyDom.find('.text');
     pageLoading = true;
-    backMsg = historyDom.text();
-    historyDom.text('加载中请稍后...')
+
+    backMsg = $textDom.text();
+    $textDom.text('加载中');
+    historyDom.addClass('loading');
+
 
 
     let params = {
         expectSize: pageSize,
-        endDate: historyTime.format('YYYY-MM-DD HH:mm:SS')
+        endDate: historyTime.format('YYYY-MM-DD HH:mm:ss:SSS')
     };
 
     const errorHandler = () => {
         pageLoading = false;
-        historyDom.text(backMsg)
+        $textDom.text(backMsg);
+        historyDom.removeClass('loading');
     }
 
     return service.historyMsg(params).then((result) => {
@@ -272,10 +284,11 @@ function getHistory() {
         let data = result.data;
         if (data.length < pageSize) {
             noMorePage = true;
-            historyDom.text('没有更多了');
+            $textDom.text('没有更多了');
         } else {
-            historyDom.text(backMsg);
+            $textDom.text(backMsg);
         }
+        historyDom.removeClass('loading');
 
 
 
@@ -434,7 +447,7 @@ function resolveMsg(resData) {
 
         // 转接排队
         if (item.type == Constants.DIALOG_TRANSFER_QUEUE) {
-            this.lineModal.open();
+            this.addLine(0);
             break;
         }
 
@@ -559,7 +572,7 @@ function serviceGroupListener(params) {
             globalVar.isClose = false;
             if (!customerServiceId) {
                 // 要排队
-                this.lineModal.open().change(result.data.queueLength);
+                this.addLine(result.data.queueLength);
 
                 return;
             }
@@ -580,12 +593,7 @@ function serviceGroupListener(params) {
 
 }
 
-/**
- * 取消排队
- */
-function cancelLine() {
-    this.groupClick = false;
-}
+
 
 /**
  * 多页面打开，弹窗提示
@@ -643,12 +651,13 @@ function cancelQueueListener() {
                 previousDialogId: globalVar.dialogId
             }
         }).then((res) => {
+            this.groupClick = false;
             if (res.resultCode === Constants.AJAX_SUCCESS_CODE && !!res.data.result) {
                 const data = res.data;
                 globalVar.dialogId = data.currentDialogId;
                 globalVar.targetServiceId = data.toUserId;
                 globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
-
+                globalVar.queueLength = 0;
                 // 修改文字
                 const $target = $(event.currentTarget);
                 const $dialog = $target.parent('.dialog');
@@ -658,4 +667,44 @@ function cancelQueueListener() {
             return false;
         });
     });
+}
+
+/**
+ * 添加排队消息
+ */
+function addLine(num) {
+    let $queueDom;
+    if (!!num) {
+        $queueDom = this.addMsg({
+            queue: true,
+            number: num
+        });
+    }
+    queueInterval($queueDom);
+}
+
+/**
+ * 重复请求剩余对列长度
+ * @param {*} timeout
+ */
+function queueInterval($dom, timeout = 30000) {
+    if (!$dom) {
+        timeout = 0;
+    }
+    setTimeout(() => {
+        service.queryQueueLenght().then((result) => {
+            let data = result.data;
+            if (!$dom) {
+                $dom = this.addMsg({
+                    queue: true,
+                    number: data.length
+                });
+            } else if (data.length > 0 && globalVar.queueLength > 0) {
+                $dom.find('.queue-num').text(data.length);
+                queueInterval($dom);
+            }
+
+        });
+    }, timeout);
+
 }

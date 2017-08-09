@@ -27,10 +27,10 @@
             </div>
             <div class="close pull-right"></div>
         </div>
-        <div class="talk-message">
-            <div class="message-row" style="text-align:center;">
+        <div class="talk-message ">
+            <div class="message-row message-history" style="text-align:center;">
                 <div class="history-msg">
-                    <span class="v-middle">点击加载历史记录</span>
+                    <span class="text v-middle">点击加载历史记录</span>
                     <span class="loading-body v-middle"><span class="loading">....</span></span>
                 </div>
             </div>
@@ -43,11 +43,14 @@
             <div class="input-box" contenteditable="true"></div>
             <div class="input-footer">
                 <div class="tool-list inline-block">
-                    <a class="tool-item tool-emoji"></a>
-                    <a class="tool-item tool-file"></a>
+                    <a class="tool-item tool-emoji" data-type="emoji"></a>
+                    <a class="tool-item tool-file fileinput-button" data-type="img">
+                        <input id="fileupload" type="file" name="files" accept="mage/gif,image/jpeg,image/jpg,image/png">
+                    </a>
+                    <a class="tool-item tool-service" data-type="service"></a>
                 </div>
                 <div class="actions inline-block pull-right">
-                    <a class="btn btn-default">发送</a>
+                    <a class="btn btn-default btn-submit">发送</a>
                 </div>
             </div>
         </div>

@@ -19,23 +19,29 @@ export default function (talk) {
     const init = talk.prototype.init;
     talk.prototype.init = function (...args) {
         init.apply(this, args);
-        this.emoji = Emoji(this.dom.find('.toolbar'), emojiChange.bind(this));
-        this.appraise = Appraise(this.dom.find('.toolbar'), true);
-        this.rateTooltip = this.dom.find('.rate-tooltip');
+        this.emoji = Emoji(this.$dom.find('.talk-input'), emojiChange.bind(this));
+        // this.appraise = Appraise(this.$dom.find('.toolbar'), true);
+        // this.rateTooltip = this.$dom.find('.rate-tooltip');
         this.toolItemListener();
         this.closeListener();
-        this.rateListener();
-        this.botRateListener();
+        // this.rateListener();
+        // this.botRateListener();
+
     }
 }
 
+/**
+ * 工具栏点击
+ */
 function toolItemListener() {
-    const $botRate = this.dom.find('.bot-rate');
-    this.dom.on('click', '.tool-item', (event) => {
+    const $botRate = this.$dom.find('.bot-rate');
+
+    this.$dom.on('click', '.tool-item', (event) => {
         event.stopPropagation();
         const type = $(event.currentTarget).data('type');
         this.closeOther(type);
-        this.rateTooltip.hide();
+
+
         switch (type) {
             case 'emoji':
                 this.emoji.toggle();
@@ -47,24 +53,28 @@ function toolItemListener() {
                 else if (!globalVar.botRate)
                     $botRate.toggle();
                 break;
+            case 'service':
+                // 进线按钮
+                this.onlineServiceClick();
+                break;
             default:
                 break;
         }
     });
 
     // 邀请评价
-    this.dom.on('click', '.open-rate', (event) => {
+    // this.$dom.on('click', '.open-rate', (event) => {
 
-        event.stopPropagation();
-        addAppraise();
-    });
+    //     event.stopPropagation();
+    //     addAppraise();
+    // });
 
 }
 
 function imgUploadListener() {
     const imgReg = /(\.|\/)(gif|jpe?g|png)$/i;
-    this.dom.find('.fileinput-button').fileupload({
-        pasteZone: this.inputBox,
+    this.$dom.find('.tool-file').fileupload({
+        pasteZone: this.$inputBox,
         dropZone: $(document),
         maxFileSize: '5000000',
         dataType: 'json',
@@ -77,7 +87,7 @@ function imgUploadListener() {
             let msg = `<img src='${url}' class="open-img">`;
 
             this.inputBoxPlaceholderJudge();
-            this.inputBox.append(msg);
+            this.$inputBox.append(msg);
 
         }
     });
@@ -85,7 +95,7 @@ function imgUploadListener() {
 
 function closeListener() {
     $(document).on('click', () => {
-        this.dom.find('.submit-type').hide();
+        this.$dom.find('.submit-type').hide();
         this.closeOther();
     });
 
@@ -109,10 +119,10 @@ function closeOther(type) {
         this.emoji.close();
     }
 
-    if (type !== 'rate') {
-        this.dom.find('.bot-rate').hide();
-        this.appraise.close();
-    }
+    // if (type !== 'rate') {
+    //     this.$dom.find('.bot-rate').hide();
+    //     this.appraise.close();
+    // }
 
 }
 
@@ -123,14 +133,14 @@ function closeOther(type) {
  * @param {*} emoji
  */
 function addEmoji(emoji) {
-    let inputBox = this.inputBox;
+    let inputBox = this.$inputBox;
     this.inputBoxPlaceholderJudge(inputBox)
     inputBox.append(emoji);
 }
 
 
 function rateListener() {
-    let dom = this.dom;
+    let dom = this.$dom;
     let rateTooltip = this.rateTooltip;
     dom.on('mouseenter', '.rate-tool', () => {
         if (globalVar.isRate) {
@@ -152,8 +162,8 @@ function rateListener() {
 }
 
 function botRateListener() {
-    this.dom.on('click', '.bot-rate .btn', (event) => {
-        globalVar.botRate=true;
+    this.$dom.on('click', '.bot-rate .btn', (event) => {
+        globalVar.botRate = true;
         const $target = $(event.currentTarget);
         const type = $target.data('type');
         console.log(type);
