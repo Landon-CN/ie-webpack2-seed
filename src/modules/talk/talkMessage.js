@@ -35,7 +35,8 @@ export default function (talk) {
         imgModalListener,
         botAnswerRateListener,
         cancelQueueListener,
-        addLine
+        addLine,
+        chooseGroupInService
     });
 
     const init = talk.prototype.init;
@@ -62,6 +63,9 @@ export default function (talk) {
             this.inService(Constants.RECONNECT_MESSAGE);
             this.getHistory();
 
+        } else if (globalVar.isClose) {
+            // 没有机器人，直接发送分组
+            this.onlineServiceClick();
         } else {
             // 机器人，发送欢迎语
             this.addMsg({
@@ -388,7 +392,7 @@ function resolveMsg(resData) {
 
         if (item.type == Constants.CLOSE_MESSAGE) {
 
-            if(globalVar.msgType === Constants.MSG_TYPE_BOT){
+            if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
                 // 机器人会话，刷新整个页面
                 return window.location.reload();
             }
@@ -556,15 +560,7 @@ function serviceGroupListener(params) {
     // 选择问题分组
     // 有且只能点一次
     this.groupClick = false;
-    const errorHandler = () => {
-        console.log('进线失败');
 
-        this.groupClick = false;
-        this.addMsg([{
-            dialog: true,
-            message: Constants.ERROR_MESSAGE
-        }]);
-    }
     this.$dom.on('click', '.service-group  li', (event) => {
         if (this.groupClick) {
             return;
@@ -574,35 +570,52 @@ function serviceGroupListener(params) {
         let id = item.data('id');
         globalVar.groupId = id;
         item.find('.group-name').addClass('active');
-        service.queryServiceId(id).then((result) => {
-
-            if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
-                return errorHandler();
-            }
-
-            let customerServiceId = result.data.customerServiceId;
-            globalVar.isClose = false;
-            if (!customerServiceId) {
-                // 要排队
-                this.addLine(result.data.queueLength);
-
-                return;
-            }
-
-            globalVar.targetServiceId = customerServiceId;
-            globalVar.dialogId = result.data.dialogId;
-            globalVar.msgType = Constants.MSG_TYPE_SERVICE;
-
-            this.inService(Constants.INSERVICE_EMSSAGE);
-
-            // this.addMsg([{
-            //     service: true,
-            //     message: result.data.welcomeWords
-            // }]);
-
-        }, errorHandler);
+        this.chooseGroupInService(id);
     });
 
+}
+
+/**
+ * 选择进线分组后端交互
+ * @param {number} id
+ */
+function chooseGroupInService(id) {
+    const errorHandler = () => {
+        console.log('进线失败');
+
+        this.groupClick = false;
+        this.addMsg([{
+            dialog: true,
+            message: Constants.ERROR_MESSAGE
+        }]);
+    }
+    service.queryServiceId(id).then((result) => {
+
+        if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
+            return errorHandler();
+        }
+
+        let customerServiceId = result.data.customerServiceId;
+        globalVar.isClose = false;
+        if (!customerServiceId) {
+            // 要排队
+            this.addLine(result.data.queueLength);
+
+            return;
+        }
+
+        globalVar.targetServiceId = customerServiceId;
+        globalVar.dialogId = result.data.dialogId;
+        globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+
+        this.inService(Constants.INSERVICE_EMSSAGE);
+
+        // this.addMsg([{
+        //     service: true,
+        //     message: result.data.welcomeWords
+        // }]);
+
+    }, errorHandler);
 }
 
 

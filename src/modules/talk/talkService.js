@@ -173,7 +173,16 @@ export function inlineInit() {
 
         globalVar.dialogId = data.currentDialogId;
         globalVar.targetServiceId = data.toUserId;
-        globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
+        // 1 机器人
+        // 2 人
+        // 0 无机器人状态
+        if (data.currentDialogType == 1) {
+            globalVar.msgType = Constants.MSG_TYPE_BOT;
+        } else if (data.currentDialogType == 2) {
+            globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+        } else {
+            globalVar.isClose = true;
+        }
         if (data.content) {
             let botContent = botParse(data.content);
             globalVar.welcomeWords = botContent.answer;

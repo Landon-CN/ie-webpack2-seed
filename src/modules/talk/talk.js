@@ -34,7 +34,6 @@ function talk() {
     this.$dom = $('.talk-body');
     this.onlineClick = false;
 
-
 }
 
 
@@ -44,7 +43,7 @@ function talk() {
 
 talk.prototype.onlineServiceClick = function () {
 
-    if (this.onlineClick) {
+    if (this.onlineClick || globalVar.queueLength > 0) {
         return;
     }
     this.onlineClick = true;
@@ -61,14 +60,24 @@ talk.prototype.onlineServiceClick = function () {
         const data = result.data;
 
         const list = data.showBusinessInfo.sort((a, b) => a.groupId - b.groupId);
-        list.forEach(function (element, index) {
-            element.idx = index + 1;
-        }, this);
-        this.addMsg({
-            serviceGroup: true,
-            serviceList: list,
-            time: moment()
-        });
+
+        if (list.length === 1) {
+            // 只有一个分组，直接进线
+            const groupId = list[0].groupId;
+            this.chooseGroupInService(groupId);
+        } else {
+            // 多个分组，展示所有分组
+            list.forEach(function (element, index) {
+                element.idx = index + 1;
+            }, this);
+
+            this.addMsg({
+                serviceGroup: true,
+                serviceList: list,
+                time: moment()
+            });
+        }
+
         this.onlineClick = false;
     }, errorHandler);
 
