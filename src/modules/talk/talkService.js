@@ -167,7 +167,7 @@ export function inlineInit() {
     }).then((result) => {
         const data = result.data;
 
-        if (data.queueLength) {
+        if (!!data.queueLength) {
             return globalVar.queueLength = data.queueLength;
         }
 
@@ -187,7 +187,6 @@ export function inlineInit() {
             let botContent = botParse(data.content);
             globalVar.welcomeWords = botContent.answer;
         }
-
 
     });
 }

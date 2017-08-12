@@ -80,7 +80,9 @@ function submit() {
     let content = utils.stringifyContent(htmlText);
 
     // 有消息才发送
-    if (content && !globalVar.isClose) {
+    // 会话未关闭
+    // 未排队
+    if (content && !globalVar.isClose && globalVar.queueLength === 0) {
         service.sendMsg(globalVar.targetServiceId, {
             content
         }, {
@@ -88,15 +90,21 @@ function submit() {
         });
     }
 
-    if (globalVar.isClose) {
-        this.onlineClick = false;
-        this.onlineServiceClick();
-    }
+
+
+
 
     this.addMsg({
         user: true,
         message: htmlText
     });
+    // 有排队的话，就发送排队消息
+    if (globalVar.queueLength) {
+        this.addLine(globalVar.queueLength);
+    } else if (globalVar.isClose) {
+        this.onlineClick = false;
+        this.onlineServiceClick();
+    }
 }
 
 // 添加换行

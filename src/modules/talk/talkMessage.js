@@ -394,7 +394,9 @@ function resolveMsg(resData) {
 
             if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
                 // 机器人会话，刷新整个页面
-                return window.location.reload();
+                alert('机器人会话断开，刷新页面')
+                // return window.location.reload();
+                return;
             }
 
             // 结束会话
@@ -420,10 +422,34 @@ function resolveMsg(resData) {
             globalVar.dialogId = item.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
             globalVar.queueLength = 0;
-            this.$queueDom.hide('fast', () => {
-                this.$queueDom.remove();
-            });
+            this.$dom.find('.queue.active').removeClass('active').text('进线成功');
             globalVar.isClose = false;
+
+            let hello;
+            try {
+                hello = JSON.parse(item.content);
+            } catch (e) {
+                hello = {};
+            }
+
+            if (hello.welcomeWords || hello.consultingWords) {
+                const msgList = [];
+                if (hello.welcomeWords) {
+                    msgList.push({
+                        service: true,
+                        message: hello.welcomeWords
+                    });
+                }
+                if (hello.consultingWords) {
+                    msgList.push({
+                        service: true,
+                        message: hello.consultingWords
+                    })
+                }
+                this.addMsg(msgList);
+            }
+
+
             this.inService(Constants.INSERVICE_EMSSAGE);
             break;
         }
@@ -594,18 +620,43 @@ function chooseGroupInService(id) {
         if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
             return errorHandler();
         }
+        const data = result.data;
+        let customerServiceId = data.customerServiceId;
 
-        let customerServiceId = result.data.customerServiceId;
-        globalVar.isClose = false;
-        if (!customerServiceId) {
+
+        if (data.queueLength) {
             // 要排队
-            this.addLine(result.data.queueLength);
-
+            this.addLine(data.queueLength);
             return;
+        } else if (data.notWorkingWords) {
+            this.groupClick = false;
+            return this.addMsg({
+                service: true,
+                message: data.notWorkingWords
+            });
+        } else if (data.welcomeWords || data.consultingWords) {
+            this.groupClick = false;
+            const msgList = [];
+            if (data.welcomeWords) {
+                msgList.push({
+                    service: true,
+                    message: data.welcomeWords
+                });
+            }
+            if (data.consultingWords) {
+                msgList.push({
+                    service: true,
+                    message: data.consultingWords
+                })
+            }
+            return this.addMsg(msgList);
         }
+        // 重置结束状态
+        globalVar.isClose = false;
+
 
         globalVar.targetServiceId = customerServiceId;
-        globalVar.dialogId = result.data.dialogId;
+        globalVar.dialogId = data.dialogId;
         globalVar.msgType = Constants.MSG_TYPE_SERVICE;
 
         this.inService(Constants.INSERVICE_EMSSAGE);
@@ -658,12 +709,14 @@ function botAnswerRateListener() {
 /**
  * 排队取消按钮监听
  */
+let cancelLoading = false;
+
 function cancelQueueListener() {
     this.$dom.on('click', '.queue .cancel', (event) => {
 
         // 防重复点击
-        if (event.currentTarget.ajaxLoading) return;
-        event.currentTarget.ajaxLoading = true;
+        if (cancelLoading) return;
+        cancelLoading = true;
 
 
         $.ajax({
@@ -677,6 +730,7 @@ function cancelQueueListener() {
             }
         }).then((res) => {
             this.groupClick = false;
+            cancelLoading = false;
             if (res.resultCode === Constants.AJAX_SUCCESS_CODE && !!res.data.result) {
                 const data = res.data;
                 globalVar.dialogId = data.currentDialogId;
@@ -684,8 +738,8 @@ function cancelQueueListener() {
                 globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
                 globalVar.queueLength = 0;
                 // 修改文字
-                const $target = $(event.currentTarget);
-                const $dialog = $target.parent('.dialog');
+                const $dialog = this.$dom.find('.queue.active');
+                $dialog.removeClass('active');
                 $dialog.text(Constants.TEXT_CANCEL_QUEUE);
                 return true;
             }
@@ -694,41 +748,52 @@ function cancelQueueListener() {
     });
 }
 
+
+let queueTimer = null;
 /**
  * 添加排队消息
  */
 function addLine(num) {
-    let $queueDom;
     if (!!num) {
-        this.$queueDom = $queueDom = this.addMsg({
+        this.addMsg({
             queue: true,
             number: num
         });
     }
-    queueInterval.call(this, $queueDom);
+    // 防止重复设置定时器
+    if (!queueTimer) {
+        queueTimer = queueInterval.call(this, num);
+    }
+
 }
 
 /**
  * 重复请求剩余对列长度
  * @param {*} timeout
  */
-function queueInterval($dom, timeout = 30000) {
-    if (!$dom) {
+function queueInterval(num, timeout = 3000) {
+    if (!num) {
         timeout = 0;
     }
-    setTimeout(() => {
+    return setTimeout(() => {
         service.queryQueueLenght().then((result) => {
             let data = result.data;
-            if (!$dom) {
-                $dom = this.addMsg({
+            if (!num) {
+                this.addMsg({
                     queue: true,
                     number: data.length
                 });
-                this.$queueDom = $dom;
-            } else if (data.length > 0 && globalVar.queueLength > 0) {
-                $dom.find('.queue-num').text(data.length);
-                queueInterval($dom);
+            } else if (data.length > 0) {
+                globalVar.queueLength = data.length;
+                this.$dom.find('.queue.active .queue-num').text(data.length);
             }
+
+            if (globalVar.queueLength > 0) {
+                queueInterval.call(this, num);
+            } else {
+                queueTimer = null;
+            }
+
 
         });
     }, timeout);
