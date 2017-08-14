@@ -81,7 +81,7 @@ export default function (talk) {
         }
 
 
-
+        this.addAppraise();
         // this.addMsg({
         //     user: true,
         //     message: "测试112313"
@@ -571,13 +571,16 @@ function pollInterval() {
 
 // 添加评价
 function addAppraise() {
-    let dom = this.addMsg({
-        service: true,
-        date: Date.now()
-    });
+    // let dom = this.addMsg({
+    //     service: true,
+    //     date: Date.now()
+    // });
 
     // TODO: cb暂时变为空，看下效果
-    Appraise(dom.find('.message-text'), undefined, undefined, false).open();
+    // Appraise(dom.find('.message-text'), undefined, undefined, false).open();
+    this.addMsg({
+        appraise: true
+    });
 }
 
 function serviceGroupListener(params) {

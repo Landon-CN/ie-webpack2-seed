@@ -19,7 +19,7 @@
         <ul class="non-style">
             {{#serviceList}}
             <li data-name="{{businessName}}" data-id="{{groupId}}">
-                <a class="bot-list-item" >{{idx}}. {{businessName}}</a>
+                <a class="bot-list-item">{{idx}}. {{businessName}}</a>
             </li>
             {{/serviceList}}
         </ul>
@@ -98,6 +98,42 @@
     </div>
 </div>
 {{/botFlodText}}
+
+<!-- 评价 -->
+{{#appraise}}
+<div class="message-row">
+    <div class="service rate">
+        <dl>
+            <dt>请对本次服务评价:</dt>
+            <dd>
+                <ul class="inline-list score">
+                    <li class="score-item" data-score="1"></li>
+                    <li class="score-item" data-score="2"></li>
+                    <li class="score-item" data-score="3"></li>
+                    <li class="score-item" data-score="4"></li>
+                    <li class="score-item" data-score="5"></li>
+                </ul>
+            </dd>
+
+        </dl>
+        <dl class="dl-reason">
+            <dt>您不满意的原因:</dt>
+            <dd>
+                <ul class="inline-list reason">
+                    <li data-type="JA">回复不及时</li>
+                    <li data-type="JB">态度差</li>
+                    <li class="last" data-type="JC">问题没得到解决</li>
+                </ul>
+            </dd>
+        </dl>
+        <dl class="rate-submit">
+            <a class="btn btn-default">提交</a>
+        </dl>
+
+    </div>
+</div>
+{{/appraise}}
+
 
 <!-- 结束 -->
 {{/list}}

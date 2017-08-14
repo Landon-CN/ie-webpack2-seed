@@ -1,4 +1,7 @@
 import $ from 'jquery';
+import globalVar from '../../globalVar';
+import talk from '../../modules/talk/talk';
+import moment from 'moment';
 
 /**
  * 邀评交互
@@ -36,8 +39,67 @@ import $ from 'jquery';
         chooseScore = score;
         if (score < 4) {
             $('.dl-reason').show('normal');
-        }else{
+        } else {
             $('.dl-reason').hide('normal');
         }
     }
+
+    // 选择不满意原因
+    $document.on('click', '.reason li', (event) => {
+        $(event.currentTarget).toggleClass('active');
+    });
+
+    $document.on('click', '.rate-submit .btn', (event) => {
+        if (globalVar.isRate) {
+            return talk.addMsg({
+                dialog: true,
+                message: '请勿重复评价'
+            });
+        }
+        // globalVar.isRate = true;
+
+
+
+        const $target = $(event.currentTarget);
+        const $reasonList = $target.parents('.rate').find('.reason li.active');
+
+        let reason = []; // 选择的原因
+        $reasonList.each((idx, ele) => {
+            reason.push($(ele).data('type'));
+        });
+        const params = {
+            dialogId: globalVar.dialogId,
+            toUser: globalVar.targetServiceId,
+            sendTime: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+            score: chooseScore,
+            reason: reason.join(','),
+            userSay: ''
+        };
+
+        $.ajax({
+            url: '/webpage/invitejudge/judge.htm',
+            contentType: 'application/json; charset=utf-8',
+            type: 'post',
+            data: params
+        }).then((result) => {
+            if (result.data == '01') {
+                talk.addMsg({
+                    dialog: true,
+                    message: '评价成功'
+                });
+            } else if (result.data == '02') {
+                // 重复评价
+                talk.addMsg({
+                    dialog: true,
+                    message: '请勿重复评价'
+                });
+            } else {
+                talk.addMsg({
+                    dialog: true,
+                    message: '系统开小差啦~请稍后再试'
+                });
+            }
+        });
+
+    });
 })(document);
