@@ -79,6 +79,7 @@ export default function (talk) {
         if (globalVar.queueLength > 0) {
             this.addLine(globalVar.queueLength);
         }
+        this.addAppraise()
 
     }
 }
