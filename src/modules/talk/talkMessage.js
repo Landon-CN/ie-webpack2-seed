@@ -610,6 +610,7 @@ function chooseGroupInService(id) {
 
         if (data.queueLength) {
             // 要排队
+            globalVar.queueLength = data.queueLength;
             this.addLine(data.queueLength);
             return;
         } else if (data.notWorkingWords) {
@@ -684,7 +685,7 @@ function imgModalListener() {
 function botAnswerRateListener() {
     this.$dom.on('click', '.bot-answer-rate', (event) => {
         const $target = $(event.currentTarget);
-        console.log($target.data('msgid'));
+
         this.dom.find('.bot-appraise').text('已反馈')
     });
 }

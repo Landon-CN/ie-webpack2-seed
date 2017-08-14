@@ -168,7 +168,6 @@ export function inlineInit() {
         const data = result.data;
 
         if (!!data.queueLength) {
-            console.log('初始化，修改队列长度', data.queueLength);
 
             return globalVar.queueLength = data.queueLength;
         }
