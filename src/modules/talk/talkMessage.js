@@ -376,6 +376,7 @@ function resolveMsg(resData) {
                 // 机器人会话，刷新整个页面
                 return window.location.reload();
             }
+            console.log('会话结束');
 
             // 结束会话
             globalVar.targetServiceId = null;
@@ -453,7 +454,7 @@ function resolveMsg(resData) {
                 console.error('解析转接消息失败');
                 break;
             }
-
+            console.log('转接成功');
             globalVar.dialogId = nextServiceInfo.afterJkDialogId;
             globalVar.targetServiceId = nextServiceInfo.afterCustomerServiceUserId;
             globalVar.groupId = nextServiceInfo.afterBusinessLineId;
@@ -467,6 +468,7 @@ function resolveMsg(resData) {
 
         // 转接排队
         if (item.type == Constants.DIALOG_TRANSFER_QUEUE) {
+            console.log('转接排队');
             this.addLine(0);
             break;
         }
@@ -768,6 +770,7 @@ function queueInterval(num, timeout = 3000) {
                     queue: true,
                     number: data.length
                 });
+                globalVar.queueLength = data.length;
             } else if (data.length > 0) {
                 console.log('队列长度', data.length);
 
