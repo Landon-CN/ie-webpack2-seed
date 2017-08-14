@@ -28,9 +28,8 @@ function domInit() {
 
 function init() {
     jquery.when(keyInit(), service.inlineInit()).then(() => {
-        // domInit();
+        domInit();
     });
-    domInit();
 }
 
 

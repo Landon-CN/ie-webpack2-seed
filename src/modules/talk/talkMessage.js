@@ -80,26 +80,6 @@ export default function (talk) {
             this.addLine(globalVar.queueLength);
         }
 
-
-        this.addAppraise();
-        // this.addMsg({
-        //     user: true,
-        //     message: "测试112313"
-        // });
-
-        // this.addMsg({
-        //     bot: true,
-        //     type: Constants.BOT_MESSAGE_TEXT,
-        //     answer: '机器人测试',
-        //     msgId: 123,
-        //     scene: 'asfsd'
-        // });
-        // this.addMsg({
-        //     user:true,
-        //     message:'<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1502254226145&di=8d0aa8b710538eaa4961aa012bf3592d&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F267f9e2f07082838b5168c32b299a9014c08f1f9.jpg" class="open-img">'
-        // })
-        // this.resolveMsg(suggest);
-
     }
 }
 
@@ -786,6 +766,8 @@ function queueInterval(num, timeout = 3000) {
                     number: data.length
                 });
             } else if (data.length > 0) {
+                console.log('队列长度',data.length);
+
                 globalVar.queueLength = data.length;
                 this.$dom.find('.queue.active .queue-num').text(data.length);
             }

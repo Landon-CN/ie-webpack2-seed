@@ -98,6 +98,8 @@ function submit() {
         user: true,
         message: htmlText
     });
+    console.log('发送时长度',globalVar.queueLength);
+
     // 有排队的话，就发送排队消息
     if (globalVar.queueLength) {
         this.addLine(globalVar.queueLength);
