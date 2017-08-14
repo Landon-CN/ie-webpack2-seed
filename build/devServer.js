@@ -11,7 +11,7 @@ var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webap
 let targetUrl = '172.25.47.40'; // server
 let messageUrl = '172.25.47.37'; // server
 
-let local = true;
+let local = false;
 if (local) {
     targetUrl = '10.9.46.144';
     messageUrl = '10.9.46.144';

@@ -395,7 +395,6 @@ function resolveMsg(resData) {
             if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
                 // 机器人会话，刷新整个页面
                 return window.location.reload();
-                return;
             }
 
             // 结束会话
@@ -417,7 +416,7 @@ function resolveMsg(resData) {
 
         // 排队进线成功
         if (item.type == Constants.INLINE_MESSAGE) {
-            globalVar.targetServiceId = item.fromUserId;
+            globalVar.targetServiceId = item.customerServiceId;
             globalVar.dialogId = item.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
             globalVar.queueLength = 0;
@@ -587,7 +586,8 @@ function serviceGroupListener(params) {
     this.groupClick = false;
 
     this.$dom.on('click', '.service-group  li', (event) => {
-        if (this.groupClick) {
+        // 已经点击过分组，或者处于进线状态，禁止再次点击
+        if (this.groupClick || globalVar.msgType === Constants.MSG_TYPE_SERVICE || globalVar.queueLength > 0) {
             return;
         }
         let item = $(event.currentTarget);
