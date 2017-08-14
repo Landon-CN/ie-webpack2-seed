@@ -416,7 +416,7 @@ function resolveMsg(resData) {
 
         // 排队进线成功
         if (item.type == Constants.INLINE_MESSAGE) {
-            globalVar.targetServiceId = item.customerServiceId;
+            globalVar.targetServiceId = item.fromUserId;
             globalVar.dialogId = item.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
             globalVar.queueLength = 0;
@@ -646,9 +646,9 @@ function chooseGroupInService(id) {
                 msgList.push({
                     service: true,
                     message: data.consultingWords
-                })
+                });
             }
-            return this.addMsg(msgList);
+            this.addMsg(msgList);
         }
         // 重置结束状态
         globalVar.isClose = false;
