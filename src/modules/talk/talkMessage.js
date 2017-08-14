@@ -720,10 +720,26 @@ function cancelQueueListener() {
                 const data = res.data;
                 globalVar.dialogId = data.currentDialogId;
                 globalVar.targetServiceId = data.toUserId;
-                globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
-                console.log('取消排队，修改队列长度0');
 
+                let dialogType = parseInt(data.currentDialogType, 10);
+                let msgType = '';
+                switch (dialogType) {
+                    case 1:
+                        globalVar.msgType = Constants.MSG_TYPE_BOT;
+                        break;
+                    case 2:
+                        globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+                    default:
+                        // 没有，证明无机器人
+                        globalVar.isClose = true;
+                        break;
+                }
+                // 如果只有result：true一个字段，证明是无机器人
+
+
+                console.log('取消排队，修改队列长度0');
                 globalVar.queueLength = 0;
+
                 // 修改文字
                 const $dialog = this.$dom.find('.queue.active');
                 $dialog.removeClass('active');

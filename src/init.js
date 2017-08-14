@@ -4,6 +4,7 @@ import * as service from './modules/talk/talkService';
 import {
     talk
 } from './modules';
+window.globalVar = globalVar;
 
 function keyInit() {
 
