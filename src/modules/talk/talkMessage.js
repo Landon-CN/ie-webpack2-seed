@@ -394,8 +394,7 @@ function resolveMsg(resData) {
 
             if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
                 // 机器人会话，刷新整个页面
-                alert('机器人会话断开，刷新页面')
-                // return window.location.reload();
+                return window.location.reload();
                 return;
             }
 
