@@ -56,6 +56,8 @@ talk.prototype.onlineServiceClick = function () {
         if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
             return errorHandler();
         }
+        console.log('进线分组获取成功');
+
 
         const data = result.data;
 
@@ -63,6 +65,8 @@ talk.prototype.onlineServiceClick = function () {
 
         if (list.length === 1) {
             // 只有一个分组，直接进线
+            console.log('只有一个分组', list[0].groupId);
+
             const groupId = list[0].groupId;
             this.chooseGroupInService(groupId);
         } else {

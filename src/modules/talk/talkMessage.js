@@ -553,13 +553,6 @@ function pollInterval() {
 
 // 添加评价
 function addAppraise() {
-    // let dom = this.addMsg({
-    //     service: true,
-    //     date: Date.now()
-    // });
-
-    // TODO: cb暂时变为空，看下效果
-    // Appraise(dom.find('.message-text'), undefined, undefined, false).open();
     this.addMsg({
         appraise: true
     });
@@ -572,7 +565,7 @@ function serviceGroupListener(params) {
 
     this.$dom.on('click', '.service-group  li', (event) => {
         // 已经点击过分组，或者处于进线状态，禁止再次点击
-        if (this.groupClick || globalVar.msgType === Constants.MSG_TYPE_SERVICE || globalVar.queueLength > 0) {
+        if (this.groupClick || (!globalVar.isClose && globalVar.msgType === Constants.MSG_TYPE_SERVICE) || globalVar.queueLength > 0) {
             return;
         }
         let item = $(event.currentTarget);
@@ -606,14 +599,19 @@ function chooseGroupInService(id) {
         }
         const data = result.data;
         let customerServiceId = data.customerServiceId;
+        console.log('进线返回===>');
 
 
         if (data.queueLength) {
             // 要排队
+            console.log('需要排队，长度:', data.queueLength);
+
             globalVar.queueLength = data.queueLength;
             this.addLine(data.queueLength);
             return;
         } else if (data.notWorkingWords) {
+            console.log('不在服务状态');
+
             this.groupClick = false;
             return this.addMsg({
                 service: true,
