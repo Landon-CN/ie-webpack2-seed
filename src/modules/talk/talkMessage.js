@@ -399,6 +399,8 @@ function resolveMsg(resData) {
             globalVar.targetServiceId = item.fromUserId;
             globalVar.dialogId = item.dialogId;
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+            console.log('进线成功，修改队列长度0');
+
             globalVar.queueLength = 0;
             this.$dom.find('.queue.active').removeClass('active').text('进线成功');
             globalVar.isClose = false;
@@ -718,6 +720,8 @@ function cancelQueueListener() {
                 globalVar.dialogId = data.currentDialogId;
                 globalVar.targetServiceId = data.toUserId;
                 globalVar.msgType = data.currentDialogType == 1 ? Constants.MSG_TYPE_BOT : Constants.MSG_TYPE_SERVICE;
+                console.log('取消排队，修改队列长度0');
+
                 globalVar.queueLength = 0;
                 // 修改文字
                 const $dialog = this.$dom.find('.queue.active');
@@ -766,7 +770,7 @@ function queueInterval(num, timeout = 3000) {
                     number: data.length
                 });
             } else if (data.length > 0) {
-                console.log('队列长度',data.length);
+                console.log('队列长度', data.length);
 
                 globalVar.queueLength = data.length;
                 this.$dom.find('.queue.active .queue-num').text(data.length);
