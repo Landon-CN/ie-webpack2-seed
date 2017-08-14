@@ -79,7 +79,6 @@ export default function (talk) {
         if (globalVar.queueLength > 0) {
             this.addLine(globalVar.queueLength);
         }
-        this.addAppraise()
 
     }
 }
@@ -429,6 +428,9 @@ function resolveMsg(resData) {
                     })
                 }
                 this.addMsg(msgList);
+
+                // 重置排队长度定时
+                queueTimer = null;
             }
 
 
@@ -745,6 +747,10 @@ function cancelQueueListener() {
                 const $dialog = this.$dom.find('.queue.active');
                 $dialog.removeClass('active');
                 $dialog.text(Constants.TEXT_CANCEL_QUEUE);
+
+                // 重置排队长度定时
+                queueTimer = null;
+
                 return true;
             }
             return false;
@@ -796,7 +802,7 @@ function queueInterval(num, timeout = 3000) {
             }
 
             if (globalVar.queueLength > 0) {
-                queueInterval.call(this, num);
+                queueInterval.call(this, globalVar.queueLength);
             } else {
                 queueTimer = null;
             }
