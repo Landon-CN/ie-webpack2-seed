@@ -52,9 +52,7 @@ function toolItemListener() {
             case 'rate':
                 // 机器人和客服是两种评价界面
                 if (globalVar.msgType === Constants.MSG_TYPE_SERVICE)
-                    this.appraise.toggle();
-                else if (!globalVar.botRate)
-                    $botRate.toggle();
+                    this.addAppraise();
                 break;
             case 'service':
                 // 进线按钮

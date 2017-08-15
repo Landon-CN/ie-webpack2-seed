@@ -101,7 +101,7 @@ talk.prototype.inService = function inService(message) {
 // 进线成功后，显示某些元素
 talk.prototype.onlineServiceShow = function onlineServiceShow() {
     // 显示图片上传和评价按钮
-    this.$dom.find('.tool-file').css('display', 'inline-block');
+    this.$dom.find('.tool-file,.tool-rate').css('display', 'inline-block');
     this.$dom.find('.tool-service').hide();
     // 显示历史记录按钮
     this.historyDom.show();
