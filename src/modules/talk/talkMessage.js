@@ -794,7 +794,8 @@ function queueInterval(num, timeout = 3000) {
                     number: data.length
                 });
                 globalVar.queueLength = data.length;
-            } else if (data.length > 0) {
+                // 队列长度>0
+            } else if (data.length > 0 && globalVar.queueLength > 0) {
                 console.log('队列长度', data.length);
 
                 globalVar.queueLength = data.length;
