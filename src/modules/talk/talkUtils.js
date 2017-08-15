@@ -73,7 +73,6 @@ export function stringifyContent(html) {
 }
 
 export function encode(str) {
-    str = str.replace(/&/g, '&amp;');
     str = str.replace(/</g, '&lt;');
     str = str.replace(/>/g, '&gt;');
     str = str.replace(/"/g, '&quot;');

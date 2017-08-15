@@ -3,6 +3,8 @@ import jquery from 'jquery';
 import {
     dialog
 } from './components';
+import talk from './modules/talk/talk';
+import * as Constants from './modules/talk/talkConstants';
 
 jquery.ajaxSetup({
     timeout: 10000,
@@ -12,7 +14,10 @@ jquery.ajaxSetup({
     success(result, status, xhr) {
 
         if (result.resultCode !== '00000' && !!xhr.setting.errorIgnore === false) {
-            dialog.open('错误:' + JSON.stringify(result) + '  path:' + xhr.setting.url);
+            if (process.env.NODE_ENV === 'development') {
+                dialog.open('错误:' + JSON.stringify(result) + '  path:' + xhr.setting.url);
+            }
+            addErrorMsg();
         }
         return result;
     },
@@ -21,7 +26,11 @@ jquery.ajaxSetup({
         // 轮训暂时报错不提示
         if (xhr.setting.url.indexOf('/message/conn?type=conn&time=') == -1) {
             console.error(xhr.setting, xhr, text, error);
-            dialog.open('错误:' + error + '  path:' + xhr.setting.url);
+
+            if (process.env.NODE_ENV === 'development') {
+                dialog.open('错误:' + error + '  path:' + xhr.setting.url);
+            }
+            addErrorMsg();
         }
 
     },
@@ -36,3 +45,12 @@ jquery.ajaxSetup({
 
     }
 });
+
+function addErrorMsg() {
+    try {
+        talk.addMsg({
+            dialog: true,
+            message: Constants.ERROR_MESSAGE
+        });
+    } catch (e) {}
+}

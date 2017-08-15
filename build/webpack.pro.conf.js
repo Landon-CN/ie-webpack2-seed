@@ -28,7 +28,10 @@ const proConf = merge(devConfig, {
             exclude: /\.less$/i
         }),
         new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[chunkhash].js"),
-        new ExtractTextPlugin("index.[chunkhash].css")
+        new ExtractTextPlugin("index.[chunkhash].css"),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': '"production"'
+        }),
     ]
 });
 
