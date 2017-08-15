@@ -4,6 +4,9 @@ import {
 // import Appraise from './appraise/appraise';
 import * as Constants from './talkConstants';
 import globalVar from 'globalVar';
+import * as service from './talkService';
+import * as utils from './talkUtils';
+
 export default function (talk) {
     Object.assign(talk.prototype, {
         toolItemListener,
@@ -86,8 +89,15 @@ function imgUploadListener() {
             let url = data.url;
             let msg = `<img src='${url}' class="open-img">`;
 
-            this.inputBoxPlaceholderJudge();
-            this.$inputBox.append(msg);
+            // this.inputBoxPlaceholderJudge();
+            // this.$inputBox.append(msg);
+            service.sendMsg(globalVar.targetServiceId, {
+                content: utils.stringifyContent(msg)
+            });
+            this.addMsg({
+                user: true,
+                message: msg
+            })
 
         }
     });

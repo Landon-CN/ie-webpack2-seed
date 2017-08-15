@@ -90,10 +90,6 @@ function submit() {
         });
     }
 
-
-
-
-
     this.addMsg({
         user: true,
         message: htmlText

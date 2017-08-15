@@ -10,11 +10,21 @@ var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webap
 
 let targetUrl = '172.25.47.40'; // server
 let messageUrl = '172.25.47.37'; // server
+let webImPort = '8088';
+let messagePort = '8090'
 
 let local = true;
 if (local) {
     targetUrl = '10.9.46.150';
     messageUrl = '10.9.46.150';
+}
+
+let test = false;
+if (test) {
+    targetUrl = 'jtalk.jd.com';
+    messageUrl = 'talk.jd.com';
+    webImPort = '80';
+    messagePort = '80'
 }
 
 var server = new webpackDevServer(compiler, {
@@ -32,8 +42,14 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
-        '/jtalk/message/**': `http://${messageUrl}:8090`,
-        '/jtalk/**': `http://${targetUrl}:8088`
+        '/jtalk/message/**': {
+            target: `http://${messageUrl}:${messagePort}`,
+            changeOrigin: true,
+        },
+        '/jtalk/**': {
+            target: `http://${targetUrl}:${webImPort}`,
+            changeOrigin: true,
+        }
     },
     // Set this if you want webpack-dev-server to delegate a single path to an arbitrary server.
     // Use "**" to proxy all paths to the specified server.
@@ -44,7 +60,7 @@ var server = new webpackDevServer(compiler, {
 
         app.all('/', function (req, res, next) {
 
-            fetch(`http://${messageUrl}:8090/index.htm`, {
+            fetch(`http://${messageUrl}:${messagePort}/index.htm`, {
                 redirect: 'manual',
                 headers: req.headers,
                 timeout: 1000
