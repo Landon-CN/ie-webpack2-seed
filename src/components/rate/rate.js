@@ -46,6 +46,7 @@ import moment from 'moment';
 
     // 选择不满意原因
     $document.on('click', '.reason li', (event) => {
+
         $(event.currentTarget).toggleClass('active');
     });
 
@@ -56,8 +57,8 @@ import moment from 'moment';
                 message: '请勿重复评价'
             });
         }
-        // globalVar.isRate = true;
-
+        globalVar.isRate = true;
+        disabled();
 
 
         const $target = $(event.currentTarget);
@@ -102,4 +103,11 @@ import moment from 'moment';
         });
 
     });
+
+    /**
+     * 禁用评价框
+     */
+    function disabled() {
+        $(document).find('.message-row.appraise').addClass('disabled');
+    }
 })(document);

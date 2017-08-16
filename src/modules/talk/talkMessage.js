@@ -558,6 +558,12 @@ function pollInterval() {
 
 // 添加评价
 function addAppraise() {
+    const $lastRow = this.$dom.find('.message-row:last');
+    // 禁止连续出现两次评价
+    if ($lastRow.hasClass('appraise') || globalVar.isRate) return;
+
+    this.$dom.find('.appraise').remove();
+
     this.addMsg({
         appraise: true
     });

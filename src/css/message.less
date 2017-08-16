@@ -9,11 +9,15 @@
     padding: 23px 38px;
     .message-row {
         margin-bottom: 20px;
-
-        &.message-history{
+        &.message-history {
             display: none;
         }
-
+        &.appraise.disabled {
+            pointer-events: none;
+            .btn {
+                background: #eee;
+            }
+        }
         .history-msg {
             cursor: pointer;
             display: inline-block;
@@ -22,13 +26,11 @@
             color: @text-blue-color;
             background: url('../public/imgs/history.png') no-repeat 0 center;
             padding-left: 20px;
-
             .loading-body {
                 display: none;
             }
-
             &.loading {
-                .loading-body{
+                .loading-body {
                     display: inline-block;
                 }
             }
@@ -135,8 +137,7 @@
             dl {
                 margin: 18px 0 0 0;
                 dt {
-                    color: @text-gray-light;
-                    // width: 116px;
+                    color: @text-gray-light; // width: 116px;
                     text-align: right;
                 }
                 dt,
