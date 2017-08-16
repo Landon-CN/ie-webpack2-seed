@@ -14,19 +14,19 @@ const proConf = merge(devConfig, {
     },
     devtool: false,
     plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                warnings: false,
-                screw_ie8: false
-            },
-            mangle: {
-                screw_ie8: false
-            },
-            output: {
-                screw_ie8: false
-            },
-            exclude: /\.less$/i
-        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     compress: {
+        //         warnings: false,
+        //         screw_ie8: false
+        //     },
+        //     mangle: {
+        //         screw_ie8: false
+        //     },
+        //     output: {
+        //         screw_ie8: false
+        //     },
+        //     exclude: /\.less$/i
+        // }),
         new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[chunkhash].js"),
         new ExtractTextPlugin("index.[chunkhash].css"),
         new webpack.DefinePlugin({

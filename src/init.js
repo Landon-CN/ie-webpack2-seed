@@ -31,6 +31,7 @@ function init() {
     jquery.when(keyInit(), service.inlineInit()).then(() => {
         domInit();
     });
+
 }
 
 

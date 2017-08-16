@@ -172,7 +172,7 @@ function inputResize() {
 function pasteListener() {
     // 处理粘贴富文本
     this.$inputBox.on('paste', (e) => {
-
+        e.preventDefault();
         let text;
 
         if (window.clipboardData && clipboardData.setData) {
@@ -181,6 +181,8 @@ function pasteListener() {
         } else {
             text = (e.originalEvent || e).clipboardData.getData('text/plain');
         }
+        console.log('粘贴文本',text);
+
         if (text) {
             e.preventDefault();
             if (document.body.createTextRange) {
