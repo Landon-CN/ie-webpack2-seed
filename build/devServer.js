@@ -15,8 +15,8 @@ let messagePort = '8090'
 
 let local = true;
 if (local) {
-    targetUrl = '10.9.46.150';
-    messageUrl = '10.9.46.150';
+    targetUrl = '10.9.46.134';
+    messageUrl = '10.9.46.134';
 }
 
 let test = false;

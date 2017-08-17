@@ -13,6 +13,11 @@ jquery.ajaxSetup({
     processData: false,
     success(result, status, xhr) {
 
+        if (result.error === 'NotLogin') {
+            // 登录超时，刷新页面
+            return window.location.reload();
+        }
+
         if (result.resultCode !== '00000' && !!xhr.setting.errorIgnore === false) {
             if (process.env.NODE_ENV === 'development') {
                 dialog.open('错误:' + JSON.stringify(result) + '  path:' + xhr.setting.url);
@@ -25,7 +30,7 @@ jquery.ajaxSetup({
 
         // 轮训暂时报错不提示
         if (xhr.setting.url.indexOf('/message/conn?type=conn&time=') == -1) {
-            console.error(xhr.setting, xhr, text, error,process.env.NODE_ENV);
+            console.error(xhr.setting, xhr, text, error, process.env.NODE_ENV);
 
             if (process.env.NODE_ENV === 'development') {
                 dialog.open('错误:' + error + '  path:' + xhr.setting.url);
