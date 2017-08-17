@@ -18,7 +18,7 @@ export function parseContent(xml) {
         element = $(element);
         switch (nodeName) {
             case '#text':
-                htmlStr += element.text();
+                htmlStr += encode(element.text());
                 break;
             case 'br':
                 htmlStr += '<br/>';
