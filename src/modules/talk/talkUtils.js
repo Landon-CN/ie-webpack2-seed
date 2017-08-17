@@ -44,7 +44,7 @@ export function stringifyContent(html) {
     if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
         return $(`<body>${html}</body>`).text();
     }
-
+    html = html.replace(/&nbsp;/g, ' ');
     $(`<body>${html}</body>`).each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
