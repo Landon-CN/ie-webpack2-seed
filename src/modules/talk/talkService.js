@@ -172,6 +172,11 @@ export function inlineInit() {
             return globalVar.queueLength = data.queueLength;
         }
 
+        if (data.previousDialogAppraise) {
+            // 已经评价过了
+            globalVar.isRate = true;
+        }
+
         globalVar.dialogId = data.currentDialogId;
         globalVar.targetServiceId = data.toUserId;
         // 1 机器人

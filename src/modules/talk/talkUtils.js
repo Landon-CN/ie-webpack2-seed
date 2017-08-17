@@ -18,7 +18,7 @@ export function parseContent(xml) {
         element = $(element);
         switch (nodeName) {
             case '#text':
-                htmlStr += encode(element.text());
+                htmlStr += noScript(element.text());
                 break;
             case 'br':
                 htmlStr += '<br/>';
@@ -37,6 +37,17 @@ export function parseContent(xml) {
     return htmlStr;
 }
 
+/**
+ * 防注入
+ * @param {*} test
+ */
+function noScript(test) {
+    test = test.replace(/</g, '&lt;');
+    test = test.replace(/>/g, '&gt;');
+    return test
+}
+
+
 // 消息解析为xml
 export function stringifyContent(html) {
     let htmlStr = '';
@@ -44,7 +55,6 @@ export function stringifyContent(html) {
     if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
         return $(`<body>${html}</body>`).text();
     }
-    html = html.replace(/&nbsp;/g, ' ');
     $(`<body>${html}</body>`).each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
@@ -73,6 +83,7 @@ export function stringifyContent(html) {
 }
 
 export function encode(str) {
+    str = str.replace(/&/g, '&amp;');
     str = str.replace(/</g, '&lt;');
     str = str.replace(/>/g, '&gt;');
     str = str.replace(/"/g, '&quot;');
