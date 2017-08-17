@@ -28,16 +28,20 @@ jquery.ajaxSetup({
     },
     error(xhr, text, error) {
 
+        console.error(xhr.setting, xhr, text, error);
+
         // 轮训暂时报错不提示
         // 网络问题不提示
-        if (!!xhr.setting.errorIgnore === false || text === 'timeout') {
-            console.error(xhr.setting, xhr, text, error, process.env.NODE_ENV);
-
-            if (process.env.NODE_ENV === 'development') {
-                dialog.open('错误:' + error + '  path:' + xhr.setting.url);
-            }
-            addErrorMsg();
+        // 登录失效，刷新页面 xhr.readyState 0
+        if (!!xhr.setting.errorIgnore === false || text === 'timeout' || xhr.readyState === 0) {
+            return;
         }
+
+        if (process.env.NODE_ENV === 'development') {
+            dialog.open('错误:' + error + '  path:' + xhr.setting.url);
+        }
+        addErrorMsg();
+
 
     },
     beforeSend(xhr, setting) {

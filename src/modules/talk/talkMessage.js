@@ -596,12 +596,7 @@ function serviceGroupListener(params) {
 function chooseGroupInService(id) {
     const errorHandler = () => {
         console.log('进线失败');
-
         this.groupClick = false;
-        this.addMsg([{
-            dialog: true,
-            message: Constants.ERROR_MESSAGE
-        }]);
     }
     service.queryServiceId(id).then((result) => {
 
