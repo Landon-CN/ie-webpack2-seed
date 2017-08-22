@@ -15,4 +15,5 @@ export default {
     welcomeWords: '欢迎来到京东金融客服', //欢迎语
     queueLength: 0, // 排队长度
     botRate: false, //机器人是否评价过
+    initSource: '03',
 }

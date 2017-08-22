@@ -28,10 +28,38 @@ function domInit() {
 }
 
 function init() {
+    let args = getUrlParams();
+    if (args.initSource) {
+        globalVar.initSource = args.initSource;
+    }
     jquery.when(keyInit(), service.inlineInit()).then(() => {
         domInit();
     });
 
+}
+
+
+if (process.env.NODE_ENV === 'development') {
+    window.globalVar = globalVar;
+}
+
+
+/**
+ * 获取url参数
+ */
+function getUrlParams() {
+    let queryString = window.location.search.substr(1);
+
+    let argsArr = queryString.split('&');
+    if (argsArr[0] === '') {
+        argsArr.shift();
+    }
+    let argsObj = {};
+    for (let i = 0; i < argsArr.length; i++) {
+        let args = argsArr[i].split('=');
+        argsObj[args[0]] = args[1];
+    }
+    return argsObj;
 }
 
 

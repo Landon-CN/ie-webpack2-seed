@@ -713,7 +713,7 @@ function cancelQueueListener() {
             contentType: 'application/json; charset=utf-8',
             type: 'post',
             data: {
-                initSource: '03',
+                initSource: globalVar.initSource,
                 groupId: globalVar.groupId,
                 previousDialogId: globalVar.dialogId
             }

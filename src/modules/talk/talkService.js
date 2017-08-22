@@ -42,7 +42,7 @@ export function queryServiceId(groupId) {
         contentType: 'application/json; charset=utf-8',
         data: {
             groupId,
-            initSource: '03'
+            initSource: globalVar.initSource
         },
     });
 }
@@ -124,7 +124,7 @@ export function sendMsg(targetUserId, data = {}, ext = {}) {
 
 // 获取分组列表
 export function getServiceList(data = {
-    source: '03'
+    source: globalVar.initSource
 }) {
     return $.ajax({
         type: 'post',
@@ -162,7 +162,7 @@ export function inlineInit() {
         contentType: 'application/json; charset=utf-8',
         noParse: true,
         data: {
-            initSource: '03'
+            initSource: globalVar.initSource
         }
     }).then((result) => {
         const data = result.data;
