@@ -60,7 +60,7 @@ export function stringifyContent(html) {
         return $(`<body>${html}</body>`).text();
     }
 
-    html = extractUrl(html);
+
     $(`<body>${html}</body>`).each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
@@ -79,8 +79,8 @@ export function stringifyContent(html) {
                 break;
             case '#text':
             default:
-
-                htmlStr += encode(element.text());
+                let text = extractUrl(element.text());
+                htmlStr += encode(text);
                 break;
         }
     });
