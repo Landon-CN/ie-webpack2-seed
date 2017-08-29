@@ -113,7 +113,7 @@ function submit() {
         return;
     }
 
-    if (htmlText.length > maxTextSize) {
+    if (this.$inputBox.text().length > maxTextSize) {
         // 超过最大字符限制
         this.$dom.find('.max-input-error').remove();
         return this.addMsg({

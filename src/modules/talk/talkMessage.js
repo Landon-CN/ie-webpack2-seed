@@ -389,7 +389,6 @@ function resolveMsg(resData) {
     let msgList = [];
     for (let i = 0; i < resData.length; i++) {
         let item = resData[i];
-
         if (item.type == Constants.INVITE_MESSAGE) {
             this.addAppraise();
             break;

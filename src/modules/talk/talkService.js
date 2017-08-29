@@ -247,5 +247,5 @@ export function queryQueueLenght() {
         data: {
             groupId: globalVar.groupId
         }
-    })
+    });
 }
