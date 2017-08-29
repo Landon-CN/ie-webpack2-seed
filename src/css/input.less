@@ -37,6 +37,22 @@
         &.tool-rate {
             display: none;
             background: url('../public/imgs/rate.png') no-repeat center center;
+            position: relative;
+
+            .tooltip {
+                position: absolute;
+                display: none;
+                font-size: 12px;
+                top:-20px;
+                left: -10px;
+                white-space: nowrap;
+                background: #fff;
+                box-shadow: 0 0 2px 0px #bbb;
+                color:#bbb;
+                border: 1px solid #bbb;
+                padding: 2px 10px;
+                border-radius: 4px;
+            }
         }
     }
     .placeholder {

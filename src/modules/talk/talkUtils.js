@@ -10,6 +10,7 @@ export function parseContent(xml) {
     if (xml.indexOf('<') != 0) {
         return xml;
     }
+    xml.replace(/&amp;/g, '&');
     let msgBody = $(xml);
 
     let htmlStr = '';
@@ -29,6 +30,9 @@ export function parseContent(xml) {
                 break;
             case 'img':
                 htmlStr += `<img src='${element.attr('src')}' / class="open-img">`
+                break;
+            case 'a':
+                htmlStr += `<a href="${element.attr('href')}" target="_blank" class="open-link" >${element.attr('href')}</a>`
                 break;
             default:
                 break;
@@ -55,6 +59,8 @@ export function stringifyContent(html) {
     if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
         return $(`<body>${html}</body>`).text();
     }
+
+    html = extractUrl(html);
     $(`<body>${html}</body>`).each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
@@ -68,6 +74,9 @@ export function stringifyContent(html) {
                 else
                     htmlStr += `<img src='${element.attr('src')}' />`
                 break;
+            case 'a':
+                htmlStr += `<a href="${element.attr('href')}">${element.attr('href')}</a>`;
+                break;
             case '#text':
             default:
 
@@ -77,13 +86,25 @@ export function stringifyContent(html) {
     });
 
 
-    return `<body>${htmlStr}</body>`
-
+    return `<body>${htmlStr}</body>`.replace(/&/g, '&amp;');
 
 }
 
+/**
+ * 替换url为a标签
+ * @param {*} text
+ */
+export function extractUrl(text) {
+    return text.replace(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/gi, (s1, s2) => {
+        let href = s1;
+        if (!/^http/.test(href)) {
+            href = 'http://' + href;
+        }
+        return `<a class="open-link" target="_blank" href="${href}">${s1}</a>`;
+    });
+}
+
 export function encode(str) {
-    str = str.replace(/&/g, '&amp;');
     str = str.replace(/</g, '&lt;');
     str = str.replace(/>/g, '&gt;');
     str = str.replace(/"/g, '&quot;');

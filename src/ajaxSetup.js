@@ -33,7 +33,7 @@ jquery.ajaxSetup({
         // 轮训暂时报错不提示
         // 网络问题不提示
         // 登录失效，刷新页面 xhr.readyState 0
-        if (!!xhr.setting.errorIgnore === false || text === 'timeout' || xhr.readyState === 0) {
+        if (!!xhr.setting.errorIgnore === true || text === 'timeout' || xhr.readyState === 0) {
             return;
         }
 
@@ -57,10 +57,15 @@ jquery.ajaxSetup({
 });
 
 function addErrorMsg() {
+    // 先删除已有的error提示
+    jquery('.error-dialog').remove();
+
     try {
         talk.addMsg({
             dialog: true,
+            className:'error-dialog',
             message: Constants.ERROR_MESSAGE
         });
     } catch (e) {}
 }
+window.addErrorMsg = addErrorMsg;

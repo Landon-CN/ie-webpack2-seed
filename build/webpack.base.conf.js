@@ -31,7 +31,8 @@ module.exports = {
         loaders: [{
                 test: /\.js$/,
                 include: pathConf.srcPath,
-                loader: 'babel?cacheDirectory=true'
+                loader: 'babel?cacheDirectory=true',
+                exclude: ['node_modules']
             },
             {
                 test: /\.less$/,

@@ -8,7 +8,7 @@
     overflow-x: hidden;
     padding: 23px 38px;
     .message-row {
-        margin-bottom: 20px;
+        margin-bottom: 30px;
         &.message-history {
             display: none;
         }
@@ -66,6 +66,14 @@
             max-width: 563px;
             word-wrap: break-word;
         }
+        .message-title {
+            position: absolute;
+            white-space: nowrap;
+            color: #bbb;
+            font-size: 12px;
+            top: -20px;
+            margin: 0;
+        }
         .service {
             display: inline-block;
             border-radius: 5px;
@@ -73,6 +81,7 @@
             position: relative;
             border-top-left-radius: 0;
             background-color: @bg-white-color;
+            margin-top: 20px;
             .service-border {
                 display: inline-block;
                 width: 8px;
@@ -81,6 +90,9 @@
                 position: absolute;
                 left: -7px;
                 top: 0;
+            }
+            .message-title {
+                left: 0;
             }
         }
         .user {
@@ -99,6 +111,13 @@
                 position: absolute;
                 right: -7px;
                 top: 0;
+            }
+            .message-title {
+                right: 0;
+            }
+
+            .open-link {
+                color: white;
             }
         }
         .bot-plain-text {
@@ -194,6 +213,12 @@
             max-width: 100px;
             max-height: 100px;
             cursor: pointer;
+        }
+        .open-link {
+            color: #5d78ff;
+            &:hover {
+                text-decoration: underline;
+            }
         }
     }
 }

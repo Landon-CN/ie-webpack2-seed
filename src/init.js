@@ -18,6 +18,8 @@ function keyInit() {
         globalVar.jdPin = result.data.jdPin;
         globalVar.webPersonalKey = result.data.webPersonalKey;
         globalVar.userId = result.data.userId;
+        globalVar.userName = result.data.jdPin;
+
     });
 
 }
@@ -32,10 +34,13 @@ function init() {
     if (args.initSource) {
         globalVar.initSource = args.initSource;
     }
+    globalVar.companyId = args.companyId;
+    globalVar.entrance = args.entrance;
+
+
     jquery.when(keyInit(), service.inlineInit()).then(() => {
         domInit();
     });
-
 }
 
 

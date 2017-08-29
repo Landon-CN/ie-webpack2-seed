@@ -27,9 +27,8 @@ export default function (talk) {
         // this.rateTooltip = this.$dom.find('.rate-tooltip');
         this.toolItemListener();
         this.closeListener();
-        // this.rateListener();
+        this.rateListener();
         // this.botRateListener();
-
     }
 }
 
@@ -52,7 +51,7 @@ function toolItemListener() {
             case 'rate':
                 // 机器人和客服是两种评价界面
                 // if (globalVar.msgType === Constants.MSG_TYPE_SERVICE)
-                    this.addAppraise();
+                this.addAppraise();
                 break;
             case 'service':
                 // 进线按钮
@@ -149,22 +148,21 @@ function addEmoji(emoji) {
 
 function rateListener() {
     let dom = this.$dom;
-    let rateTooltip = this.rateTooltip;
-    dom.on('mouseenter', '.rate-tool', () => {
+    let rateTooltip = this.$dom.find('.tool-rate .tooltip');
+    dom.on('mouseenter', '.tool-rate', () => {
         if (globalVar.isRate) {
-            rateTooltip.find('.text').text(Constants.ALREADY_RATE_MESSAGE);
             rateTooltip.show();
         }
     });
 
-    dom.on('mouseleave', '.rate-tool', () => {
+    dom.on('mouseleave', '.tool-rate', () => {
         if (globalVar.isRate) {
             rateTooltip.hide();
         }
     });
 
-    dom.on('click', '.rate-tooltip .close', () => {
-        dom.find('.rate-tooltip').hide();
+    dom.on('click', '.tool-rate .tooltip', (e) => {
+        e.stopPropagation();
     });
 
 }

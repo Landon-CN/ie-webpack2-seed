@@ -42,7 +42,9 @@ export function queryServiceId(groupId) {
         contentType: 'application/json; charset=utf-8',
         data: {
             groupId,
-            initSource: globalVar.initSource
+            initSource: globalVar.initSource,
+            companyId: globalVar.companyId,
+            entrance: globalVar.entrance
         },
     });
 }
@@ -124,7 +126,9 @@ export function sendMsg(targetUserId, data = {}, ext = {}) {
 
 // 获取分组列表
 export function getServiceList(data = {
-    source: globalVar.initSource
+    source: globalVar.initSource,
+    companyId: globalVar.companyId,
+    entrance: globalVar.entrance
 }) {
     return $.ajax({
         type: 'post',
@@ -162,7 +166,9 @@ export function inlineInit() {
         contentType: 'application/json; charset=utf-8',
         noParse: true,
         data: {
-            initSource: globalVar.initSource
+            initSource: globalVar.initSource,
+            companyId: globalVar.companyId,
+            entrance: globalVar.entrance
         }
     }).then((result) => {
         const data = result.data;
@@ -186,12 +192,19 @@ export function inlineInit() {
             globalVar.msgType = Constants.MSG_TYPE_BOT;
         } else if (data.currentDialogType == 2) {
             globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+            // globalVar.serviceName = data.nickName;
+            globalVar.serviceName = '在线客服';
         } else {
             globalVar.isClose = true;
+            $('.tool-service').hide();
         }
         if (data.content) {
             let botContent = botParse(data.content);
             globalVar.welcomeWords = botContent.answer;
+        }
+
+        if (data.previousDialogAppraise) {
+            globalVar.isRate = true;
         }
 
     });

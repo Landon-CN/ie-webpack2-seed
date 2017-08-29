@@ -16,4 +16,8 @@ export default {
     queueLength: 0, // 排队长度
     botRate: false, //机器人是否评价过
     initSource: '03',
+    userName: '', // 用户昵称
+    serviceName: '智能客服', // 服务方名称  在线客服
+    companyId: '',//公司ID
+    entrance: '' // 入口ID
 }

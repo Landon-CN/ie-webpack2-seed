@@ -80,6 +80,8 @@ export default function (talk) {
             this.addLine(globalVar.queueLength);
         }
 
+        window.addLine = addLine.bind(this);
+        window.addAppraise = addAppraise.bind(this);
     }
 }
 
@@ -104,42 +106,42 @@ function addMsg(data, append = true) {
     }
 
 
-    const previousDayTime = [];
-    for (let i = 0; i < data.list.length; i++) {
-        let item = data.list[i];
-        let time = moment(item.time || Date.now());
+    // const previousDayTime = [];
+    // for (let i = 0; i < data.list.length; i++) {
+    //     let item = data.list[i];
+    //     let time = moment(item.time || Date.now());
 
-        if (item.bot) {
-            resolveBotMsg(this, item);
-        }
+    //     if (item.bot) {
+    //         resolveBotMsg(this, item);
+    //     }
 
-        // 历史记录，只展示最早的那个日期,按天算
-        if (time < timeNow) {
-            let day = time.format('YYYY-MM-DD');
+    //     // 历史记录，只展示最早的那个日期,按天算
+    //     if (time < timeNow) {
+    //         let day = time.format('YYYY-MM-DD');
 
-            // 已经有时间展示记录，跳过
-            if (previousDayTime.indexOf(day) > -1) {
-                continue;
-            }
-            previousDayTime.push(day);
-            data.list.splice(i, 0, {
-                timeShow: true,
-                message: time.format('YYYY-MM-DD HH:mm')
-            });
-            i++;
-        }
+    //         // 已经有时间展示记录，跳过
+    //         if (previousDayTime.indexOf(day) > -1) {
+    //             continue;
+    //         }
+    //         previousDayTime.push(day);
+    //         data.list.splice(i, 0, {
+    //             timeShow: true,
+    //             message: time.format('YYYY-MM-DD HH:mm')
+    //         });
+    //         i++;
+    //     }
 
-        // 日期为当天
-        else if (!lastTime || time - lastTime > intervalTime) {
-            lastTime = time;
-            data.list.splice(i, 0, {
-                timeShow: true,
-                message: lastTime.format('HH:mm')
-            });
-        }
+    //     // 日期为当天
+    //     else if (!lastTime || time - lastTime > intervalTime) {
+    //         lastTime = time;
+    //         data.list.splice(i, 0, {
+    //             timeShow: true,
+    //             message: lastTime.format('HH:mm')
+    //         });
+    //     }
 
-    }
-
+    // }
+    data = msgTime(data);
 
     const serviceListHtml = mustache.render(msgTpl, data);
     let dom = $(serviceListHtml);
@@ -157,6 +159,25 @@ function addMsg(data, append = true) {
     }
 
     return dom;
+}
+
+/**
+ * 给消息加上名称和时间
+ * @param {*} data
+ */
+function msgTime(data) {
+    data.list.forEach((msg) => {
+        msg.time = msg.time ? moment(msg.time) : moment();
+        msg.timeText = msg.time.format('YYYY-MM-DD HH:mm:ss');
+        if (msg.service && !msg.serviceName) {
+            // 客服
+            msg.serviceName = globalVar.serviceName;
+        }
+        if (msg.user && !msg.userName) {
+            msg.userName = globalVar.userName;
+        }
+    });
+    return data;
 }
 
 function resolveBotMsg(context, msg) {
@@ -239,6 +260,7 @@ function getHistory() {
     if (noMorePage || pageLoading) {
         return;
     }
+
     let historyDom = this.historyDom;
     let $textDom = historyDom.find('.text');
     pageLoading = true;
@@ -292,7 +314,8 @@ function getHistory() {
                         service: item.from != globalVar.userId,
                         user: item.from == globalVar.userId,
                         message: item.content,
-                        time: item.sendTime
+                        time: item.sendTime,
+                        serviceName: '智能机器人',
                     });
                     break;
                 case Constants.HISTORY_SERVICE:
@@ -300,7 +323,8 @@ function getHistory() {
                         service: item.from != globalVar.userId,
                         user: item.from == globalVar.userId,
                         message: utils.parseContent(item.content),
-                        time: item.sendTime
+                        time: item.sendTime,
+                        serviceName: item.fromUserName,
                     });
                     break;
                 case Constants.HISTORY_NEW_BOT_ASK:
@@ -322,6 +346,7 @@ function getHistory() {
                     let botMsg = botParse(item.content);
                     if (botMsg) {
                         botMsg.bot = true;
+                        botMsg.serviceName = '智能机器人';
                         msgList.push(botMsg);
                     }
                     break;
@@ -384,6 +409,7 @@ function resolveMsg(resData) {
             globalVar.groupId = null;
             globalVar.dialogId = null;
             globalVar.isClose = true;
+            globalVar.serviceName = '智能客服';
             service.inlineInit().then(() => {
                 this.groupClick = false;
             });
@@ -412,7 +438,8 @@ function resolveMsg(resData) {
             } catch (e) {
                 hello = {};
             }
-
+            // globalVar.serviceName = hello.nickName;
+            globalVar.serviceName = '在线客服';
             if (hello.welcomeWords || hello.consultingWords) {
                 const msgList = [];
                 if (hello.welcomeWords) {
@@ -461,6 +488,7 @@ function resolveMsg(resData) {
             globalVar.dialogId = nextServiceInfo.afterJkDialogId;
             globalVar.targetServiceId = nextServiceInfo.afterCustomerServiceUserId;
             globalVar.groupId = nextServiceInfo.afterBusinessLineId;
+            // globalVar.serviceName = nextServiceInfo.afterCustomerServiceNickName;
             msgList.push({
                 dialog: true,
                 message: Constants.TRANSFER_MESSAGE_SUCCESS,
@@ -496,15 +524,9 @@ function resolveMsg(resData) {
             });
             break;
         }
-
-
-
         console.error('消息类型未知:' + item.type);
 
-
-
     }
-
 
     this.addMsg(msgList);
 }
@@ -607,7 +629,8 @@ function chooseGroupInService(id) {
         let customerServiceId = data.customerServiceId;
         console.log('进线返回===>');
 
-
+        // globalVar.serviceName = data.nickName;
+        globalVar.serviceName = '在线客服';
         if (data.queueLength) {
             // 要排队
             console.log('需要排队，长度:', data.queueLength);
@@ -665,9 +688,9 @@ function chooseGroupInService(id) {
  */
 function mutiPageModal() {
     let $dom = $(mustache.render(mutiPageTpl, {}));
-    $dom.on('click', '.btn', () => {
-        window.location.href = 'about:black';
-    });
+    // $dom.on('click', '.btn', () => {
+    //     window.location.href = 'about:black';
+    // });
     modal($dom).open();
 }
 
@@ -706,7 +729,6 @@ function cancelQueueListener() {
         // 防重复点击
         if (cancelLoading) return;
         cancelLoading = true;
-
 
         $.ajax({
             url: '/IncomingLine/cancelInQueue.htm',
@@ -765,6 +787,8 @@ let queueTimer = null;
  * 添加排队消息
  */
 function addLine(num) {
+    this.$dom.find('.queue.active').remove();
+
     if (!!num) {
         this.addMsg({
             queue: true,

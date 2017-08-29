@@ -5,7 +5,9 @@ import * as Constants from './talkConstants';
 import * as utils from './talkUtils';
 import * as service from './talkService';
 import globalVar from 'globalVar';
+import moment from 'moment';
 
+const maxTextSize = 400;
 
 export default function (talk) {
     Object.assign(talk.prototype, {
@@ -16,7 +18,7 @@ export default function (talk) {
         inputBoxPlaceholder,
         inputResize,
         pasteListener,
-        autoCompleteListener
+        autoCompleteListener,
     });
 
     const init = talk.prototype.init;
@@ -26,9 +28,7 @@ export default function (talk) {
         this.submitListener();
         this.$inputBox = this.$dom.find('.input-box');
         this.inputBoxPlaceholder();
-        // this.inputResize();
         this.pasteListener();
-        // this.autoCompleteListener();
     }
 }
 
@@ -63,13 +63,64 @@ function inputKeyListener() {
             this.submit();
         }
     });
+
 }
 
 
+/**
+ * 输入框不能超过400字
+ * 废弃，中文输入法没法阻止
+ */
+// function inputMaxSizeListener() {
+//     this.$dom.on('keydown', '.input-box', (event) => {
+
+//         const keys = [8, 9, 16, 17, 18, 19, 20, 27, 33, 34, 35, 36, 37, 38, 39, 40, 45, 46, 144, 145];
+//         if (keys.indexOf(event.keyCode) > -1 || event.ctrlKey || event.metaKey) {
+//             // 功能按键
+//             return;
+//         }
+//         let textLength = this.$inputBox.text().length;
+//         if (textLength >= maxTextSize) {
+//             event.preventDefault();
+//         }
+//     });
+//     this.$dom.on('keyup', '.input-box', (event) => {
+//         let text = this.$inputBox.text();
+//         let textLength = text.length;
+//         // if (textLength > maxTextSize) {
+//         //     let cutLen = textLength - maxTextSize;
+//         //     let html = this.$inputBox.html();
+//         //     html = html.substr(0, html.length - cutLen);
+//         //     this.$inputBox.html(html);
+//         // }
+
+//         this.$dom.find('.text-length-present').text(textLength);
+//     });
+
+//     this.$dom.on('blur', '.input-box', (event) => {
+//         console.log(123);
+
+//     })
+// }
+
+
+
 function submit() {
+
+
     let htmlText = this.$inputBox.html();
     if (htmlText == '' || htmlText == Constants.INPUT_PLACEHOLDER) {
         return;
+    }
+
+    if (htmlText.length > maxTextSize) {
+        // 超过最大字符限制
+        this.$dom.find('.max-input-error').remove();
+        return this.addMsg({
+            dialog: true,
+            className: 'max-input-error',
+            message: `超过最大${maxTextSize}个字符,请重新输入`
+        });
     }
 
     this.$inputBox.html('');
@@ -92,7 +143,8 @@ function submit() {
 
     this.addMsg({
         user: true,
-        message: htmlText
+        message: utils.extractUrl(htmlText),
+        time: moment()
     });
 
 
@@ -181,7 +233,15 @@ function pasteListener() {
         } else {
             text = (e.originalEvent || e).clipboardData.getData('text/plain');
         }
-        console.log('粘贴文本',text);
+
+        // 判断是否超出最大长度
+        let textLength = this.$inputBox.text().length;
+        if (textLength + text.length > maxTextSize) {
+            let cutLen = maxTextSize - textLength;
+            text = text.substr(0, cutLen);
+        }
+
+        console.log('粘贴文本', text);
 
         if (text) {
             e.preventDefault();

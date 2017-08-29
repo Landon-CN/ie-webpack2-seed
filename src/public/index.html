@@ -25,7 +25,7 @@
             <div class="title bot-title">
                 智能客服
             </div>
-            <div class="close pull-right"></div>
+            <a href="about:blank" class="close pull-right"></a>
         </div>
         <div class="talk-message ">
             <div class="message-row message-history" style="text-align:center;">
@@ -40,7 +40,7 @@
 
         </div>
         <div class="talk-input">
-            <div class="input-box" contenteditable="true"></div>
+            <div class="input-box" contenteditable="true" ></div>
             <div class="input-footer">
                 <div class="tool-list inline-block">
                     <a class="tool-item tool-emoji" data-type="emoji"></a>
@@ -48,8 +48,13 @@
                         <input id="fileupload" type="file" name="files" accept="mage/gif,image/jpeg,image/jpg,image/png">
                     </a>
                     <a class="tool-item tool-service" data-type="service"></a>
-                    <a class="tool-item tool-rate" data-type="rate"></a>
+                    <a class="tool-item tool-rate" data-type="rate">
+                        <div class="tooltip">
+                            您已经评价过了
+                        </div>
+                    </a>
                 </div>
+
                 <div class="actions inline-block pull-right">
                     <a class="btn btn-default btn-submit">发送</a>
                 </div>

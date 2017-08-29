@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "node  ./build/devServer.js",
+    "dev": "pm2 delete devServer && pm2 start ./build/devServer.js --name 'devServer' --no-daemon",
     "pre": "NODE_ENV=pre node ./build/devServer.js",
     "build": "webpack --progress --display-chunks --display-modules  --config  ./build/webpack.pro.conf.js"
   },
@@ -27,6 +27,7 @@
     "less-loader": "2.2.3",
     "node-fetch": "^1.7.1",
     "oldie": "^1.3.0",
+    "pm2": "^2.6.1",
     "postcss-loader": "1.2.2",
     "sprite-loader": "^0.3.6",
     "style-loader": "^0.13.1",

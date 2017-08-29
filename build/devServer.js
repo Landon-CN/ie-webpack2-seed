@@ -4,8 +4,7 @@ const webapckDevConfig = require('./webpack.dev.conf');
 const webapckProConfig = require('./webpack.pro.conf');
 const fetch = require('node-fetch');
 
-webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/", "webpack/hot/dev-server");
-webapckDevConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/");
 var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
 let targetUrl = '172.25.47.40'; // server
@@ -13,23 +12,25 @@ let messageUrl = '172.25.47.37'; // server
 let webImPort = '8088';
 let messagePort = '8090'
 
-let local = true;
+
+
+let local = false;
 if (local) {
-    targetUrl = '10.9.46.148';
-    messageUrl = '10.9.46.148';
+    targetUrl = '10.9.10.111';
+    messageUrl = '10.9.10.111';
 }
 
-let test = false;
+let test = true;
 if (test) {
     targetUrl = 'jtalk.jd.com';
-    messageUrl = 'talk.jd.com';
+    messageUrl = 'jtalk.jd.com';
     webImPort = '80';
     messagePort = '80'
 }
 
 var server = new webpackDevServer(compiler, {
     // webpack-dev-server options
-    hot: true,
+    // hot: true,
     contentBase: webapckDevConfig.output.path,
     // Can also be an array, or: contentBase: "http://localhost/",
 

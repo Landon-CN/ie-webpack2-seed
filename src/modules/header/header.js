@@ -6,7 +6,7 @@ import $ from 'jquery';
 function header() {
     // 控制.talk-header 下的所有节点
     this.$dom = $('.talk-header');
-    this.closeListener();
+    // this.closeListener();
 
 }
 
