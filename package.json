@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "pm2 delete devServer && pm2 start ./build/devServer.js --name 'devServer' --no-daemon",
+    "dev": "node ./build/devServer.js",
     "pre": "NODE_ENV=pre node ./build/devServer.js",
     "build": "webpack --progress --display-chunks --display-modules  --config  ./build/webpack.pro.conf.js"
   },

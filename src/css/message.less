@@ -264,7 +264,19 @@
 }
 
 .img-modal {
+    height: 100%;
+     // 垂直居中，低版本就不管了
+     display: flex;
+     align-items: center;
+    .img-size {
+        width: 60%;
+        height: 80%;
+        margin: 0 auto;
+        margin-top: 50px;
+
+    }
     img {
-        max-width: 60%;
+        max-width: 100%;
+        max-height: 100%;
     }
 }
