@@ -40,7 +40,8 @@ jquery.ajaxSetup({
         if (process.env.NODE_ENV === 'development') {
             dialog.open('错误:' + error + '  path:' + xhr.setting.url);
         }
-        addErrorMsg();
+        // 连接异常，不报错
+        // addErrorMsg();
 
 
     },
