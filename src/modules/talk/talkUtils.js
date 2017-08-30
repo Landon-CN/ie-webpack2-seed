@@ -32,7 +32,7 @@ export function parseContent(xml) {
                 htmlStr += `<img src='${element.attr('src')}' / class="open-img">`
                 break;
             case 'a':
-                htmlStr += `<a href="${element.attr('href')}" target="_blank" class="open-link" >${element.attr('href')}</a>`
+                htmlStr += `<a href="${element.attr('href')}" target="_blank" class="open-link" >${element.text()}</a>`
                 break;
             default:
                 break;
@@ -54,13 +54,21 @@ function noScript(test) {
 
 // 消息解析为xml
 export function stringifyContent(html) {
-    let htmlStr = '';
+
 
     if (globalVar.msgType === Constants.MSG_TYPE_BOT) {
         return $(`<body>${html}</body>`).text();
     }
 
+    return strToXml(html);
+}
 
+/**
+ * 将消息解析为xml
+ * @param {*} html
+ */
+export function strToXml(html) {
+    let htmlStr = '';
     $(`<body>${html}</body>`).each((index, element) => {
         let nodeName = element.nodeName.toLowerCase();
         element = $(element);
@@ -75,19 +83,18 @@ export function stringifyContent(html) {
                     htmlStr += `<img src='${element.attr('src')}' />`
                 break;
             case 'a':
-                htmlStr += `<a href="${element.attr('href')}">${element.attr('href')}</a>`;
+                htmlStr += `<a href="${element.attr('href')}">${element.text()}</a>`;
                 break;
             case '#text':
             default:
-                let text = extractUrl(element.text());
-                htmlStr += encode(text);
+                let text = encode(element.text());
+                htmlStr += extractUrl(text);
                 break;
         }
     });
 
 
     return `<body>${htmlStr}</body>`.replace(/&/g, '&amp;');
-
 }
 
 /**
@@ -95,7 +102,7 @@ export function stringifyContent(html) {
  * @param {*} text
  */
 export function extractUrl(text) {
-    return text.replace(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/gi, (s1, s2) => {
+    return text.replace(/(http:\/\/|https:\/\/|www\.)[a-z0-9\/]+[a-z0-9\.\/\?\&\%\=_#-]*\.[a-z0-9\/\?\&\%\=_#-]+/gi, (s1, s2) => {
         let href = s1;
         if (!/^http/.test(href)) {
             href = 'http://' + href;

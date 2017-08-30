@@ -36,7 +36,8 @@ export default function (talk) {
         botAnswerRateListener,
         cancelQueueListener,
         addLine,
-        chooseGroupInService
+        chooseGroupInService,
+        scrollBottom
     });
 
     const init = talk.prototype.init;
@@ -61,7 +62,9 @@ export default function (talk) {
         // 重新进线
         if (globalVar.msgType === Constants.MSG_TYPE_SERVICE) {
             this.inService(Constants.RECONNECT_MESSAGE);
-            this.getHistory();
+            this.getHistory().then(()=>{
+                this.scrollBottom();
+            });
 
         } else if (globalVar.isClose) {
             // 没有机器人，直接发送分组
@@ -149,16 +152,23 @@ function addMsg(data, append = true) {
     if (append) {
         this.msgBox.append(dom);
         // this.scroll.scrollTop(this.msgBox.height());
-        let scrollHeight = this.msgBox.prop('scrollHeight');
-
-        this.msgBox.stop().animate({
-            scrollTop: scrollHeight
-        }, 'normal');
+        this.scrollBottom();
     } else {
         this.$dom.find('.message-history').after(dom);
     }
 
     return dom;
+}
+
+/**
+ * 输入框滚动到底部
+ */
+function scrollBottom() {
+    let scrollHeight = this.msgBox.prop('scrollHeight');
+
+    this.msgBox.stop().animate({
+        scrollTop: scrollHeight
+    }, 'normal');
 }
 
 /**

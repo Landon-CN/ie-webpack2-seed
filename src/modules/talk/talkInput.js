@@ -143,7 +143,7 @@ function submit() {
 
     this.addMsg({
         user: true,
-        message: utils.extractUrl(htmlText),
+        message: utils.parseContent(utils.strToXml(htmlText)),
         time: moment()
     });
 
