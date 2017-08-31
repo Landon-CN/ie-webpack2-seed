@@ -62,7 +62,7 @@ export default function (talk) {
         // 重新进线
         if (globalVar.msgType === Constants.MSG_TYPE_SERVICE) {
             this.inService(Constants.RECONNECT_MESSAGE);
-            this.getHistory().then(()=>{
+            this.getHistory().then(() => {
                 this.scrollBottom();
             });
 
@@ -389,6 +389,7 @@ function offlineMsgInteval() {
     }, Constants.OFFLINE_MSG_TIME);
 }
 
+let isFirstPoll = true; // 是否是第一次长轮训放回的，第一次长轮训返回的离线消息不展示
 /**
  * 处理服务端返回结果
  * @param {*} resData
@@ -401,7 +402,7 @@ function resolveMsg(resData) {
         let item = resData[i];
         if (item.type == Constants.INVITE_MESSAGE) {
             this.addAppraise();
-            break;
+            continue;
         }
 
         if (item.type == Constants.CLOSE_MESSAGE) {
@@ -427,7 +428,7 @@ function resolveMsg(resData) {
                 message: Constants.CLOSE_MESSAGE_TEXT,
                 time: moment()
             });
-            break;
+            continue;
         }
 
         // 排队进线成功
@@ -471,7 +472,12 @@ function resolveMsg(resData) {
 
 
             this.inService(Constants.INSERVICE_EMSSAGE);
-            break;
+            continue;
+        }
+
+        // 第一次轮训回来的离线消息不处理
+        if (item.offline && item.type == Constants.INSTANT_MESSAGE && isFirstPoll) {
+            continue;
         }
 
         // 真人客服需要消息回执
@@ -491,7 +497,7 @@ function resolveMsg(resData) {
                 nextServiceInfo = JSON.parse(item.content);
             } catch (e) {
                 console.error('解析转接消息失败');
-                break;
+                continue;
             }
             console.log('转接成功');
             globalVar.dialogId = nextServiceInfo.afterJkDialogId;
@@ -503,14 +509,14 @@ function resolveMsg(resData) {
                 message: Constants.TRANSFER_MESSAGE_SUCCESS,
                 time: moment()
             });
-            break;
+            continue;
         }
 
         // 转接排队
         if (item.type == Constants.DIALOG_TRANSFER_QUEUE) {
             console.log('转接排队');
             this.addLine(0);
-            break;
+            continue;
         }
 
         // 机器人v2
@@ -521,7 +527,7 @@ function resolveMsg(resData) {
                 msgList.push(botMsg);
             }
 
-            break;
+            continue;
         }
 
         if (item.type == Constants.ROBOT_MESSAGE || item.type == Constants.INSTANT_MESSAGE) {
@@ -531,7 +537,7 @@ function resolveMsg(resData) {
                 message: utils.parseContent(item.content),
                 time: item.sendTime
             });
-            break;
+            continue;
         }
         console.error('消息类型未知:' + item.type);
 
@@ -566,6 +572,7 @@ function pollInterval() {
             if (data.channel === 'hello') {
                 this.resolveMsg(data.data)
             }
+            isFirstPoll = false;
             return this.pollInterval();
         }
 
