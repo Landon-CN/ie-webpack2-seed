@@ -141,15 +141,13 @@ function addEmoji(emoji) {
     let inputBox = this.$inputBox;
     this.inputBoxPlaceholderJudge(inputBox)
     inputBox.append(emoji);
-    // let html = inputBox.html();
-    // inputBox.html('').focus().html(html+'123');
-    // let ib = inputBox.eq(0);
-    // ib.setSelectionRange(1,1);
     placeCaretAtEnd(inputBox.get(0));
 }
 
+/**
+ * 光标移到最后
+*/
 function placeCaretAtEnd(el) {
-    console.log(el);
 
     el.focus();
     if (typeof window.getSelection != "undefined"
