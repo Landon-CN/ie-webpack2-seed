@@ -133,8 +133,6 @@ function closeOther(type) {
 
 }
 
-
-
 /**
  * 添加表情
  * @param {*} emoji
@@ -143,8 +141,32 @@ function addEmoji(emoji) {
     let inputBox = this.$inputBox;
     this.inputBoxPlaceholderJudge(inputBox)
     inputBox.append(emoji);
+    // let html = inputBox.html();
+    // inputBox.html('').focus().html(html+'123');
+    // let ib = inputBox.eq(0);
+    // ib.setSelectionRange(1,1);
+    placeCaretAtEnd(inputBox.get(0));
 }
 
+function placeCaretAtEnd(el) {
+    console.log(el);
+
+    el.focus();
+    if (typeof window.getSelection != "undefined"
+            && typeof document.createRange != "undefined") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+}
 
 function rateListener() {
     let dom = this.$dom;

@@ -199,6 +199,7 @@ function inputBoxPlaceholder() {
             $inputBox.addClass(placeholderClassName);
             $inputBox.text(defaultText);
         }
+
     });
 }
 
