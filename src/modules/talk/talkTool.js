@@ -142,6 +142,7 @@ function addEmoji(emoji) {
     this.inputBoxPlaceholderJudge(inputBox)
     inputBox.append(emoji);
     placeCaretAtEnd(inputBox.get(0));
+
 }
 
 /**

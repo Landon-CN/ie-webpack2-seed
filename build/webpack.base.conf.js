@@ -53,6 +53,9 @@ module.exports = {
             {
                 test: /\jquery-form/,
                 loader: "imports?define=>false"
+            },{
+                test: /\.json/,
+                loader:'file-loader?name=static/[name].[ext]'
             }
         ]
     },

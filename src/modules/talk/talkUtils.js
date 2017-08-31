@@ -3,41 +3,66 @@ import {
     getImgSrcById
 } from 'components/emoji/emoji';
 import * as Constants from './talkConstants';
+import xmlParse2 from 'htmlparser2';
 
-// 消息体解析
+
 export function parseContent(xml) {
-
-    if (xml.indexOf('<') != 0) {
-        return xml;
-    }
-    xml.replace(/&amp;/g, '&');
-    let msgBody = $(xml);
-
     let htmlStr = '';
-    msgBody.each((index, element) => {
-        let nodeName = element.nodeName.toLowerCase();
-        element = $(element);
-        switch (nodeName) {
-            case '#text':
-                htmlStr += noScript(element.text());
-                break;
-            case 'br':
-                htmlStr += '<br/>';
-                break;
-            case 'e':
-                let src = getImgSrcById(element.attr('s'));
-                htmlStr += `<img src='${src}' />`;
-                break;
-            case 'img':
-                htmlStr += `<img src='${element.attr('src')}' / class="open-img">`
-                break;
-            case 'a':
-                htmlStr += `<a href="${element.attr('href')}" target="_blank" class="open-link" >${element.text()}</a>`
-                break;
-            default:
-                break;
+    xml = xml.replace(/&amp;/g, '&');
+    let tag;
+    const parse = new xmlParse2.Parser({
+        onopentag(tagName, attrs) {
+            tag = tagName;
+            switch (tag) {
+                case 'img':
+                    htmlStr += `<img src='${attrs.src}' class="open-img" />`
+                    break;
+                case 'e':
+                    let src = getImgSrcById(attrs.s);
+                    htmlStr += `<img src='${src}' class="emoji" />`;
+                    break;
+                case 'br':
+                    htmlStr += '<br />';
+                    break;
+                case 'a':
+                    let href = attrs.href;
+                    if(!/^http/.test(href)){
+                        href = 'http://'+href;
+                    }
+                    htmlStr += `<a href="${href}" target="_blank" class="open-link" >`
+                    break;
+                case 'body':
+                    break;
+                default:
+                    throw new Error('不能识别的类型:' + tagName);
+
+            }
+
+        },
+        ontext(text) {
+            switch (tag) {
+                case 'a':
+                    htmlStr += text;
+                    break;
+
+                default:
+                    htmlStr += noScript(text);
+                    break;
+            }
+        },
+        onclosetag() {
+            switch (tag) {
+                case 'a':
+                    htmlStr += '</a>';
+                    break;
+                default:
+            }
         }
     });
+    parse.write(`<body>${xml}</body>`);
+    parse.end();
+
+
     return htmlStr;
 }
 
@@ -69,33 +94,28 @@ export function stringifyContent(html) {
  */
 export function strToXml(html) {
     let htmlStr = '';
-    $(`<body>${html}</body>`).each((index, element) => {
-        let nodeName = element.nodeName.toLowerCase();
-        element = $(element);
-        switch (nodeName) {
-            case 'br':
-                htmlStr += '<br/>';
-                break;
-            case 'img':
-                if (element.data('type'))
-                    htmlStr += `<e t="d" s="${element.data('s')}" />`;
-                else
-                    htmlStr += `<img src='${element.attr('src')}' />`
-                break;
-            case 'a':
-                htmlStr += `<a href="${element.attr('href')}">${element.text()}</a>`;
-                break;
-            case '#text':
-            default:
-                let text = encode(element.text());
-                htmlStr += extractUrl(text);
-                break;
+    html = html.replace(/&nbsp;/g, ' ');
+    const parse = new xmlParse2.Parser({
+        onopentag(tagName, attrs) {
+
+            if (tagName === 'img') {
+                if (attrs['data-type'] === 'e') {
+                    htmlStr += `<e t="d" s="${attrs['data-s']}" />`;
+                } else {
+                    htmlStr += `<img src='${attrs.src}'  />`
+                }
+            }
+        },
+        ontext(text) {
+            text = encode(text);
+            htmlStr += extractUrl(text)
         }
     });
-
-
+    parse.write(`<body>${html}</body>`);
+    parse.end();
     return `<body>${htmlStr}</body>`.replace(/&/g, '&amp;');
 }
+
 
 /**
  * 替换url为a标签
@@ -171,3 +191,4 @@ export function debounce(func, wait, immediate) {
 
     return debounced;
 };
+
