@@ -33,13 +33,18 @@ jquery.ajaxSetup({
         // 轮训暂时报错不提示
         // 网络问题不提示
         // 登录失效，刷新页面 xhr.readyState 0
-        if (!!xhr.setting.errorIgnore === true || text === 'timeout' || xhr.readyState === 0) {
+        if (!!xhr.setting.errorIgnore === true || xhr.readyState === 0) {
             return;
         }
 
         if (process.env.NODE_ENV === 'development') {
             dialog.open('错误:' + error + '  path:' + xhr.setting.url);
         }
+        if (text === 'timeout') {
+            // 网络问题
+            addErrorMsg('网络开小差啦~请稍候重试');
+        }
+
         // 连接异常，不报错
         // addErrorMsg();
 
@@ -57,15 +62,15 @@ jquery.ajaxSetup({
     }
 });
 
-function addErrorMsg() {
+function addErrorMsg(text = Constants.ERROR_MESSAGE) {
     // 先删除已有的error提示
     jquery('.error-dialog').remove();
 
     try {
         talk.addMsg({
             dialog: true,
-            className:'error-dialog',
-            message: Constants.ERROR_MESSAGE
+            className: 'error-dialog',
+            message: text
         });
     } catch (e) {}
 }
