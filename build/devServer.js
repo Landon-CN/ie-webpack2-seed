@@ -14,13 +14,13 @@ let messagePort = '8090'
 
 
 
-let local = false;
+let local = true;
 if (local) {
-    // targetUrl = '10.9.10.83';
+    targetUrl = '10.9.10.83';
     messageUrl = '10.9.10.83';
 }
 
-let test = true;
+let test = false;
 if (test) {
     targetUrl = 'jtalk.jd.com';
     messageUrl = 'jtalk.jd.com';
