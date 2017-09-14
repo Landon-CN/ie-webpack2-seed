@@ -86,10 +86,7 @@ export function getOfflineMsg(params) {
  */
 export function sendMsg(targetUserId, data = {}, ext = {}) {
     data.time = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
-<<<<<<< HEAD:src/modules/content/talk/talkService.js
-=======
     console.log(data.time);
->>>>>>> dev_2:src/modules/talk/talkService.js
 
     data.type = globalVar.msgType;
     data.dialogId = globalVar.dialogId;
