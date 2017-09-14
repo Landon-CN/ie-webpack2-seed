@@ -1,65 +1,113 @@
-import tpl from './rate.html';
-import mustache from 'mustache';
 import $ from 'jquery';
-import './rate.less';
-
+import globalVar from '../../globalVar';
+import talk from '../../modules/talk/talk';
+import moment from 'moment';
 
 /**
- * @param  {number} max=5 评分数量
- * @param  {function} change 评分变化
- * @param  {number} currentRate 初始评分
+ * 邀评交互
  */
-export function rate(parent,change = () => {},max = 5 , currentRate = 0) {
-    let maxRate = [];
-    for (let i = 1; i <= max; i++) {
-        maxRate[i - 1] = i;
-    }
-
-    const tplResult = mustache.render(tpl, {
-        maxRate
+(function rate(document) {
+    const $document = $(document);
+    let chooseScore = 0;
+    $document.on('mouseenter', '.score > .score-item', (event) => {
+        const $target = $(event.currentTarget);
+        $target.addClass('active').nextAll().removeClass('active');
+        $target.prevAll().addClass('active');
+        const score = parseInt($target.data('score'), 10);
     });
 
-    const dom = $(tplResult);
-    let itemList = dom.children('.rate-item');
-
-    dom.on('mouseenter', '.rate-item', function (event) {
-        const rate = $(this).data('rate');
-        setRate(parseInt(rate, 10));
-    });
-
-    dom.on('click', '.rate-item', function (event) {
-        event.stopPropagation();
-        const rate = parseInt($(this).data('rate'),10);
-        if(rate !== currentRate){
-            currentRate = rate;
-            setRate(rate);
-            change(rate);
-        }
-    });
-
-    dom.on('mouseleave', function () {
-        setRate(currentRate);
-    });
-
-    function setRate(rate) {
-        if (rate < 1) {
-            return itemList.removeClass('active');
-        } else if (rate > max) {
-            return itemList.addClass('active');
-        }
-
-        itemList.each(function (index, element) {
-
-            if (index < rate) {
-                $(element).addClass('active')
+    $document.on('mouseleave', '.score', (event) => {
+        const $target = $(event.currentTarget);
+        $target.find('.score-item').each((index, item) => {
+            const $item = $(item);
+            const score = parseInt($item.data('score'), 10);
+            if (score <= chooseScore) {
+                $item.addClass('active');
             } else {
-                $(element).removeClass('active');
+                $item.removeClass('active');
             }
         });
+    });
+    $document.on('click', '.score > .score-item', (event) => {
+        const $target = $(event.currentTarget);
+        const score = parseInt($target.data('score'), 10);
+        setRate(score)
+    });
+
+    // 小于4分，弹出不满意理由选择
+    function setRate(score) {
+        chooseScore = score;
+        if (score < 4) {
+            $('.dl-reason').show('normal');
+        } else {
+            $('.dl-reason').hide('normal');
+        }
     }
 
-    // 初始化分数
-    setRate(currentRate);
+    // 选择不满意原因
+    $document.on('click', '.reason li', (event) => {
 
-    $(parent).append(dom);
-}
+        $(event.currentTarget).toggleClass('active');
+    });
+
+    $document.on('click', '.rate-submit .btn', (event) => {
+        if (globalVar.isRate) {
+            return talk.addMsg({
+                dialog: true,
+                message: '请勿重复评价'
+            });
+        }
+        globalVar.isRate = true;
+        disabled();
+
+
+        const $target = $(event.currentTarget);
+        const $reasonList = $target.parents('.rate').find('.reason li.active');
+
+        let reason = []; // 选择的原因
+        $reasonList.each((idx, ele) => {
+            reason.push($(ele).data('type'));
+        });
+        const params = {
+            dialogId: globalVar.dialogId,
+            toUser: globalVar.targetServiceId,
+            sendTime: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+            score: chooseScore,
+            reason: reason.join(','),
+            userSay: ''
+        };
+
+        $.ajax({
+            url: '/webpage/invitejudge/judge.htm',
+            contentType: 'application/json; charset=utf-8',
+            type: 'post',
+            data: params
+        }).then((result) => {
+            if (result.data == '01') {
+                talk.addMsg({
+                    dialog: true,
+                    message: '评价成功'
+                });
+            } else if (result.data == '02') {
+                // 重复评价
+                talk.addMsg({
+                    dialog: true,
+                    message: '请勿重复评价'
+                });
+            } else {
+                talk.addMsg({
+                    dialog: true,
+                    message: '系统开小差啦~请稍后再试'
+                });
+            }
+        });
+
+    });
+
+    /**
+     * 禁用评价框
+     */
+    function disabled() {
+        $(document).find('.message-row.appraise').addClass('disabled');
+    }
+})(document);

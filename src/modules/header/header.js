@@ -1,26 +1,32 @@
-import tpl from './header.html';
-import mustache from 'mustache';
 import $ from 'jquery';
-import './header.less';
-import talk from '../content/talk/talk';
 
-let dom;
-export default function (parent) {
-    dom = $(mustache.render(tpl, {}));
+/**
+ * 头部控制
+ */
+function header() {
+    // 控制.talk-header 下的所有节点
+    this.$dom = $('.talk-header');
+    // this.closeListener();
 
-    dom.on('click', '.online', function (event) {
-        talk.onlineServiceClick();
+}
+
+/**
+ * 人工客服模式
+ * 切换头部为人工客服
+ */
+header.prototype.headerInservice = function () {
+    const $title = this.$dom.find('.title');
+    $title.removeClass('bot-title').addClass('user-title').text('人工客服');
+}
+
+/**
+ * 关闭按钮
+ */
+header.prototype.closeListener = function () {
+    this.$dom.on('click', '.close', () => {
+        window.location.href = "about:blank";
     });
-
-    $(parent).append(dom);
 }
 
-function headerChangeToSerice() {
-    dom.find('.online').remove();
-    dom.find('.name-small').text('在线客服');
-    dom.find('.qr-code').addClass('big');
-}
 
-export {
-    headerChangeToSerice
-}
+export default new header();

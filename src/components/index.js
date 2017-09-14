@@ -4,14 +4,11 @@ import {
 import {
     emoji
 } from './emoji/emoji';
-import {
-    rate
-} from './rate/rate';
+import './rate/rate';
 import modal from './modal/modal';
 
 export {
     emoji,
-    rate,
     dialog,
     modal
 }

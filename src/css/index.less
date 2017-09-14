@@ -1,94 +1,98 @@
-@width: 1200px;
-@height: 90%;
-@min-height: 638px;
+@import './variable.less';
+@width: 700px;
+@height: 555px;
+* {
+    box-sizing: border-box;
+    outline: none;
+}
 
 html,
 body {
     height: 100%;
+    min-height: @height;
     padding: 0;
     margin: 0;
 }
 
 body {
     position: relative;
-    min-height: @min-height;
-    font-size: 14px;
-    font-family: 'Hiragino Sans GB', 'Microsoft YaHei', tahoma, arial, '\\5b8b\4f53', sans-serif;
-}
-
-a {
-    text-decoration: none;
-    img {
-        border:none;
-    }
+    font-size: 14px; // 抄JD的，设计稿默认是微软雅黑
+    font-family: "Microsoft YaHei", tahoma, arial, "Hiragino Sans GB", "\\5b8b\4f53", sans-serif;
+    background: url('../public/imgs/background.png') no-repeat center center/cover;
+    background-color: #6d9aff;
+    color: @text-blank-color;
 }
 
 ul {
     padding: 0;
     margin: 0;
-}
-
-.wrapper {
-    background: #d8d8d8;
-    min-height: @min-height;
-    height: 100%;
-    position: relative;
-
-    .bg-box {
-        position: absolute;
-        left:0;right:0;bottom:0;top:0;
+    &.inline-list {
+        list-style: none;
+        display: table;
+        /* 调教webkit*/
+        word-spacing: -1em;
+        >li {
+            word-spacing: 0;
+            display: inline-block;
+        }
     }
 
-    .wrapper-bg {
-        min-height: @min-height;
-        width: 100%;
-        height: 100%;
+    &.non-style{
+        list-style: none;
     }
 }
 
-.center {
-    width: @width;
-    height: @height;
-    // box-shadow: 2px 2px 5px 0 #dedede;
-    position: relative;
-    margin: 0px auto;
-    padding-top: 30px;
+a {
+    text-decoration: none;
 }
 
 .pull-left {
     float: left;
 }
-
-.inline-list {
-    list-style: none;
-    display: table;
-    /* 调教webkit*/
-    word-spacing: -1em;
-    >li {
-        word-spacing: 0;
-    }
+.pull-right {
+    float: right;
 }
 
-.red {
-    color:red;
+.inline-block {
+    display: inline-block;
 }
 
-.clear {
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: "";
     clear: both;
     height: 0;
-    line-height: 0;
-    opacity: 0;
-    overflow: hidden;
 }
 
 .btn {
     cursor: pointer;
     display: inline-block;
     user-select: none;
-
-
+    padding: 8px 21px;
+    border-radius: 2px;
+    font-size: 14px;
     &:active {
-        box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+        box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
     }
+    &.btn-default {
+        background-color: @bg-blue-color;
+        color: @text-white-color;
+    }
+}
+
+.talk-body {
+    width: @width;
+    height: @height;
+    position: relative;
+    margin: 0 auto;
+    top: 50%;
+    margin-top: -@height/2;
+    display: none;
+}
+
+.v-middle{
+    vertical-align: middle;
 }
 

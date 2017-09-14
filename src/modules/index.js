@@ -1,7 +1,7 @@
-import content from './content/content';
+import talk from './talk/talk';
 import header from './header/header';
 
 export {
-    content,
+    talk,
     header
 }

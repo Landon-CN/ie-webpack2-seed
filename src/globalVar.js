@@ -12,7 +12,12 @@ export default {
     groupId: null, //分组ID,进线后使用
     isClose: false, //是否被断开连接
     msgType: null, //消息类型,机器人，客服
-    welcomeWords: '欢迎回到京东金融客服', //欢迎语
+    welcomeWords: '欢迎来到京东金融客服', //欢迎语
     queueLength: 0, // 排队长度
     botRate: false, //机器人是否评价过
+    initSource: '03',
+    userName: '', // 用户昵称
+    serviceName: '智能客服', // 服务方名称  在线客服
+    companyId: '',//公司ID
+    entrance: '' // 入口ID
 }

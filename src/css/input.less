@@ -1,0 +1,61 @@
+@import './variable.less';
+@height: 130px;
+.talk-input {
+    padding: 16px 22px;
+    height: @height;
+    background: @bg-white-color;
+    position: relative;
+    .input-box {
+        height: 70px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        img {
+            vertical-align: middle;
+            max-height: 100px;
+            max-width: 100px;
+        }
+    }
+    .tool-list {
+        font-size: 0;
+    }
+    .tool-item {
+        cursor: pointer;
+        display: inline-block;
+        width: 22px;
+        height: 35px;
+        margin-right: 25px;
+        &.tool-emoji {
+            background: url('../public/imgs/emoji.png') no-repeat center center;
+        }
+        &.tool-file {
+            display: none;
+            background: url('../public/imgs/file.png') no-repeat center center;
+        }
+        &.tool-service {
+            background: url('../public/imgs/service.png') no-repeat center center;
+        }
+        &.tool-rate {
+            display: none;
+            background: url('../public/imgs/rate.png') no-repeat center center;
+            position: relative;
+
+            .tooltip {
+                position: absolute;
+                display: none;
+                font-size: 12px;
+                top:-20px;
+                left: -10px;
+                white-space: nowrap;
+                background: #fff;
+                box-shadow: 0 0 2px 0px #bbb;
+                color:#bbb;
+                border: 1px solid #bbb;
+                padding: 2px 10px;
+                border-radius: 4px;
+            }
+        }
+    }
+    .placeholder {
+        color: #ccc;
+    }
+}

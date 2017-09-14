@@ -1,15 +1,10 @@
 import jquery from 'jquery';
-import {
-    content,
-    header
-} from './modules';
 import globalVar from 'globalVar';
+import * as service from './modules/talk/talkService';
 import {
-    postFrom
-} from './utils';
-import * as Constants from './modules/content/talk/talkConstants';
-import botParse from './modules/content/talk/botContentParse';
-import * as service from './modules/content/talk/talkService';
+    talk
+} from './modules';
+window.globalVar = globalVar;
 
 function keyInit() {
 
@@ -23,21 +18,53 @@ function keyInit() {
         globalVar.jdPin = result.data.jdPin;
         globalVar.webPersonalKey = result.data.webPersonalKey;
         globalVar.userId = result.data.userId;
-    })
+        globalVar.userName = result.data.jdPin;
+
+    });
 
 }
-
 
 
 function domInit() {
-    header('.body-content');
-    content('.body-content');
+    talk.init()
 }
 
 function init() {
+    let args = getUrlParams();
+    if (args.initSource) {
+        globalVar.initSource = args.initSource;
+    }
+    globalVar.companyId = args.companyId;
+    globalVar.entrance = args.entrance;
+
+
     jquery.when(keyInit(), service.inlineInit()).then(() => {
         domInit();
     });
+}
+
+
+if (process.env.NODE_ENV === 'development') {
+    window.globalVar = globalVar;
+}
+
+
+/**
+ * 获取url参数
+ */
+function getUrlParams() {
+    let queryString = window.location.search.substr(1);
+
+    let argsArr = queryString.split('&');
+    if (argsArr[0] === '') {
+        argsArr.shift();
+    }
+    let argsObj = {};
+    for (let i = 0; i < argsArr.length; i++) {
+        let args = argsArr[i].split('=');
+        argsObj[args[0]] = args[1];
+    }
+    return argsObj;
 }
 
 

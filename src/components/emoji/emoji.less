@@ -2,29 +2,10 @@
 @emoji-hover-color: #45ac4a;
 // 表情包-经典表情包，.emoji .emoji-classics-1,72
 
-/* sprite-loader-enable */
-.emoji-bg(@i: 1) when (@i<=72) {
-    .mixin(@i);
-    .emoji-bg((@i+1));
-}
-
-.mixin(@num) when(@num<10) {
-    &.emoji-classics-0@{i} {
-        background-image: url('./imgs/s0@{i}.gif');
-    }
-}
-
-.mixin(@num) when(@num>=10) {
-    &.emoji-classics-@{i} {
-        background-image: url('./imgs/s@{i}.gif');
-    }
-}
-
 .emoji {
     width: 24px;
     height: 24px;
     display: inline-block;
-    .emoji-bg()
 }
 
 
@@ -33,43 +14,18 @@
     background-color: #fff;
     position: absolute;
     z-index: 100;
-    bottom: 41px;
-    left: 40px;
+    top: -208px;
+    left: 20px;
     .classics {
-        margin: 4px;
+        margin: 20px;
         border-collapse: collapse;
         border-spacing: 0;
-        border: 1px solid @border-color;
         .emoji-item {
             cursor: pointer;
             padding: 0;
-            background-color: #FAFAFA;
             width: 28px;
             height: 28px;
-            border: 1px solid @border-color;
             text-align: center;
-            .emoji-border {
-                &:hover {
-                    border: 1px solid @emoji-hover-color;
-                }
-            }
-            .emoji {
-                vertical-align: middle;
-                &:hover {
-                    border-color: @emoji-hover-color;
-                }
-            }
         }
-    }
-    .emoji-show-body {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 24px;
-        height: 24px;
-        padding: 16px;
-        border: 1px solid @emoji-hover-color;
-        opacity: 0;
-        background-color: #fafafa;
     }
 }
