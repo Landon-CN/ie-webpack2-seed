@@ -57,12 +57,18 @@ import moment from 'moment';
                 message: '请勿重复评价'
             });
         }
-        globalVar.isRate = true;
-        disabled();
+
 
 
         const $target = $(event.currentTarget);
         const $reasonList = $target.parents('.rate').find('.reason li.active');
+
+        // 发生邀评-结束会话-再次进线-评价上一个客服，这时候不能把评价置灰
+        if ($target.data('dialog-id') === globalVar.dialogId) {
+            globalVar.isRate = true;
+            disabled();
+        }
+
 
         let reason = []; // 选择的原因
         $reasonList.each((idx, ele) => {
