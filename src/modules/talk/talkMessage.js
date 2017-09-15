@@ -334,7 +334,7 @@ function getHistory() {
                         user: item.from == globalVar.userId,
                         message: utils.parseContent(item.content),
                         time: item.sendTime,
-                        serviceName: '人工客服',
+                        serviceName: '在线客服',
                     });
                     break;
                 case Constants.HISTORY_NEW_BOT_ASK:
