@@ -69,8 +69,8 @@ import moment from 'moment';
             reason.push($(ele).data('type'));
         });
         const params = {
-            dialogId: globalVar.dialogId,
-            toUser: globalVar.targetServiceId,
+            dialogId: $target.data('dialog-id'),
+            toUser: $target.data('target-service-id'),
             sendTime: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
             score: chooseScore,
             reason: reason.join(','),

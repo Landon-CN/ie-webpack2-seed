@@ -20,7 +20,7 @@ if (local) {
     messageUrl = '10.9.10.83';
 }
 
-let test = false;
+let test = true;
 if (test) {
     targetUrl = 'jtalk.jd.com';
     messageUrl = 'jtalk.jd.com';

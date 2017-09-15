@@ -603,7 +603,9 @@ function addAppraise() {
     this.$dom.find('.appraise').remove();
 
     this.addMsg({
-        appraise: true
+        appraise: true,
+        dialogId: globalVar.dialogId,
+        targetServiceId: globalVar.targetServiceId
     });
 }
 
