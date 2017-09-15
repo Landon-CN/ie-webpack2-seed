@@ -61,7 +61,7 @@ talk.prototype.onlineServiceClick = function () {
 
         const data = result.data;
 
-        const list = data.showBusinessInfo.sort((a, b) => a.groupId - b.groupId);
+        const list = data.showBusinessInfo.sort((a, b) => a.groupId > b.groupId ? 1 : -1);
 
         if (list.length === 1) {
             // 只有一个分组，直接进线
