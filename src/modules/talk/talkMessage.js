@@ -13,7 +13,8 @@ import {
     modal
 } from 'components';
 import botParse, {
-    suggest
+    testData,
+    block
 } from './botContentParse';
 
 // 最多显示多少个列表
@@ -71,6 +72,8 @@ export default function (talk) {
             this.onlineServiceClick();
         } else {
             // 机器人，发送欢迎语
+            console.log('欢迎语', globalVar.welcomeWords);
+
             this.addMsg({
                 service: true,
                 message: globalVar.welcomeWords,
@@ -82,7 +85,9 @@ export default function (talk) {
         if (globalVar.queueLength > 0) {
             this.addLine(globalVar.queueLength);
         }
+        console.log(1231);
 
+        this.resolveMsg(block.data.data);
         window.addLine = addLine.bind(this);
         window.addAppraise = addAppraise.bind(this);
     }

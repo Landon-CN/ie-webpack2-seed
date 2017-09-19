@@ -46,10 +46,10 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
-        '/jtbms/**': {
-            target: `http://${bmsUrl}:${bmsPort}`,
-            changeOrigin: true,
-        },
+        // '/jtbms/**': {
+        //     target: `http://${bmsUrl}:${bmsPort}`,
+        //     changeOrigin: true,
+        // },
         '/jtalk/message/**': {
             target: `http://${messageUrl}:${messagePort}`,
             changeOrigin: true,

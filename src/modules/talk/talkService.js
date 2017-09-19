@@ -200,7 +200,9 @@ export function inlineInit() {
         }
         if (data.content) {
             let botContent = botParse(data.content);
-            globalVar.welcomeWords = botContent.answer;
+            console.log('获取欢迎语', botContent);
+            if (botContent && botContent.answer)
+                globalVar.welcomeWords = botContent.answer;
         }
 
         if (data.previousDialogAppraise) {

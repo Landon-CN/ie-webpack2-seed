@@ -20,13 +20,17 @@ export default function contentParse(content) {
         return false;
     }
 
-
     content = content.data;
     let answers;
     try {
         answers = JSON.parse(content.answerModel.answers);
     } catch (e) {
         console.error(e);
+        return false;
+    }
+
+    if (!answers) {
+        console.warn('机器人无返回answers')
         return false;
     }
 
@@ -216,20 +220,81 @@ export const fold = {
     "sessionId": "d19b267e-7a76-4f68-8485-bc38751f402d"
 }
 
-export const suggest =  [{
+export const suggest = [{
+    "channels": ["hello"],
+    "content": "{\"data\":{\"answerModel\":{\"answerModelProperties\":{\"engineerRenderType\":\"render_user_suggestion\",\"replyType\":\"suggest\",\"scene\":\"ask\",\"toMan\":false},\"answers\":\"{\\\"more\\\":[{\\\"id\\\":\\\"800219\\\",\\\"score\\\":0.6495274098697531,\\\"title\\\":\\\"白条激活\\\"},{\\\"id\\\":\\\"800220\\\",\\\"score\\\":0.6317176200434012,\\\"title\\\":\\\"白条消费\\\"},{\\\"id\\\":\\\"800223\\\",\\\"score\\\":0.6294584388969316,\\\"title\\\":\\\"白条催收\\\"},{\\\"id\\\":\\\"800222\\\",\\\"score\\\":0.617052496681011,\\\"title\\\":\\\"白条退款\\\"},{\\\"id\\\":\\\"800221\\\",\\\"score\\\":0.6167268561026664,\\\"title\\\":\\\"白条还款\\\"},{\\\"id\\\":\\\"800218\\\",\\\"score\\\":0.6141201479678945,\\\"title\\\":\\\"白条账户\\\"}],\\\"scene\\\":\\\"ask\\\",\\\"score\\\":0.0,\\\"title\\\":\\\"建议问题\\\",\\\"type\\\":\\\"suggest\\\"}\"},\"msgId\":\"cdc11ef4-074f-413e-938e-3b61e243b365\",\"renderType\":\"render_user_suggestion\",\"requestInteractionType\":\"request_text\",\"requestNo\":\"d89ac2e8-f383-4eb0-b36d-bbbe9ce90eef\",\"requestTime\":1502100727887,\"responseTime\":1502100728000,\"sessionId\":\"c4ae8ccf-71f3-4ab1-a1a0-5f79c9ebd5d3\"},\"result\":true,\"terminalType\":\"pc\"}",
+    "dialogId": "59883a3930ee5916e8e51334",
+    "fromUserId": "10001",
+    "fromUserName": "机器人小京",
+    "msgId": "0121007278859830",
+    "offline": false,
+    "packetId": "0",
+    "sendTime": "2017-08-07 18:12:07",
+    "timeout": 0,
+    "toUserId": "110020000000114697",
+    "toUserName": "perftest001/01",
+    "type": "43",
+    "ws": "lpool"
+}]
+
+
+export const testData = {
+    "data": {
+        "channel": "hello",
+        "data": [{
             "channels": ["hello"],
-            "content": "{\"data\":{\"answerModel\":{\"answerModelProperties\":{\"engineerRenderType\":\"render_user_suggestion\",\"replyType\":\"suggest\",\"scene\":\"ask\",\"toMan\":false},\"answers\":\"{\\\"more\\\":[{\\\"id\\\":\\\"800219\\\",\\\"score\\\":0.6495274098697531,\\\"title\\\":\\\"白条激活\\\"},{\\\"id\\\":\\\"800220\\\",\\\"score\\\":0.6317176200434012,\\\"title\\\":\\\"白条消费\\\"},{\\\"id\\\":\\\"800223\\\",\\\"score\\\":0.6294584388969316,\\\"title\\\":\\\"白条催收\\\"},{\\\"id\\\":\\\"800222\\\",\\\"score\\\":0.617052496681011,\\\"title\\\":\\\"白条退款\\\"},{\\\"id\\\":\\\"800221\\\",\\\"score\\\":0.6167268561026664,\\\"title\\\":\\\"白条还款\\\"},{\\\"id\\\":\\\"800218\\\",\\\"score\\\":0.6141201479678945,\\\"title\\\":\\\"白条账户\\\"}],\\\"scene\\\":\\\"ask\\\",\\\"score\\\":0.0,\\\"title\\\":\\\"建议问题\\\",\\\"type\\\":\\\"suggest\\\"}\"},\"msgId\":\"cdc11ef4-074f-413e-938e-3b61e243b365\",\"renderType\":\"render_user_suggestion\",\"requestInteractionType\":\"request_text\",\"requestNo\":\"d89ac2e8-f383-4eb0-b36d-bbbe9ce90eef\",\"requestTime\":1502100727887,\"responseTime\":1502100728000,\"sessionId\":\"c4ae8ccf-71f3-4ab1-a1a0-5f79c9ebd5d3\"},\"result\":true,\"terminalType\":\"pc\"}",
-            "dialogId": "59883a3930ee5916e8e51334",
+            "content": "{\"data\":{\"answerModel\":{\"answerModelProperties\":{\"engineerRenderType\":\"render_plain_text\",\"replyType\":\"answer\",\"scene\":\"business\",\"sceneItem\":\"8984\",\"sessionId\":\"56\",\"toMan\":false},\"answers\":\"{\\\"id\\\":\\\"8984\\\",\\\"scene\\\":\\\"business\\\",\\\"score\\\":0.0,\\\"title\\\":\\\"京东小金库有哪些用途\\\",\\\"type\\\":\\\"answer\\\"}\"},\"msgId\":\"54\",\"renderType\":\"render_plain_text\",\"requestInteractionType\":\"request_normal_select\",\"requestNo\":\"9c1e7baa-eab8-4c73-995f-ed33c25449f8\",\"requestTime\":1505830875418,\"responseTime\":1505830875434,\"sessionId\":\"56\"},\"result\":true,\"terminalType\":\"pc\"}",
+            "dialogId": "59c1275530ee593d0bec161b",
             "fromUserId": "10001",
             "fromUserName": "机器人小京",
-            "msgId": "0121007278859830",
+            "offline": true,
+            "packetId": "0",
+            "sendTime": "2017-09-19 22:21:14.888",
+            "timeout": 0,
+            "toUserId": "110020000000114580",
+            "toUserName": "jtalk001/01",
+            "type": "43"
+        }, {
+            "channels": ["hello"],
+            "content": "{\"data\":{\"answerModel\":{\"answerModelProperties\":{\"engineerRenderType\":\"render_fold_answer\",\"replyType\":\"fold\",\"scene\":\"business\",\"sceneItem\":\"5595\",\"sessionId\":\"56\",\"toMan\":false},\"answers\":\"{\\\"answer\\\":\\\"可以，白条账户支持关闭。但是白条一旦关闭，不能保证可以再次开通。白条关闭后，您仍能看到白条额度，但在消费时无法使用。\\\",\\\"id\\\":\\\"5595\\\",\\\"more\\\":[{\\\"id\\\":\\\"8891\\\",\\\"scene\\\":\\\"business\\\",\\\"score\\\":76.0,\\\"title\\\":\\\"我的白条额度太低，要注销白条\\\",\\\"type\\\":\\\"fold\\\"},{\\\"id\\\":\\\"8890\\\",\\\"scene\\\":\\\"business\\\",\\\"score\\\":76.0,\\\"title\\\":\\\"我的白条额度太高了，要注销白条\\\",\\\"type\\\":\\\"fold\\\"},{\\\"id\\\":\\\"6102\\\",\\\"scene\\\":\\\"business\\\",\\\"score\\\":76.0,\\\"title\\\":\\\"白条注销是否影响白条闪付消费\\\",\\\"type\\\":\\\"fold\\\"},{\\\"id\\\":\\\"8885\\\",\\\"scene\\\":\\\"business\\\",\\\"score\\\":72.0,\\\"title\\\":\\\"我不小心开通了白条，能注销吗\\\",\\\"type\\\":\\\"fold\\\"}],\\\"scene\\\":\\\"business\\\",\\\"score\\\":80.0,\\\"title\\\":\\\"白条账户是否可以注销\\\",\\\"type\\\":\\\"fold\\\"}\"},\"msgId\":\"55\",\"renderType\":\"render_fold_answer\",\"requestInteractionType\":\"request_text\",\"requestNo\":\"28e8ce4c-7b7a-4ff3-b057-0891d169f676\",\"requestTime\":1505830885599,\"responseTime\":1505830885632,\"sessionId\":\"56\"},\"result\":true,\"terminalType\":\"pc\"}",
+            "dialogId": "59c1275530ee593d0bec161b",
+            "fromUserId": "10001",
+            "fromUserName": "机器人小京",
+            "offline": true,
+            "packetId": "0",
+            "sendTime": "2017-09-19 22:21:25.505",
+            "timeout": 0,
+            "toUserId": "110020000000114580",
+            "toUserName": "jtalk001/01",
+            "type": "43"
+        }],
+        "time": 1505830965027
+    },
+    "msg": "操作成功",
+    "resultCode": "00000"
+}
+
+export const block = {
+    "data": {
+        "channel": "hello",
+        "data": [{
+            "channels": ["hello"],
+            "content": "{\"data\":{\"answerModel\":{\"answerModelProperties\":{\"engineerRenderType\":\"render_plain_text\",\"replyType\":\"unknown\",\"scene\":\"business\",\"sessionId\":\"57\",\"toMan\":false},\"answers\":\"null\"},\"msgId\":\"79\",\"renderType\":\"render_plain_text\",\"requestInteractionType\":\"request_text\",\"requestNo\":\"0e428dce-ce58-47b3-b951-ee3da1f31445\",\"requestTime\":1505832507304,\"responseTime\":1505832507341,\"sessionId\":\"57\"},\"result\":true,\"terminalType\":\"pc\"}",
+            "dialogId": "59c12a2930ee593d0bec161c",
+            "fromUserId": "10001",
+            "fromUserName": "机器人小京",
+            "msgId": "0158325072988332",
             "offline": false,
             "packetId": "0",
-            "sendTime": "2017-08-07 18:12:07",
+            "sendTime": "2017-09-19 22:48:26.545",
             "timeout": 0,
-            "toUserId": "110020000000114697",
-            "toUserName": "perftest001/01",
+            "toUserId": "110020000000114887",
+            "toUserName": "perftest020/01",
             "type": "43",
             "ws": "lpool"
-        }]
-
+        }],
+        "time": 1505832486604
+    },
+    "msg": "操作成功",
+    "resultCode": "00000"
+}
