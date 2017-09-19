@@ -8,9 +8,6 @@ export const CLOSE_MESSAGE_TEXT = '本次会话已结束';
 export const TRANSFER_MESSAGE_SUCCESS = '已为您转接到新的客服';
 export const TEXT_CANCEL_QUEUE = '已取消排队';
 
-// 输入框文本
-export const INPUT_PLACEHOLDER = '请描述您遇到的问题~';
-export const INPUT_PLACEHOLDER_CALSS = 'placeholder';
 
 export const OFFLINE_MSG_TIME = 25000; // 离线消息抓取间隔时间
 

@@ -5,14 +5,44 @@
     height: @height;
     background: @bg-white-color;
     position: relative;
+    .input-recommond {
+        position: absolute;
+        height: 0;
+        top: -1px;
+        left: 0;
+        width: 100%;
+        display: none;
+        .recommond-list {
+            position: absolute;
+            bottom: 0;
+            background: #fff;
+            width: 100%;
+            padding: 10px 20px;
+            ul {
+                list-style: none;
+                font-size: 12px;
+                color: #333;
+                li {
+                    cursor: pointer;
+                }
+            }
+            .light {
+                color: #FF8111;
+            }
+        }
+    }
     .input-box {
         height: 70px;
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         img {
             vertical-align: middle;
             max-height: 100px;
             max-width: 100px;
+        }
+        &:empty:before {
+            content: attr(placeholder);
+            color: #ccc;
         }
     }
     .tool-list {
@@ -38,24 +68,20 @@
             display: none;
             background: url('../public/imgs/rate.png') no-repeat center center;
             position: relative;
-
             .tooltip {
                 position: absolute;
                 display: none;
                 font-size: 12px;
-                top:-20px;
+                top: -20px;
                 left: -10px;
                 white-space: nowrap;
                 background: #fff;
                 box-shadow: 0 0 2px 0px #bbb;
-                color:#bbb;
+                color: #bbb;
                 border: 1px solid #bbb;
                 padding: 2px 10px;
                 border-radius: 4px;
             }
         }
-    }
-    .placeholder {
-        color: #ccc;
     }
 }

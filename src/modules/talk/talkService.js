@@ -215,23 +215,19 @@ export function inlineInit() {
  * @param {*} inputText 输入文案
  */
 export function autoComplete(inputText) {
-    return new Promise((resolve) => {
-        setTimeout(function () {
-            let data = [{
-                text: '提示1'
-            }, {
-                text: '提示2'
-            }];
-            data.push({
-                text: Math.random()
-            })
-
-            resolve({
-                data
-            });
-        }, Math.ceil(Math.random() * 2000));
+    return $.ajax({
+        url: '/jtbms/robot/search/recommend.htm',
+        contentType: 'application/json; charset=utf-8',
+        type: 'post',
+        prefix: false,
+        data: {
+            pageSize: 4,
+            pageNum: 1,
+            keyword: inputText,
+            companyId: globalVar.companyId,
+            identityId: globalVar.userId
+        }
     });
-
 }
 
 
@@ -246,6 +242,27 @@ export function queryQueueLenght() {
         type: 'post',
         data: {
             groupId: globalVar.groupId
+        }
+    });
+}
+
+
+/**
+ * 机器人答案反馈
+ * @param {*} msgId
+ * @param {*} satisfy 1满意 -1 不满意
+ */
+export function botRate(msgId, satisfy) {
+    return $.ajax({
+        url: '/jtbms/robot/comment/feedback.htm',
+        contentType: 'application/json; charset=utf-8',
+        type: 'post',
+        prefix: false,
+        data: {
+            msgId,
+            satisfy,
+            companyId: globalVar.companyId,
+            identityId: globalVar.userId
         }
     });
 }

@@ -139,7 +139,7 @@ function closeOther(type) {
  */
 function addEmoji(emoji) {
     let inputBox = this.$inputBox;
-    this.inputBoxPlaceholderJudge(inputBox)
+    // this.inputBoxPlaceholderJudge(inputBox)
     inputBox.append(emoji);
     placeCaretAtEnd(inputBox.get(0));
 

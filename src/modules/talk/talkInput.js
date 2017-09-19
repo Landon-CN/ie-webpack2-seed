@@ -6,6 +6,8 @@ import * as utils from './talkUtils';
 import * as service from './talkService';
 import globalVar from 'globalVar';
 import moment from 'moment';
+import recommondTpl from './tpl/recommond.html';
+import mustache from 'mustache';
 
 const maxTextSize = 400;
 
@@ -14,11 +16,10 @@ export default function (talk) {
         inputKeyListener,
         submitListener,
         submit,
-        inputBoxPlaceholderJudge,
-        inputBoxPlaceholder,
         inputResize,
         pasteListener,
         autoCompleteListener,
+        recommondClickListener
     });
 
     const init = talk.prototype.init;
@@ -27,13 +28,15 @@ export default function (talk) {
         this.inputKeyListener();
         this.submitListener();
         this.$inputBox = this.$dom.find('.input-box');
-        this.inputBoxPlaceholder();
         this.pasteListener();
+        // this.autoCompleteListener();
+        this.recommondClickListener();
     }
 }
 
 function submitListener() {
     this.$dom.on('click', '.btn-submit', (event) => {
+        this.$inputRecommond.hide();
         this.submit();
     });
 }
@@ -168,42 +171,6 @@ function addBr() {
         }
     }
 }
-
-const placeholderClassName = Constants.INPUT_PLACEHOLDER_CALSS;
-const defaultText = Constants.INPUT_PLACEHOLDER;
-// 判断是否placeholder需要删除
-function inputBoxPlaceholderJudge() {
-    let $inputBox = this.$inputBox;
-    if ($inputBox.html() == defaultText) {
-        $inputBox.removeClass(placeholderClassName);
-        $inputBox.text('');
-    }
-}
-
-/**
- * 输入框的placehloder
- * @param {*} dom
- */
-function inputBoxPlaceholder() {
-    let dom = this.$dom;
-    let $inputBox = this.$inputBox;
-    $inputBox.addClass(placeholderClassName);
-    $inputBox.text(defaultText);
-    $inputBox.on('focus', () => {
-
-        this.inputBoxPlaceholderJudge($inputBox);
-        dom.find('.rate-tooltip').hide();
-    });
-    $inputBox.on('blur', () => {
-        if ($inputBox.html() == '') {
-            $inputBox.addClass(placeholderClassName);
-            $inputBox.text(defaultText);
-        }
-
-    });
-}
-
-
 /**
  * 动态调整输入框高度
  */
@@ -274,16 +241,50 @@ function pasteListener() {
 }
 
 function autoCompleteListener() {
-    this.dom.on('keydown', '.input-box', (event) => {
-        console.log(111);
+    let lastText = '';
+    this.$inputRecommond = this.$dom.find('.input-recommond');
+    this.$dom.on('keydown', '.input-box', utils.debounce((event) => {
+
         const $target = $(event.currentTarget);
-        console.log($target.text());
+        const text = $.trim($target.text());
+
+        if (text === lastText) {
+            return;
+        }
+        lastText = text;
+
+        if (text) {
+            service.autoComplete(text).then((result) => {
+                const data = result.data.data || [];
+                // 拉消息期间，变成空，取消本次处理
+                if (!$.trim($target.text()) || data.length === 0) return;
+
+                const textReg = new RegExp(text, 'g');
+                data.forEach(function (element) {
+                    element.dom = element.question.replace(textReg, ($0) => {
+                        return `<span class="light">${$0}</span>`;
+                    });
+                });
+                const dom = mustache.render(recommondTpl, {
+                    list: data
+                });
+                this.$inputRecommond.show().find('.recommond-list > ul').html(dom);
+            });
+        } else {
+            this.$inputRecommond.hide();
+        }
 
 
+    }, 100));
+}
 
-        // service.autoComplete().then((result)=>{
-        //     console.log(result);
-        // });
-
+/**
+ * 监听推荐答案选中
+ */
+function recommondClickListener() {
+    this.$dom.on('click', '.recommond-item', (event) => {
+        const text = $(event.currentTarget).text();
+        this.$inputBox.text(text);
+        this.$inputRecommond.hide();
     });
 }

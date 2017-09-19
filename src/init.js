@@ -34,7 +34,7 @@ function init() {
     if (args.initSource) {
         globalVar.initSource = args.initSource;
     }
-    globalVar.companyId = args.companyId;
+    globalVar.companyId = args.companyId || 1;
     globalVar.entrance = args.entrance;
 
 

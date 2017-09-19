@@ -26,8 +26,8 @@ export function parseContent(xml) {
                     break;
                 case 'a':
                     let href = attrs.href;
-                    if(!/^http/.test(href)){
-                        href = 'http://'+href;
+                    if (!/^http/.test(href)) {
+                        href = 'http://' + href;
                     }
                     htmlStr += `<a href="${href}" target="_blank" class="open-link" >`
                     break;
@@ -122,7 +122,7 @@ export function strToXml(html) {
  * @param {*} text
  */
 export function extractUrl(text) {
-    return text.replace(/(http:\/\/|https:\/\/|www\.)[a-z0-9\/]+[a-z0-9\.\/\?\&\%\=_#-]*\.[a-z0-9\/\?\&\%\=_#-]+/gi, (s1, s2) => {
+    return text.replace(/(http:\/\/|https:\/\/|www\.)[a-z0-9\/]+[a-z0-9\.\/\?\&\%\=_#-:]*\.[a-z0-9\/\?\&\%\=_#-:]+/gi, (s1, s2) => {
         let href = s1;
         if (!/^http/.test(href)) {
             href = 'http://' + href;
@@ -191,4 +191,3 @@ export function debounce(func, wait, immediate) {
 
     return debounced;
 };
-

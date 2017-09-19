@@ -1,8 +1,8 @@
 import moment from 'moment';
 import mustache from 'mustache';
-import msgTpl from './message.html';
-import mutiPageTpl from './mutiPage.html';
-import imgModalTpl from './imgModal.html';
+import msgTpl from './tpl/message.html';
+import mutiPageTpl from './tpl/mutiPage.html';
+import imgModalTpl from './tpl/imgModal.html';
 import * as service from './talkService';
 import * as utils from './talkUtils';
 import * as Constants from './talkConstants';
@@ -53,7 +53,7 @@ export default function (talk) {
         this.cancelQueueListener();
         this.botAnswersListener();
         this.imgModalListener();
-        // this.botAnswerRateListener();
+        this.botAnswerRateListener();
         this.botMsgList = {};
         this.$queueDom = null; // 排队消息
 
@@ -144,6 +144,15 @@ function addMsg(data, append = true) {
     //     }
 
     // }
+
+    // 处理机器人消息
+    for (let i = 0; i < data.list.length; i++) {
+        let item = data.list[i];
+        if (item.bot) {
+            resolveBotMsg(this, item);
+        }
+    }
+
     data = msgTime(data);
 
     const serviceListHtml = mustache.render(msgTpl, data);
@@ -179,7 +188,7 @@ function msgTime(data) {
     data.list.forEach((msg) => {
         msg.time = msg.time ? moment(msg.time) : moment();
         msg.timeText = msg.time.format('YYYY-MM-DD HH:mm:ss');
-        if (msg.service && !msg.serviceName) {
+        if (((msg.service && !msg.serviceName) || msg.bot)) {
             // 客服
             msg.serviceName = globalVar.serviceName;
         }
@@ -728,10 +737,12 @@ function imgModalListener() {
 }
 
 function botAnswerRateListener() {
-    this.$dom.on('click', '.bot-answer-rate', (event) => {
+    this.$dom.on('click', '.bot-answer-rate .rate-btn', (event) => {
         const $target = $(event.currentTarget);
-
-        this.dom.find('.bot-appraise').text('已反馈')
+        $target.parents('.bot-answer-rate').hide('fast');
+        const msgId = $target.data('msgid');
+        const satisfy = $target.data('type');
+        service.botRate(msgId, satisfy);
     });
 }
 

@@ -9,8 +9,10 @@ var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webap
 
 let targetUrl = '172.25.47.40'; // server
 let messageUrl = '172.25.47.37'; // server
+let bmsUrl = '10.9.10.37';
 let webImPort = '8088';
-let messagePort = '8090'
+let messagePort = '8090';
+let bmsPort = '8080';
 
 
 
@@ -18,6 +20,7 @@ let local = true;
 if (local) {
     targetUrl = '10.9.10.83';
     messageUrl = '10.9.10.83';
+    bmsUrl = '10.9.10.37'
 }
 
 let test = true;
@@ -43,6 +46,10 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
+        '/jtbms/**': {
+            target: `http://${bmsUrl}:${bmsPort}`,
+            changeOrigin: true,
+        },
         '/jtalk/message/**': {
             target: `http://${messageUrl}:${messagePort}`,
             changeOrigin: true,
@@ -63,7 +70,9 @@ var server = new webpackDevServer(compiler, {
 
             fetch(`http://${messageUrl}:${messagePort}/index.htm`, {
                 redirect: 'manual',
-                headers: req.headers,
+                headers: Object.assign(req.headers, {
+                    host: 'jtalk.jd.com'
+                }),
                 timeout: 1000
             }).then((response) => {
                 let statusCode = response.status;

@@ -15,7 +15,7 @@ jquery.ajaxSetup({
 
         if (result.error === 'NotLogin') {
             // 登录超时，刷新页面
-            return window.location.reload();
+            // return window.location.reload();
         }
 
         if (result.resultCode !== '00000' && !!xhr.setting.errorIgnore === false) {
@@ -53,7 +53,10 @@ jquery.ajaxSetup({
     },
     beforeSend(xhr, setting) {
         xhr.setting = setting;
-        setting.url = '/jtalk' + setting.url;
+        if (setting.prefix !== false) {
+            setting.url = '/jtalk' + setting.url;
+        }
+
 
         if (setting.contentType && setting.contentType.indexOf('application/json') > -1) {
             let data = setting.data || {};
