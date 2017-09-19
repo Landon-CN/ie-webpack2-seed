@@ -85,9 +85,8 @@ export default function (talk) {
         if (globalVar.queueLength > 0) {
             this.addLine(globalVar.queueLength);
         }
-        console.log(1231);
 
-        this.resolveMsg(block.data.data);
+        // this.resolveMsg(block.data.data);
         window.addLine = addLine.bind(this);
         window.addAppraise = addAppraise.bind(this);
     }
