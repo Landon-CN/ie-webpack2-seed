@@ -454,6 +454,7 @@ function resolveMsg(resData) {
             globalVar.queueLength = 0;
             this.$dom.find('.queue.active').removeClass('active').text('进线成功');
             globalVar.isClose = false;
+            globalVar.isRate = false;
 
             let hello;
             try {
@@ -516,6 +517,7 @@ function resolveMsg(resData) {
             globalVar.dialogId = nextServiceInfo.afterJtkDialogId;
             globalVar.targetServiceId = nextServiceInfo.afterCustomerServiceUserId;
             globalVar.groupId = nextServiceInfo.afterBusinessLineId;
+            globalVar.isRate = false;
             // globalVar.serviceName = nextServiceInfo.afterCustomerServiceNickName;
             msgList.push({
                 dialog: true,
