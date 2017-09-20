@@ -4,3 +4,4 @@ test
 dev
 npm-debug.log
 .DS_Store
+.idea
