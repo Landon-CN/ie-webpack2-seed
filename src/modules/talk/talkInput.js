@@ -36,7 +36,6 @@ export default function (talk) {
 
 function submitListener() {
     this.$dom.on('click', '.btn-submit', (event) => {
-        this.$inputRecommond.hide();
         this.submit();
     });
 }
@@ -127,6 +126,7 @@ function submit() {
     }
 
     this.$inputBox.html('');
+    // this.$inputRecommond.hide();
     htmlText = $(`<div>${htmlText}</div>`);
     htmlText.find('.remove').remove()
     htmlText = htmlText.html();
