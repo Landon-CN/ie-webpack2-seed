@@ -513,7 +513,7 @@ function resolveMsg(resData) {
                 continue;
             }
             console.log('转接成功');
-            globalVar.dialogId = nextServiceInfo.afterJkDialogId;
+            globalVar.dialogId = nextServiceInfo.afterJtkDialogId;
             globalVar.targetServiceId = nextServiceInfo.afterCustomerServiceUserId;
             globalVar.groupId = nextServiceInfo.afterBusinessLineId;
             // globalVar.serviceName = nextServiceInfo.afterCustomerServiceNickName;
