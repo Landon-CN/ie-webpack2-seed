@@ -275,11 +275,11 @@ export function botRate(msgId, satisfy) {
 export function queryBotWelcome() {
     return $.ajax({
         url: '/jtbms/robot/fareign/welcome.htm',
-        ontentType: 'application/json; charset=utf-8',
+        contentType: 'application/json; charset=utf-8',
         type: 'post',
         prefix: false,
         data: {
-            channelId: globalVar.entrance,
+            channelId: `${globalVar.initSource}_${globalVar.entrance}`,
             identityId: globalVar.userId,
             companyId: globalVar.companyId
         }
