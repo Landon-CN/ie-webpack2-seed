@@ -147,12 +147,12 @@ function addEmoji(emoji) {
 
 /**
  * 光标移到最后
-*/
+ */
 function placeCaretAtEnd(el) {
 
     el.focus();
-    if (typeof window.getSelection != "undefined"
-            && typeof document.createRange != "undefined") {
+    if (typeof window.getSelection != "undefined" &&
+        typeof document.createRange != "undefined") {
         var range = document.createRange();
         range.selectNodeContents(el);
         range.collapse(false);
@@ -169,7 +169,7 @@ function placeCaretAtEnd(el) {
 
 function rateListener() {
     let dom = this.$dom;
-    let rateTooltip = this.$dom.find('.tool-rate .tooltip');
+    let rateTooltip = this.$dom.find('.tool-rate .tooltip.is-rate');
     dom.on('mouseenter', '.tool-rate', () => {
         if (globalVar.isRate) {
             rateTooltip.show();
