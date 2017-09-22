@@ -38,7 +38,9 @@ export default function (talk) {
         cancelQueueListener,
         addLine,
         chooseGroupInService,
-        scrollBottom
+        scrollBottom,
+        queryBotWelcomeWords,
+        recQuesClickLisnter
     });
 
     const init = talk.prototype.init;
@@ -55,6 +57,7 @@ export default function (talk) {
         this.botAnswersListener();
         this.imgModalListener();
         this.botAnswerRateListener();
+        this.recQuesClickLisnter();
         this.botMsgList = {};
         this.$queueDom = null; // 排队消息
 
@@ -68,17 +71,18 @@ export default function (talk) {
             });
 
         } else if (globalVar.isClose) {
-            // 没有机器人，直接发送分组
+            // 没有机器人，或者会话结束,直接发送分组
             this.onlineServiceClick();
         } else {
-            // 机器人，发送欢迎语
-            console.log('欢迎语', globalVar.welcomeWords);
+            // 机器人，调用欢迎语接口
+            // console.log('欢迎语', globalVar.welcomeWords);
 
-            this.addMsg({
-                service: true,
-                message: globalVar.welcomeWords,
-                time: moment()
-            });
+            // this.addMsg({
+            //     service: true,
+            //     message: globalVar.welcomeWords,
+            //     time: moment()
+            // });
+            this.queryBotWelcomeWords();
         }
 
         // 需要排队
@@ -192,7 +196,7 @@ function msgTime(data) {
     data.list.forEach((msg) => {
         msg.time = msg.time ? moment(msg.time) : moment();
         msg.timeText = msg.time.format('YYYY-MM-DD HH:mm:ss');
-        if (((msg.service && !msg.serviceName) || msg.bot)) {
+        if (((msg.service && !msg.serviceName) || msg.bot || msg.recQues)) {
             // 客服
             msg.serviceName = globalVar.serviceName;
         }
@@ -872,4 +876,68 @@ function queueInterval(num, timeout = 3000) {
         });
     }, timeout);
 
+}
+
+/**
+ * 调用机器人欢迎语
+ */
+function queryBotWelcomeWords() {
+    let {
+        data
+    } = service.queryBotWelcome();
+
+    // data = {
+    //     welcomeMessage: '欢迎来到京东jinr',
+    //     "title": "你可能想问：", // 推荐问题标题
+    //     "faqResultList": // 推荐的数据 可能为空
+    //         [{
+    //             "id": "1002", // faqId
+    //             "question": "问题标题"
+    //         }]
+
+    // }
+
+    // 欢迎语
+    if (data.welcomeMessage) {
+        this.addMsg({
+            service: true,
+            message: data.welcomeMessage,
+            time: moment()
+        });
+    }
+
+    // 推荐问题
+    const faqResultList = data.faqResultList || [];
+    if (faqResultList.length > 0) {
+        const botMsg = {
+            recQues: true,
+            title: data.title,
+            quesList: faqResultList.map((item, index) => {
+                return {
+                    idx: index + 1,
+                    question: item.question
+                }
+            })
+        }
+        this.addMsg(botMsg)
+    }
+
+}
+
+/**
+ * 点击推荐问题
+ */
+function recQuesClickLisnter() {
+    this.$dom.on('click', '.rec-list li', (event) => {
+        const $target = $(event.currentTarget);
+        const text = $target.data('ques');
+        this.addMsg({
+            user: true,
+            message: text,
+            time: moment()
+        });
+        service.sendMsg(globalVar.targetServiceId, {
+            content: text
+        });
+    });
 }

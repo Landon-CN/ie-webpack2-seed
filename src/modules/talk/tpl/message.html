@@ -137,7 +137,24 @@
     </div>
 </div>
 {{/appraise}}
+<!-- 推荐答案 -->
+{{#recQues}}
+<div class="message-row">
+    <div class="service rec-list">
+        <span class="service-border"></span>
+        <p class="message-title">{{serviceName}} {{timeText}}</p>
+        <span class="message-text">{{{title}}}</span>
+        <ul class="non-style">
+            {{#quesList}}
+            <li data-ques="{{question}}">
+                <a class="bot-list-item">{{idx}}. {{question}}</a>
+            </li>
+            {{/quesList}}
+        </ul>
+    </div>
+</div>
 
+{{/recQues}}
 
 <!-- 结束 -->
 {{/list}}

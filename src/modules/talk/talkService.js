@@ -268,3 +268,20 @@ export function botRate(msgId, satisfy) {
         }
     });
 }
+
+/**
+ * 机器人欢迎语
+ */
+export function queryBotWelcome() {
+    return $.ajax({
+        url: '/jtbms/robot/fareign/welcome.htm',
+        ontentType: 'application/json; charset=utf-8',
+        type: 'post',
+        prefix: false,
+        data: {
+            channelId: globalVar.entrance,
+            identityId: globalVar.userId,
+            companyId: globalVar.companyId
+        }
+    })
+}
