@@ -82,7 +82,13 @@ export default function (talk) {
             //     message: globalVar.welcomeWords,
             //     time: moment()
             // });
-            this.queryBotWelcomeWords();
+            try {
+                // 防止接口问题，影响后续监听
+                this.queryBotWelcomeWords();
+            }catch(e){
+                console.error(e);
+            }
+
         }
 
         // 需要排队
