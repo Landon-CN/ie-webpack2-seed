@@ -15,15 +15,18 @@ let messagePort = '8090';
 let bmsPort = '8080';
 
 
-
-let local = true;
-if (local) {
-    targetUrl = '10.9.10.83';
-    messageUrl = '10.9.10.83';
-    bmsUrl = '10.9.10.37'
+// 开发环境
+let dev = true;
+if (dev) {
+    targetUrl = '172.25.47.40';
+    messageUrl = '172.25.47.37';
+    bmsUrl = '172.25.47.40';
+    bmsPort = '8160';
+    messagePort = '8090';
+    webImPort = '8088';
 }
 
-let test = true;
+let test = false;
 if (test) {
     targetUrl = 'jtalk.jd.com';
     messageUrl = 'jtalk.jd.com';
