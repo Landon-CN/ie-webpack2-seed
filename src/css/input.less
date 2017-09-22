@@ -70,7 +70,6 @@
             position: relative;
             .tooltip {
                 position: absolute;
-                display: none;
                 font-size: 12px;
                 top: -20px;
                 left: -10px;
@@ -81,7 +80,36 @@
                 border: 1px solid #bbb;
                 padding: 2px 10px;
                 border-radius: 4px;
+                &.invite {
+                    img {
+                        width: 15px;
+                        vertical-align: middle;
+                    }
+                    span {
+                        vertical-align: middle;
+                    }
+                    display: none;
+                    animation: shake 0.5s linear infinite;
+                }
+                &.is-rate {
+                    display: none;
+                }
             }
         }
+    }
+}
+
+@keyframes shake {
+    0% {
+        transform: translateY(1px);
+    }
+    25% {
+        transform: translateY(-1px);
+    }
+    50% {
+        transform: translateY(0px);
+    }
+    100% {
+        transform: translateY(0);
     }
 }

@@ -92,6 +92,15 @@ talk.prototype.inService = function inService(message) {
     this.historyRest(); // 进线后可以再次查看历史记录
     header.headerInservice();
     this.onlineServiceShow();
+    if (!globalVar.isRate) {
+        this.$dom.find('.tooltip.invite').show();
+
+        this.$dom.find('.talk-input').on('click', () => {
+            this.$dom.find('.tooltip.invite').hide();
+        });
+    }
+
+
     this.addMsg({
         dialog: true,
         message: message
