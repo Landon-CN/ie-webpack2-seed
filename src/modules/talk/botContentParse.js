@@ -42,6 +42,7 @@ export default function contentParse(content) {
                 answer: answers.answer,
                 title: answers.title,
                 msgId: content.msgId,
+                faqId: answers.id,
                 list: [],
                 scene: answers.scene
             }

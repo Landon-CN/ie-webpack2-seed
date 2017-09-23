@@ -748,7 +748,8 @@ function botAnswerRateListener() {
         $target.parents('.bot-answer-rate').hide('fast');
         const msgId = $target.data('msgid');
         const satisfy = $target.data('type');
-        service.botRate(msgId, satisfy);
+        const faqid = $target.data('faqid');
+        service.botRate(msgId, satisfy, faqid);
     });
 }
 
@@ -774,7 +775,7 @@ function cancelQueueListener() {
                 groupId: globalVar.groupId,
                 previousDialogId: globalVar.dialogId,
                 companyId: globalVar.companyId,
-                entranceId: globalVar.entrance
+                entrance: globalVar.entrance
             }
         }).then((res) => {
             this.groupClick = false;
