@@ -18,9 +18,9 @@ let bmsPort = '8080';
 // 开发环境
 let dev = true;
 if (dev) {
-    targetUrl = '172.25.47.40';
-    messageUrl = '172.25.47.37';
-    bmsUrl = '172.25.47.40';
+    targetUrl = '10.9.10.61';
+    messageUrl = '10.9.10.61';
+    bmsUrl = '10.9.10.61';
     bmsPort = '8160';
     messagePort = '8090';
     webImPort = '8088';
