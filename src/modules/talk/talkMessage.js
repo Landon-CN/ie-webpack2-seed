@@ -85,7 +85,7 @@ export default function (talk) {
             try {
                 // 防止接口问题，影响后续监听
                 this.queryBotWelcomeWords();
-            }catch(e){
+            } catch (e) {
                 console.error(e);
             }
 
@@ -758,7 +758,8 @@ function botAnswerRateListener() {
         $target.parents('.bot-answer-rate').hide('fast');
         const msgId = $target.data('msgid');
         const satisfy = $target.data('type');
-        service.botRate(msgId, satisfy);
+        const faqid = $target.data('faqid');
+        service.botRate(msgId, satisfy, faqid);
     });
 }
 
@@ -784,7 +785,7 @@ function cancelQueueListener() {
                 groupId: globalVar.groupId,
                 previousDialogId: globalVar.dialogId,
                 companyId: globalVar.companyId,
-                entranceId: globalVar.entrance
+                entrance: globalVar.entrance
             }
         }).then((res) => {
             this.groupClick = false;
@@ -890,46 +891,45 @@ function queueInterval(num, timeout = 3000) {
  * 调用机器人欢迎语
  */
 function queryBotWelcomeWords() {
-    let {
-        data
-    } = service.queryBotWelcome();
+    service.queryBotWelcome().then((result) => {
 
-    // data = {
-    //     welcomeMessage: '欢迎来到京东jinr',
-    //     "title": "你可能想问：", // 推荐问题标题
-    //     "faqResultList": // 推荐的数据 可能为空
-    //         [{
-    //             "id": "1002", // faqId
-    //             "question": "问题标题"
-    //         }]
+        const data = result.data;
+        // data = {
+        //     welcomeMessage: '欢迎来到京东jinr',
+        //     "title": "你可能想问：", // 推荐问题标题
+        //     "faqResultList": // 推荐的数据 可能为空
+        //         [{
+        //             "id": "1002", // faqId
+        //             "question": "问题标题"
+        //         }]
 
-    // }
+        // }
 
-    // 欢迎语
-    if (data.welcomeMessage) {
-        this.addMsg({
-            service: true,
-            message: data.welcomeMessage,
-            time: moment()
-        });
-    }
-
-    // 推荐问题
-    const faqResultList = data.faqResultList || [];
-    if (faqResultList.length > 0) {
-        const botMsg = {
-            recQues: true,
-            title: data.title,
-            quesList: faqResultList.map((item, index) => {
-                return {
-                    idx: index + 1,
-                    question: item.question
-                }
-            })
+        // 欢迎语
+        if (data.welcomeMessage) {
+            this.addMsg({
+                service: true,
+                message: data.welcomeMessage,
+                time: moment()
+            });
         }
-        this.addMsg(botMsg)
-    }
 
+        // 推荐问题
+        const faqResultList = data.faqResultList || [];
+        if (faqResultList.length > 0) {
+            const botMsg = {
+                recQues: true,
+                title: data.title,
+                quesList: faqResultList.map((item, index) => {
+                    return {
+                        idx: index + 1,
+                        question: item.question
+                    }
+                })
+            }
+            this.addMsg(botMsg)
+        }
+    });
 }
 
 /**
@@ -946,6 +946,8 @@ function recQuesClickLisnter() {
         });
         service.sendMsg(globalVar.targetServiceId, {
             content: text
+        }, {
+            type: Constants.INTERACTION_TEXT
         });
     });
 }

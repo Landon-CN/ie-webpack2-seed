@@ -257,7 +257,7 @@ function autoCompleteListener() {
             service.autoComplete(text).then((result) => {
                 const data = result.data.data || [];
                 // 拉消息期间，变成空，取消本次处理
-                if (!$.trim($target.text()) || data.length === 0) return;
+                if (!$.trim($target.text())) return;
 
                 const textReg = new RegExp(text, 'g');
                 data.forEach(function (element) {
@@ -268,6 +268,7 @@ function autoCompleteListener() {
                 const dom = mustache.render(recommondTpl, {
                     list: data
                 });
+
                 this.$inputRecommond.show().find('.recommond-list > ul').html(dom);
             });
         } else {

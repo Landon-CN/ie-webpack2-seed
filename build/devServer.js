@@ -7,8 +7,8 @@ const fetch = require('node-fetch');
 webapckDevConfig.entry.index.unshift("webpack-dev-server/client?http://localhost:8080/");
 var compiler = webpack(process.env.NODE_ENV === 'pre' ? webapckProConfig : webapckDevConfig);
 
-let targetUrl = '172.25.47.40'; // server
-let messageUrl = '172.25.47.37'; // server
+let targetUrl = '10.9.10.4';
+let messageUrl = '10.9.10.4';
 let bmsUrl = '10.9.10.37';
 let webImPort = '8088';
 let messagePort = '8090';
@@ -16,11 +16,11 @@ let bmsPort = '8080';
 
 
 // 开发环境
-let dev = true;
+let dev = false;
 if (dev) {
-    targetUrl = '10.9.10.61';
-    messageUrl = '10.9.10.61';
-    bmsUrl = '10.9.10.61';
+    targetUrl = '172.25.47.40';
+    messageUrl = '172.25.47.37';
+    bmsUrl = '172.25.47.40';
     bmsPort = '8160';
     messagePort = '8090';
     webImPort = '8088';
@@ -49,10 +49,10 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
-        // '/jtbms/**': {
-        //     target: `http://${bmsUrl}:${bmsPort}`,
-        //     changeOrigin: true,
-        // },
+        '/jtbms/**': {
+            target: `http://${bmsUrl}:${bmsPort}`,
+            changeOrigin: true,
+        },
         '/jtalk/message/**': {
             target: `http://${messageUrl}:${messagePort}`,
             changeOrigin: true,

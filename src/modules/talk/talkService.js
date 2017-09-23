@@ -254,17 +254,19 @@ export function queryQueueLenght() {
  * @param {*} msgId
  * @param {*} satisfy 1满意 -1 不满意
  */
-export function botRate(msgId, satisfy) {
+export function botRate(msgId, satisfy, faqId = '') {
     return $.ajax({
-        url: '/jtbms/robot/comment/feedback.htm',
+        url: '/jtbms/robot/foreign/feedback.htm',
         contentType: 'application/json; charset=utf-8',
         type: 'post',
         prefix: false,
         data: {
             msgId,
             satisfy,
+            faqId,
             companyId: globalVar.companyId,
-            identityId: globalVar.userId
+            identityId: globalVar.userId,
+            companyId: globalVar.companyId
         }
     });
 }
@@ -274,7 +276,7 @@ export function botRate(msgId, satisfy) {
  */
 export function queryBotWelcome() {
     return $.ajax({
-        url: '/jtbms/robot/fareign/welcome.htm',
+        url: '/jtbms/robot/foreign/welcome.htm',
         contentType: 'application/json; charset=utf-8',
         type: 'post',
         prefix: false,
