@@ -35,7 +35,7 @@ function init() {
         globalVar.initSource = args.source;
     }
     globalVar.companyId = args.companyId || 1;
-    globalVar.entrance = args.entrance || '';
+    globalVar.entrance = args.entrance || undefined;
 
 
     jquery.when(keyInit(), service.inlineInit()).then(() => {
