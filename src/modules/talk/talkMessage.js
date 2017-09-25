@@ -774,8 +774,8 @@ function cancelQueueListener() {
                 initSource: globalVar.initSource,
                 groupId: globalVar.groupId,
                 previousDialogId: globalVar.dialogId,
-                companyId: globalVar.companyId,
-                entrance: globalVar.entrance
+                // companyId: globalVar.companyId,
+                // entrance: globalVar.entrance
             }
         }).then((res) => {
             this.groupClick = false;
