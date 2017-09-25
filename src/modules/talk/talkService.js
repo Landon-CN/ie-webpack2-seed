@@ -281,7 +281,7 @@ export function queryBotWelcome() {
         type: 'post',
         prefix: false,
         data: {
-            channelId: `${globalVar.initSource}_${globalVar.entrance}`,
+            channelId: `${globalVar.initSource}_${globalVar.entrance || ''}`,
             identityId: globalVar.userId,
             companyId: globalVar.companyId
         }
