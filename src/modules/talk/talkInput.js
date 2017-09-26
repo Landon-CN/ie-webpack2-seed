@@ -29,7 +29,7 @@ export default function (talk) {
         this.submitListener();
         this.$inputBox = this.$dom.find('.input-box');
         this.pasteListener();
-        // this.autoCompleteListener();
+        this.autoCompleteListener();
         this.recommondClickListener();
     }
 }
