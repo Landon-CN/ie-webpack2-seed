@@ -205,10 +205,6 @@ export function inlineInit() {
                 globalVar.welcomeWords = botContent.answer;
         }
 
-        if (data.previousDialogAppraise) {
-            globalVar.isRate = true;
-        }
-
     });
 }
 

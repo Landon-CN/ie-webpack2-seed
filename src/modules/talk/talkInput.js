@@ -240,6 +240,9 @@ function pasteListener() {
     });
 }
 
+/**
+ * 机器人推荐话术
+ */
 function autoCompleteListener() {
     let lastText = '';
     this.$inputRecommond = this.$dom.find('.input-recommond');

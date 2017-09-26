@@ -752,6 +752,9 @@ function imgModalListener() {
     });
 }
 
+/**
+ * 机器人plain_text 评价
+ */
 function botAnswerRateListener() {
     this.$dom.on('click', '.bot-answer-rate .rate-btn', (event) => {
         const $target = $(event.currentTarget);
