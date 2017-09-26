@@ -31,9 +31,8 @@ function domInit() {
 
 function init() {
     let args = getUrlParams();
-    if (args.source) {
-        globalVar.initSource = args.source;
-    }
+
+    globalVar.initSource = args.initSource || args.source || '03';
     globalVar.companyId = args.companyId || 1;
     globalVar.entrance = args.entrance || undefined;
 
