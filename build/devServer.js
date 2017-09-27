@@ -16,9 +16,9 @@ let bmsPort = '8080';
 
 let local = true;
 if (local) {
-    targetUrl = '172.25.47.40';
-    messageUrl = '172.25.47.40';
-    bmsUrl = '172.25.47.40';
+    targetUrl = '10.9.10.31';
+    messageUrl = '10.9.10.31';
+    bmsUrl = '10.9.10.31';
     bmsPort = '8160';
     messagePort = '8090';
     webImPort = '8088';

@@ -46,7 +46,7 @@ export default function contentParse(content) {
                 list: [],
                 scene: answers.scene,
                 needAppraise: answerModelProperties.replyType === 'answer' && answerModelProperties.scene === 'business',
-                toMain: answerModelProperties.toMain, // 是否转人工
+                toMan: answerModelProperties.toMan, // 是否转人工
                 toManWay: answerModelProperties.toManWay // 1 自动转人工，2 手动转人工
             }
         case 'render_fold_answer':

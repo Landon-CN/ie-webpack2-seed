@@ -545,7 +545,7 @@ function resolveMsg(resData) {
                 // 判断是否开启转人工
                 // 并且自动转人工开关打开
                 if (botMsg.type === Constants.BOT_MESSAGE_TEXT &&
-                    botMsg.toMain &&
+                    botMsg.toMan &&
                     parseInt(botMsg.toManWay, 10) === 1) {
                     this.onlineServiceClick();
                 }
