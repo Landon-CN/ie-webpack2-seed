@@ -33,7 +33,7 @@ export default function contentParse(content) {
         console.warn('机器人无返回answers')
         return false;
     }
-
+    const answerModelProperties = content.answerModel.answerModelProperties;
     switch (content.renderType) {
         case 'render_plain_text':
             return {
@@ -44,7 +44,10 @@ export default function contentParse(content) {
                 msgId: content.msgId,
                 faqId: answers.id,
                 list: [],
-                scene: answers.scene
+                scene: answers.scene,
+                needAppraise: answerModelProperties.replyType === 'answer' && answerModelProperties.scene === 'business',
+                toMain: answerModelProperties.toMain, // 是否转人工
+                toManWay: answerModelProperties.toManWay // 1 自动转人工，2 手动转人工
             }
         case 'render_fold_answer':
             return {

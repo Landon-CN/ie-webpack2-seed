@@ -537,9 +537,18 @@ function resolveMsg(resData) {
         // 机器人v2
         if (item.type == Constants.HISTORY_NEW_BOT_REPLY) {
             let botMsg = botParse(item.content);
+
             if (botMsg) {
                 botMsg.bot = true;
                 msgList.push(botMsg);
+
+                // 判断是否开启转人工
+                // 并且自动转人工开关打开
+                if (botMsg.type === Constants.BOT_MESSAGE_TEXT &&
+                    botMsg.toMain &&
+                    parseInt(botMsg.toManWay, 10) === 1) {
+                    this.onlineServiceClick();
+                }
             }
 
             continue;
