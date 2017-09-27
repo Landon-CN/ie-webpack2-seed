@@ -14,12 +14,23 @@ let webImPort = '8088';
 let messagePort = '8090';
 let bmsPort = '8080';
 
+let local = true;
+if (local) {
+    targetUrl = '10.9.10.31';
+    messageUrl = '10.9.10.31';
+    bmsUrl = '10.9.10.31';
+    bmsPort = '8160';
+    messagePort = '8090';
+    webImPort = '8088';
+}
+
 
 // 开发环境
+// http://wiki.cbpmgt.com/confluence/pages/viewpage.action?pageId=20595574
 let dev = false;
 if (dev) {
     targetUrl = '172.25.47.40';
-    messageUrl = '172.25.47.37';
+    messageUrl = '172.25.47.40';
     bmsUrl = '172.25.47.40';
     bmsPort = '8160';
     messagePort = '8090';
@@ -115,4 +126,4 @@ var server = new webpackDevServer(compiler, {
         colors: true
     },
 });
-server.listen(8080);
+server.listen(8080, '0.0.0.0');

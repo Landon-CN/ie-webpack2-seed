@@ -3,7 +3,8 @@ import {
     getImgSrcById
 } from 'components/emoji/emoji';
 import * as Constants from './talkConstants';
-import xmlParse2 from 'htmlparser2';
+// 提出来了，因为getter setter会影响ie8，并且功能也没用到，手动注释
+import xmlParse2 from '../../lib/htmlparse2';
 
 
 export function parseContent(xml) {
