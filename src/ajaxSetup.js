@@ -69,7 +69,7 @@ jquery.ajaxSetup({
 function addErrorMsg(text = Constants.ERROR_MESSAGE) {
     // 先删除已有的error提示
     jquery('.error-dialog').remove();
-
+    /* eslint-disable no-empty */
     try {
         talk.addMsg({
             dialog: true,
@@ -77,5 +77,6 @@ function addErrorMsg(text = Constants.ERROR_MESSAGE) {
             message: text
         });
     } catch (e) {}
+    /* eslint-enable no-empty */
 }
 window.addErrorMsg = addErrorMsg;

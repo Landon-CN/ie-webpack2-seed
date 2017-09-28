@@ -3,6 +3,8 @@ import globalVar from 'globalVar';
 import moment from 'moment';
 import * as Constants from './talkConstants';
 import botParse from './botContentParse';
+import $ from 'jquery';
+
 /**
 * {
        msgType:"01",//消息类型，参照ImmediateMsgTypeEnum。必填项
@@ -31,7 +33,7 @@ export function historyMsg(data) {
         contentType: 'application/json; charset=utf-8',
         type: 'post',
         data
-    })
+    });
 }
 
 // 查询客服ID
@@ -62,7 +64,7 @@ export function pollMsg() {
 }
 
 // 获取离线消息
-export function getOfflineMsg(params) {
+export function getOfflineMsg() {
     return $.ajax({
         type: 'post',
         url: '/message/offlinemsg/get.htm',
@@ -173,7 +175,7 @@ export function inlineInit() {
     }).then((result) => {
         const data = result.data;
 
-        if (!!data.queueLength) {
+        if (data.queueLength) {
 
             return globalVar.queueLength = data.queueLength;
         }

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node ./build/devServer.js",
     "pre": "NODE_ENV=pre node ./build/devServer.js",
-    "build": "webpack --progress --display-chunks --display-modules  --config  ./build/webpack.pro.conf.js"
+    "build": "webpack --progress --display-chunks --display-modules  --config  ./build/webpack.pro.conf.js",
+    "lint": "eslint ./src/** --fix"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.7",
@@ -18,6 +19,7 @@
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.4",
     "es3ify-webpack-plugin": "^0.0.1",
+    "eslint": "^4.7.2",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "^0.11.2",
     "html-loader": "^0.4.5",

@@ -20,4 +20,4 @@ export default {
     serviceName: '智能客服', // 服务方名称  在线客服
     companyId: '',//公司ID
     entrance: '' // 入口ID
-}
+};

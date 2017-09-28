@@ -1,6 +1,4 @@
-import mustache from 'mustache';
 import $ from 'jquery';
-
 import header from '../header/header';
 import globalVar from 'globalVar';
 import * as service from './talkService';
@@ -19,7 +17,7 @@ talk.prototype.init = function () {
     this.$dom.show();
 
     // this.onlineServiceClick();
-}
+};
 
 talkInput(talk);
 talkMessage(talk);
@@ -50,7 +48,7 @@ talk.prototype.onlineServiceClick = function () {
     const errorHandler = () => {
         console.log('获取分组失败');
         this.onlineClick = false;
-    }
+    };
     service.getServiceList().then((result) => {
 
         if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
@@ -90,7 +88,7 @@ talk.prototype.onlineServiceClick = function () {
 talk.prototype.inService = function inService(message) {
     this.onlineClick = true; //防止再次进线
     this.historyRest(); // 进线后可以再次查看历史记录
-    header.headerInservice();
+    // header.headerInservice(); // 为了防止以后还要修改头部,保留着
     this.onlineServiceShow();
     if (!globalVar.isRate) {
         this.$dom.find('.tooltip.invite').show();
@@ -104,7 +102,7 @@ talk.prototype.inService = function inService(message) {
     this.addMsg({
         dialog: true,
         message: message
-    })
+    });
 };
 
 // 进线成功后，显示某些元素
@@ -116,7 +114,7 @@ talk.prototype.onlineServiceShow = function onlineServiceShow() {
     this.historyDom.show();
     this.$dom.find('.message-history').show();
     this.imgUploadListener();
-}
+};
 
 
 export default new talk();

@@ -30,7 +30,7 @@ export default function contentParse(content) {
     }
 
     if (!answers) {
-        console.warn('机器人无返回answers')
+        console.warn('机器人无返回answers');
         return false;
     }
     const answerModelProperties = content.answerModel.answerModelProperties;
@@ -48,7 +48,7 @@ export default function contentParse(content) {
                 needAppraise: answerModelProperties.replyType === 'answer' && answerModelProperties.scene === 'business',
                 toMan: answerModelProperties.toMan, // 是否转人工
                 toManWay: answerModelProperties.toManWay // 1 自动转人工，2 手动转人工
-            }
+            };
         case 'render_fold_answer':
             return {
                 type: Constants.BOT_MESSAGE_FLOD,
@@ -58,7 +58,7 @@ export default function contentParse(content) {
                 msgId: content.msgId,
                 list: answers.more,
                 scene: answers.scene
-            }
+            };
         case 'render_user_suggestion':
             return {
                 type: Constants.BOT_MESSAGE_SUGGESTION,
@@ -68,7 +68,7 @@ export default function contentParse(content) {
                 msgId: content.msgId,
                 list: answers.more,
                 scene: answers.scene
-            }
+            };
         default:
             return false;
     }
@@ -205,7 +205,7 @@ export const plain = {
     "requestTime": 1499651331939,
     "responseTime": 1499651332214,
     "sessionId": "ac213c93-d71b-4119-b3ea-86bd96efc807"
-}
+};
 
 export const fold = {
     "answerModel": {
@@ -222,7 +222,7 @@ export const fold = {
     "requestTime": 1499667106815,
     "responseTime": 1499667109689,
     "sessionId": "d19b267e-7a76-4f68-8485-bc38751f402d"
-}
+};
 
 export const suggest = [{
     "channels": ["hello"],
@@ -239,7 +239,7 @@ export const suggest = [{
     "toUserName": "perftest001/01",
     "type": "43",
     "ws": "lpool"
-}]
+}];
 
 
 export const testData = {
@@ -276,7 +276,7 @@ export const testData = {
     },
     "msg": "操作成功",
     "resultCode": "00000"
-}
+};
 
 export const block = {
     "data": {
@@ -301,4 +301,4 @@ export const block = {
     },
     "msg": "操作成功",
     "resultCode": "00000"
-}
+};

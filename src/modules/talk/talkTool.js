@@ -1,11 +1,10 @@
 import {
     emoji as Emoji
 } from 'components/emoji/emoji';
-// import Appraise from './appraise/appraise';
-import * as Constants from './talkConstants';
 import globalVar from 'globalVar';
 import * as service from './talkService';
 import * as utils from './talkUtils';
+import $ from 'jquery';
 
 export default function (talk) {
     Object.assign(talk.prototype, {
@@ -29,15 +28,13 @@ export default function (talk) {
         this.closeListener();
         this.rateListener();
         // this.botRateListener();
-    }
+    };
 }
 
 /**
  * 工具栏点击
  */
 function toolItemListener() {
-    const $botRate = this.$dom.find('.bot-rate');
-
     this.$dom.on('click', '.tool-item', (event) => {
         event.stopPropagation();
         const type = $(event.currentTarget).data('type');
@@ -94,7 +91,7 @@ function imgUploadListener() {
             this.addMsg({
                 user: true,
                 message: msg
-            })
+            });
 
         }
     });
