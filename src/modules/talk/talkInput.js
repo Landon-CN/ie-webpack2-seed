@@ -127,7 +127,7 @@ function submit() {
     }
 
     this.$inputBox.html('');
-    // this.$inputRecommond.hide();
+    this.$inputRecommond.hide();
     htmlText = $(`<div>${htmlText}</div>`);
     htmlText.find('.remove').remove();
     htmlText = htmlText.html();
@@ -282,6 +282,12 @@ function autoCompleteListener() {
 
 
     }, 100));
+
+    this.$dom.on('blur', '.input-box', () => {
+        setTimeout(() => {
+            this.$inputRecommond.hide();
+        }, 150);
+    });
 }
 
 /**
@@ -289,6 +295,8 @@ function autoCompleteListener() {
  */
 function recommondClickListener() {
     this.$dom.on('click', '.recommond-item', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         const text = $(event.currentTarget).text();
         this.$inputBox.text(text);
         this.$inputRecommond.hide();
