@@ -554,6 +554,14 @@ function resolveMsg(resData) {
                     botMsg.toMan &&
                     parseInt(botMsg.toManWay, 10) === 1) {
                     this.onlineServiceClick();
+                } else if (
+                    botMsg.type === Constants.BOT_MESSAGE_TEXT &&
+                    botMsg.toMan &&
+                    parseInt(botMsg.toManWay, 10) === 2) {
+                    setTimeout(() => {
+                        this.addToManDialog();
+                    }, 0);
+
                 }
             }
 
