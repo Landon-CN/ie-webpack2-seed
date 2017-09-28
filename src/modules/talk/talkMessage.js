@@ -32,7 +32,9 @@ export default function (talk) {
         cancelQueueListener,
         addLine,
         chooseGroupInService,
-        scrollBottom
+        scrollBottom,
+        addToManDialog,
+        toManClickListener
     });
 
     const init = talk.prototype.init;
@@ -49,6 +51,7 @@ export default function (talk) {
         this.botAnswersListener();
         this.imgModalListener();
         this.botAnswerRateListener();
+        this.toManClickListener();
         this.botMsgList = {};
         this.$queueDom = null; // 排队消息
 
@@ -540,6 +543,14 @@ function resolveMsg(resData) {
                     botMsg.toMan &&
                     parseInt(botMsg.toManWay, 10) === 1) {
                     this.onlineServiceClick();
+                }else if (
+                    botMsg.type === Constants.BOT_MESSAGE_TEXT &&
+                    botMsg.toMan &&
+                    parseInt(botMsg.toManWay, 10) === 2) {
+                    setTimeout(() => {
+                        this.addToManDialog();
+                    }, 0);
+
                 }
             }
 
@@ -878,4 +889,23 @@ function queueInterval(num, timeout = 3000) {
         });
     }, timeout);
 
+}
+
+/**
+ * 添加手动转人工提示，删除上一个已存在的提示
+ */
+function addToManDialog() {
+    this.$dom.find('.to-man').remove();
+    this.addMsg({
+        toManualMan: true,
+    });
+}
+
+/**
+ * 手动转人工点击监听
+ */
+function toManClickListener() {
+    this.$dom.on('click', '.to-man-href', () => {
+        this.onlineServiceClick();
+    });
 }
