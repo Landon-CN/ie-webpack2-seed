@@ -24,5 +24,5 @@ export default function (dom, clickClose = false) {
         close() {
             modal.remove();
         }
-    }
+    };
 }

@@ -37,10 +37,12 @@ if (dev) {
     webImPort = '8088';
 }
 
-let test = false;
+let test = true;
 if (test) {
     targetUrl = 'jtalk.jd.com';
     messageUrl = 'jtalk.jd.com';
+    bmsUrl = 'jtalk.jd.com';
+    bmsPort = '80';
     webImPort = '80';
     messagePort = '80'
 }
@@ -60,10 +62,10 @@ var server = new webpackDevServer(compiler, {
     // Set this if you want to enable gzip compression for assets
 
     proxy: {
-        // '/jtbms/**': {
-        //     target: `http://${bmsUrl}:${bmsPort}`,
-        //     changeOrigin: true,
-        // },
+        '/jtbms/**': {
+            target: `http://${bmsUrl}:${bmsPort}`,
+            changeOrigin: true,
+        },
         '/jtalk/message/**': {
             target: `http://${messageUrl}:${messagePort}`,
             changeOrigin: true,

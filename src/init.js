@@ -26,7 +26,7 @@ function keyInit() {
 
 
 function domInit() {
-    talk.init()
+    talk.init();
 }
 
 function init() {

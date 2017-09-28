@@ -4,4 +4,4 @@ import header from './header/header';
 export {
     talk,
     header
-}
+};

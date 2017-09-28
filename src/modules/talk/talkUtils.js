@@ -5,6 +5,7 @@ import {
 import * as Constants from './talkConstants';
 // 提出来了，因为getter setter会影响ie8，并且功能也没用到，手动注释
 import xmlParse2 from '../../lib/htmlparse2';
+import $ from 'jquery';
 
 
 export function parseContent(xml) {
@@ -14,23 +15,23 @@ export function parseContent(xml) {
     const parse = new xmlParse2.Parser({
         onopentag(tagName, attrs) {
             tag = tagName;
+            let href;
             switch (tag) {
                 case 'img':
-                    htmlStr += `<img src='${attrs.src}' class="open-img" />`
+                    htmlStr += `<img src='${attrs.src}' class="open-img" />`;
                     break;
                 case 'e':
-                    let src = getImgSrcById(attrs.s);
-                    htmlStr += `<img src='${src}' class="emoji" />`;
+                    htmlStr += `<img src='${getImgSrcById(attrs.s)}' class="emoji" />`;
                     break;
                 case 'br':
                     htmlStr += '<br />';
                     break;
                 case 'a':
-                    let href = attrs.href;
+                    href = attrs.href;
                     if (!/^http/.test(href)) {
                         href = 'http://' + href;
                     }
-                    htmlStr += `<a href="${href}" target="_blank" class="open-link" >`
+                    htmlStr += `<a href="${href}" target="_blank" class="open-link" >`;
                     break;
                 case 'body':
                     break;
@@ -74,7 +75,7 @@ export function parseContent(xml) {
 function noScript(test) {
     test = test.replace(/</g, '&lt;');
     test = test.replace(/>/g, '&gt;');
-    return test
+    return test;
 }
 
 
@@ -103,13 +104,13 @@ export function strToXml(html) {
                 if (attrs['data-type'] === 'e') {
                     htmlStr += `<e t="d" s="${attrs['data-s']}" />`;
                 } else {
-                    htmlStr += `<img src='${attrs.src}'  />`
+                    htmlStr += `<img src='${attrs.src}'  />`;
                 }
             }
         },
         ontext(text) {
             text = encode(text);
-            htmlStr += extractUrl(text)
+            htmlStr += extractUrl(text);
         }
     });
     parse.write(`<body>${html}</body>`);
@@ -123,7 +124,7 @@ export function strToXml(html) {
  * @param {*} text
  */
 export function extractUrl(text) {
-    return text.replace(/(http:\/\/|https:\/\/|www\.)[a-z0-9\/]+[a-z0-9\.\/\?\&\%\=_#-:]*\.[a-z0-9\/\?\&\%\=_#-:]+/gi, (s1, s2) => {
+    return text.replace(/(http:\/\/|https:\/\/|www\.)[a-z0-9/]+[a-z0-9./?&%=_#-:]*\.[a-z0-9/?&%=_#-:]+/gi, (s1) => {
         let href = s1;
         if (!/^http/.test(href)) {
             href = 'http://' + href;
@@ -157,7 +158,7 @@ export function debounce(func, wait, immediate) {
                 context = args = null;
             }
         }
-    };
+    }
 
     var debounced = function () {
         context = this;
@@ -191,4 +192,4 @@ export function debounce(func, wait, immediate) {
     };
 
     return debounced;
-};
+}

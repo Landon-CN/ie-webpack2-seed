@@ -12,7 +12,6 @@ import moment from 'moment';
         const $target = $(event.currentTarget);
         $target.addClass('active').nextAll().removeClass('active');
         $target.prevAll().addClass('active');
-        const score = parseInt($target.data('score'), 10);
     });
 
     $document.on('mouseleave', '.score', (event) => {

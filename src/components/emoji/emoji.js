@@ -2,9 +2,6 @@ import tpl from './emoji.html';
 import mustache from 'mustache';
 import $ from 'jquery';
 import './emoji.less';
-import {
-    componentShow
-} from 'utils';
 import * as emojiImgs from './img';
 
 // 这里编译出来会多一个属性
@@ -34,7 +31,7 @@ export function emoji(parent, change = () => {}) {
 
     dom = $(renderResult);
 
-    dom.on('click', '.emoji-item', function (event) {
+    dom.on('click', '.emoji-item', function () {
         let id = $(this).children('.emoji-border').data('id');
         const idx = $(this).children('.emoji-border').data('idx');
         change(emojiImgs[imgsKeys[idx]], id);
@@ -58,7 +55,7 @@ export function emoji(parent, change = () => {}) {
                 this.close();
             }
         }
-    }
+    };
 }
 
 /**

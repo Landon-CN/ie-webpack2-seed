@@ -6,19 +6,13 @@ import imgModalTpl from './tpl/imgModal.html';
 import * as service from './talkService';
 import * as utils from './talkUtils';
 import * as Constants from './talkConstants';
-// import Appraise from './appraise/appraise';
-// import line from './line/line';
 import globalVar from 'globalVar';
 import {
     modal
 } from 'components';
-import botParse, {
-    testData,
-    block
-} from './botContentParse';
+import botParse from './botContentParse';
+import $ from 'jquery';
 
-// 最多显示多少个列表
-const BOT_LIST_MAX_SHOW = 3;
 
 export default function (talk) {
     Object.assign(talk.prototype, {
@@ -89,15 +83,12 @@ export default function (talk) {
         // this.resolveMsg(block.data.data);
         window.addLine = addLine.bind(this);
         window.addAppraise = addAppraise.bind(this);
-    }
+    };
 }
 
 
 // 添加消息
-let lastTime;
-const intervalTime = 5 * 60 * 1000; // 间隔5分钟以上才会显示时间条
 
-const timeNow = moment();
 // append false 代表是历史记录
 function addMsg(data, append = true) {
     // console.log('添加消息==>', data);
@@ -105,11 +96,11 @@ function addMsg(data, append = true) {
     if (Array.isArray(data)) {
         data = {
             list: data
-        }
+        };
     } else {
         data = {
             list: [data]
-        }
+        };
     }
 
 
@@ -303,7 +294,7 @@ function getHistory() {
         pageLoading = false;
         $textDom.text(backMsg);
         historyDom.removeClass('loading');
-    }
+    };
 
     return service.historyMsg(params).then((result) => {
 
@@ -320,14 +311,11 @@ function getHistory() {
         }
         historyDom.removeClass('loading');
 
-
-
-        let userId = globalVar.userId;
         let msgList = [];
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
             if (i === 0) {
-                historyTime = moment(item.sendTime, 'YYYY-MM-DD HH:mm:ss.SSS')
+                historyTime = moment(item.sendTime, 'YYYY-MM-DD HH:mm:ss.SSS');
             }
             let type = parseInt(item.msgType, 10);
             switch (type) {
@@ -350,7 +338,9 @@ function getHistory() {
                         serviceName: '在线客服',
                     });
                     break;
+                    /* eslint-disable no-case-declarations */
                 case Constants.HISTORY_NEW_BOT_ASK:
+
                     let content;
                     try {
                         content = JSON.parse(item.content);
@@ -364,6 +354,7 @@ function getHistory() {
                         message: content.question,
                         time: item.sendTime
                     });
+
                     break;
                 case Constants.HISTORY_NEW_BOT_REPLY:
                     let botMsg = botParse(item.content);
@@ -373,6 +364,7 @@ function getHistory() {
                         msgList.push(botMsg);
                     }
                     break;
+                    /* eslint-enable no-case-declarations */
                 default:
                     console.log('历史消息解析:未知类型', item.msgType);
 
@@ -476,7 +468,7 @@ function resolveMsg(resData) {
                     msgList.push({
                         service: true,
                         message: hello.consultingWords
-                    })
+                    });
                 }
                 this.addMsg(msgList);
 
@@ -581,9 +573,9 @@ function pollInterval() {
         setTimeout(() => {
             this.pollInterval();
         }, 5000);
-    }
+    };
 
-    let t = service.pollMsg().then((result) => {
+    service.pollMsg().then((result) => {
 
         if (result.resultCode === '00000') {
             let data = result.data;
@@ -594,7 +586,7 @@ function pollInterval() {
             }
 
             if (data.channel === 'hello') {
-                this.resolveMsg(data.data)
+                this.resolveMsg(data.data);
             }
             isFirstPoll = false;
             return this.pollInterval();
@@ -607,7 +599,7 @@ function pollInterval() {
             this.offlineTimer && clearTimeout(this.offlineTimer);
             return this.mutiPageModal();
         } else {
-            errorHandler(result)
+            errorHandler(result);
         }
 
 
@@ -633,7 +625,7 @@ function addAppraise() {
     });
 }
 
-function serviceGroupListener(params) {
+function serviceGroupListener() {
     // 选择问题分组
     // 有且只能点一次
     this.groupClick = false;
@@ -661,7 +653,7 @@ function chooseGroupInService(id) {
     const errorHandler = () => {
         console.log('进线失败');
         this.groupClick = false;
-    }
+    };
     service.queryServiceId(id).then((result) => {
 
         if (result.resultCode !== Constants.AJAX_SUCCESS_CODE) {
@@ -769,7 +761,7 @@ function botAnswerRateListener() {
 let cancelLoading = false;
 
 function cancelQueueListener() {
-    this.$dom.on('click', '.queue .cancel', (event) => {
+    this.$dom.on('click', '.queue .cancel', () => {
 
         // 防重复点击
         if (cancelLoading) return;
@@ -795,20 +787,22 @@ function cancelQueueListener() {
                 globalVar.targetServiceId = data.toUserId;
 
                 let dialogType = parseInt(data.currentDialogType, 10);
-                let msgType = '';
+
                 switch (dialogType) {
                     case 1:
                         globalVar.msgType = Constants.MSG_TYPE_BOT;
                         break;
                     case 2:
                         globalVar.msgType = Constants.MSG_TYPE_SERVICE;
+                        break;
                     default:
                         // 没有，证明无机器人
                         globalVar.isClose = true;
                         break;
                 }
-                // 如果只有result：true一个字段，证明是无机器人
 
+
+                // 如果只有result：true一个字段，证明是无机器人
 
                 console.log('取消排队，修改队列长度0');
                 globalVar.queueLength = 0;
@@ -836,7 +830,7 @@ let queueTimer = null;
 function addLine(num) {
     this.$dom.find('.queue.active').remove();
 
-    if (!!num) {
+    if (num) {
         this.addMsg({
             queue: true,
             number: num

@@ -8,6 +8,7 @@ import globalVar from 'globalVar';
 import moment from 'moment';
 import recommondTpl from './tpl/recommond.html';
 import mustache from 'mustache';
+import $ from 'jquery';
 
 const maxTextSize = 400;
 
@@ -31,11 +32,11 @@ export default function (talk) {
         this.pasteListener();
         // this.autoCompleteListener();
         this.recommondClickListener();
-    }
+    };
 }
 
 function submitListener() {
-    this.$dom.on('click', '.btn-submit', (event) => {
+    this.$dom.on('click', '.btn-submit', () => {
         this.submit();
     });
 }
@@ -128,7 +129,7 @@ function submit() {
     this.$inputBox.html('');
     // this.$inputRecommond.hide();
     htmlText = $(`<div>${htmlText}</div>`);
-    htmlText.find('.remove').remove()
+    htmlText.find('.remove').remove();
     htmlText = htmlText.html();
 
     let content = utils.stringifyContent(htmlText);
@@ -163,11 +164,11 @@ function submit() {
 // 添加换行
 function addBr() {
     try {
-        document.execCommand("insertHTML", false, "<br /><br />")
+        document.execCommand("insertHTML", false, "<br /><br />");
     } catch (e) {
         if (document.selection) {
             const range = document.selection.createRange();
-            range.pasteHTML('<br /><br class=\'remove\' />')
+            range.pasteHTML('<br /><br class=\'remove\' />');
         }
     }
 }
@@ -180,7 +181,7 @@ function inputResize() {
         let height = $('.talk-editor').height();
 
         this.$inputBox.outerHeight(height - 70 - 10);
-    }
+    };
 
     $(window).on('resize', resize);
     setTimeout(function () {
@@ -195,7 +196,7 @@ function pasteListener() {
         e.preventDefault();
         let text;
 
-        if (window.clipboardData && clipboardData.setData) {
+        if (window.clipboardData && window.clipboardData.setData) {
             // IE
             text = window.clipboardData.getData('text');
         } else {
@@ -214,10 +215,11 @@ function pasteListener() {
         if (text) {
             e.preventDefault();
             if (document.body.createTextRange) {
+                let textRange;
                 if (document.selection) {
                     textRange = document.selection.createRange();
                 } else if (window.getSelection) {
-                    sel = window.getSelection();
+                    let sel = window.getSelection();
                     var range = sel.getRangeAt(0);
 
                     // 创建临时元素，使得TextRange可以移动到正确的位置
