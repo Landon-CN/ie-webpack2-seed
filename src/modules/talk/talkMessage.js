@@ -40,7 +40,9 @@ export default function (talk) {
         chooseGroupInService,
         scrollBottom,
         queryBotWelcomeWords,
-        recQuesClickLisnter
+        recQuesClickLisnter,
+        addToManDialog,
+        toManClickListener
     });
 
     const init = talk.prototype.init;
@@ -58,6 +60,7 @@ export default function (talk) {
         this.imgModalListener();
         this.botAnswerRateListener();
         this.recQuesClickLisnter();
+        this.toManClickListener();
         this.botMsgList = {};
         this.$queueDom = null; // 排队消息
 
@@ -84,16 +87,17 @@ export default function (talk) {
             // });
             try {
                 // 防止接口问题，影响后续监听
-                this.queryBotWelcomeWords();
+                this.queryBotWelcomeWords().then(() => {
+                    // 需要排队
+                    if (globalVar.queueLength > 0) {
+                        this.addLine(globalVar.queueLength);
+                    }
+
+                });
             } catch (e) {
                 console.error(e);
             }
 
-        }
-
-        // 需要排队
-        if (globalVar.queueLength > 0) {
-            this.addLine(globalVar.queueLength);
         }
 
         // this.resolveMsg(block.data.data);
@@ -903,7 +907,7 @@ function queueInterval(num, timeout = 3000) {
  * 调用机器人欢迎语
  */
 function queryBotWelcomeWords() {
-    service.queryBotWelcome().then((result) => {
+    return service.queryBotWelcome().then((result) => {
 
         const data = result.data;
         // data = {
@@ -961,5 +965,24 @@ function recQuesClickLisnter() {
         }, {
             type: Constants.INTERACTION_TEXT
         });
+    });
+}
+
+/**
+ * 添加手动转人工提示，删除上一个已存在的提示
+ */
+function addToManDialog() {
+    this.$dom.find('.to-man').remove();
+    this.addMsg({
+        toManualMan: true,
+    });
+}
+
+/**
+ * 手动转人工点击监听
+ */
+function toManClickListener() {
+    this.$dom.on('click', '.to-man-href', () => {
+        this.onlineServiceClick();
     });
 }

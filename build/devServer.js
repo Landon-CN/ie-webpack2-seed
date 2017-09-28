@@ -37,10 +37,12 @@ if (dev) {
     webImPort = '8088';
 }
 
-let test = false;
+let test = true;
 if (test) {
     targetUrl = 'jtalk.jd.com';
     messageUrl = 'jtalk.jd.com';
+    bmsUrl = 'jtalk.jd.com';
+    bmsPort = '80';
     webImPort = '80';
     messagePort = '80'
 }
