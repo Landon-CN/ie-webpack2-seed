@@ -88,7 +88,7 @@ talk.prototype.onlineServiceClick = function () {
 talk.prototype.inService = function inService(message) {
     this.onlineClick = true; //防止再次进线
     this.historyRest(); // 进线后可以再次查看历史记录
-    header.headerInservice();
+    // header.headerInservice(); // 为了防止以后还要修改头部,保留着
     this.onlineServiceShow();
     if (!globalVar.isRate) {
         this.$dom.find('.tooltip.invite').show();
