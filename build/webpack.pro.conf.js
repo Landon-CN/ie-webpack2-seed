@@ -13,24 +13,25 @@ const proConf = merge(baseConfig, {
         publicPath: '/dist/'
     },
     plugins: [
-        // new webpack.optimize.UglifyJsPlugin({
-        //     compress: {
-        //         warnings: false,
-        //         screw_ie8: false
-        //     },
-        //     mangle: {
-        //         screw_ie8: false
-        //     },
-        //     output: {
-        //         screw_ie8: false
-        //     },
-        //     exclude: /\.less$/i
-        // }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false,
+                screw_ie8: false
+            },
+            mangle: {
+                screw_ie8: false
+            },
+            output: {
+                screw_ie8: false
+            },
+            exclude: /\.less$/i
+        }),
         new webpack.optimize.CommonsChunkPlugin("vendor", "libary.[chunkhash].js"),
         new ExtractTextPlugin("index.[chunkhash].css"),
-        // new webpack.DefinePlugin({
-        //     'process.env.NODE_ENV': '"production"'
-        // }),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': '"production"'
+        }),
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     ]
 });
 

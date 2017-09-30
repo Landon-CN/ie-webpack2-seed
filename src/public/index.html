@@ -71,6 +71,15 @@
             </div>
         </div>
     </div>
+    <script>
+        // ie8-9 bug
+        if (!window.console) {
+            window.console = {};
+        }
+        if (!console.log) {
+            console.log = function () {};
+        }
+    </script>
 </body>
 
 </html>

@@ -5,3 +5,4 @@ dev
 npm-debug.log
 .DS_Store
 .idea
+stats.json

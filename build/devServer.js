@@ -27,7 +27,7 @@ if (local) {
 
 // 开发环境
 // http://wiki.cbpmgt.com/confluence/pages/viewpage.action?pageId=20595574
-let dev = false;
+let dev = true;
 if (dev) {
     targetUrl = '172.25.47.40';
     messageUrl = '172.25.47.40';
