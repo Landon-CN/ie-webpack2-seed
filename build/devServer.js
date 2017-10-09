@@ -37,7 +37,7 @@ if (dev) {
     webImPort = '8088';
 }
 
-let test = true;
+let test = false;
 if (test) {
     targetUrl = 'jtalk.jd.com';
     messageUrl = 'jtalk.jd.com';
