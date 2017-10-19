@@ -23,7 +23,7 @@ const lessUse = [{
                     'last 2 versions',
                     'Chrome >= 20',
                     'Firefox >= 20',
-                    'ie >= 8', // React doesn't support IE8 anyway
+                    'ie >= 8',
                 ],
                 flexbox: 'no-2009',
             }),
@@ -40,7 +40,7 @@ const lessUse = [{
 
 
 
-
+// less
 const lessLoader = {
     test: /\.less$/,
     use: process.env.NODE_ENV === 'production' ? ExtractTextPlugin.extract({
@@ -51,8 +51,23 @@ const lessLoader = {
     }].concat(lessUse)
 }
 
+// css
+const cssLoader = {
+    test: /\.css$/,
+    use: process.env.NODE_ENV === 'production' ? ExtractTextPlugin.extract({
+        fallback: require.resolve('style-loader'),
+        use: [{
+            loader: require.resolve('css-loader')
+        }]
+    }) : [{
+        loader: require.resolve('style-loader')
+    }, {
+        loader: require.resolve('css-loader')
+    }]
+}
 
-module.exports = {
+
+const baseConf = {
     entry: [paths.srcPath],
     output: {
         filename: 'static/[name].js',
@@ -63,14 +78,13 @@ module.exports = {
         extensions: ['.js', '.js']
     },
     module: {
-        loaders: [
-            // {
-            //     enforce: "pre",
-            //     test: /\.(ts|tsx)$/,
-            //     use: ['tslint-loader'],
-            //     include: path.resolve(__dirname, '../src'),
-            //     exclude: path.resolve(__dirname, '../node_modules')
-            // },
+        loaders: [{
+                enforce: "pre",
+                test: /\.js$/,
+                use: ['eslint-loader'],
+                include: path.resolve(__dirname, '../src'),
+                exclude: path.resolve(__dirname, '../node_modules')
+            },
             {
                 test: /\.js$/,
                 use: {
@@ -112,7 +126,13 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
-        }),
-        new es3ifyPlugin(),
+        })
     ]
 }
+
+// es3ifyPlugin 会导致开发环境内存泄漏，所以正常开发模式下，不建议引入
+if (process.env.NODE_ENV === 'production' || process.env.BROWSER === 'ie8') {
+    baseConf.plugins.push(new es3ifyPlugin());
+}
+
+module.exports = baseConf;

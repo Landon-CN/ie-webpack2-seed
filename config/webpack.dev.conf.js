@@ -27,7 +27,7 @@ const devConfig = merge(baseConfig, {
 
 // ie8 不支持hot reload
 if (process.env.BROWSER !== 'ie8') {
-    baseConfig.entry = [
+    devConfig.entry = [
         path.resolve(__dirname, './devClient.js')
     ].concat(baseConfig.entry);
     devConfig.plugins.push(new webpack.HotModuleReplacementPlugin())

@@ -26,7 +26,7 @@ let _html = '';
 compiler.plugin('compilation', function (compilation) {
 
     compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-
+        
         // 解决webpack 3.0+ HtmlWebpackPlugin bug
         // https://github.com/webpack/webpack-dev-server/issues/949
         _html = _html || data.html.source();
